@@ -6,15 +6,18 @@ Children:
   Id: g=03f8c3cdd9a49ad2201e76282dc443a7
   Type: RSAMachine
   Children:
-  - Name: f0
-    Type: BaseDataVariableType
-    DataType: Float
-  - Name: ft
-    Type: BaseDataVariableType
-    DataType: Float
-  - Name: so
-    Type: BaseDataVariableType
-    DataType: Float
+  - Name: Parameters1
+    Type: Parameters
+    Children:
+    - Name: f0
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: ft
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: so
+      Type: BaseDataVariableType
+      DataType: Float
   - Name: RecipeStepRSA1
     Type: RecipeStepRSA
     Children:

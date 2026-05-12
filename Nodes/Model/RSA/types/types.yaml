@@ -1,6 +1,19 @@
 Name: types
 Type: FolderType
 Children:
+- Name: Parameters
+  Id: g=d2046ee614dd89c04e7970d26deccad9
+  Supertype: BaseObjectType
+  Children:
+  - Name: f0
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: ft
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: so
+    Type: BaseDataVariableType
+    DataType: Float
 - Name: RecipeStepRSA
   Id: g=8e75382c8b2b62c2404fb12d5f15a766
   Supertype: BaseObjectType
@@ -21,15 +34,18 @@ Children:
   Id: g=e0f0d30e0bcf9f357517f5021f2b803c
   Supertype: BaseObjectType
   Children:
-  - Name: f0
-    Type: BaseDataVariableType
-    DataType: Float
-  - Name: ft
-    Type: BaseDataVariableType
-    DataType: Float
-  - Name: so
-    Type: BaseDataVariableType
-    DataType: Float
+  - Name: Parameters1
+    Type: Parameters
+    Children:
+    - Name: f0
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: ft
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: so
+      Type: BaseDataVariableType
+      DataType: Float
   - Name: RecipeStepRSA1
     Type: RecipeStepRSA
     Children:

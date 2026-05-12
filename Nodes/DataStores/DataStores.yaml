@@ -248,6 +248,35 @@ Children:
           Type: StoreColumn
           DataType: RecipeGroupIds
           Value: 1
+    - Name: RecipeMetadata_RecipeSchema1
+      Type: SQLiteStoreTable
+      Children:
+      - Class: Reference
+        Target: ns=8;i=12
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=15
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=21
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=20
+        Direction: Forward
+      - Name: Columns
+        Type: BaseObjectType
+        Children:
+        - Name: RecipeId
+          Type: StoreColumn
+          DataType: UInt32
+          Children:
+          - Name: PrimaryKey
+            Type: BaseDataVariableType
+            DataType: Boolean
+            Value: true
+          - Name: Nullable
+            Type: BaseDataVariableType
+            DataType: Boolean
   - Class: Reference
     Target: ns=10;i=30
     Direction: Forward

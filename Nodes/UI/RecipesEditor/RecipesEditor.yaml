@@ -1688,26 +1688,6 @@ Children:
         - Name: TypeSelectors
           Type: BaseObjectType
           Children:
-          - Name: TypeSelector1
-            Type: TypeSelector
-            Children:
-            - Name: Template
-              Type: NodePointer
-              DataType: NodeId
-              Value: "/Objects/recipex_example/UI/RecipesEditor/Components/RecipeEditListViewRow/TemplateListViewRow"
-              Children:
-              - Name: Kind
-                Type: PropertyType
-                DataType: NodeId
-                Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container/Panel/ListViewRow"
-            - Name: Type
-              Type: NodePointer
-              DataType: NodeId
-              Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
-              Children:
-              - Name: Kind
-                Type: PropertyType
-                DataType: NodeId
           - Name: TypeSelector2
             Type: TypeSelector
             Children:
@@ -1724,6 +1704,26 @@ Children:
               Type: NodePointer
               DataType: NodeId
               Value: "/Objects/recipex_example/Model/RSA/types/RecipeStepRSA"
+              Children:
+              - Name: Kind
+                Type: PropertyType
+                DataType: NodeId
+          - Name: TypeSelector1
+            Type: TypeSelector
+            Children:
+            - Name: Template
+              Type: NodePointer
+              DataType: NodeId
+              Value: "/Objects/recipex_example/UI/RecipesEditor/Components/RecipeEditListViewRow/RecipeGeneralParameters"
+              Children:
+              - Name: Kind
+                Type: PropertyType
+                DataType: NodeId
+                Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container/Panel/ListViewRow"
+            - Name: Type
+              Type: NodePointer
+              DataType: NodeId
+              Value: "/Objects/recipex_example/Model/RSA/types/Parameters"
               Children:
               - Name: Kind
                 Type: PropertyType
