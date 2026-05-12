@@ -1,0 +1,62 @@
+Name: RSA
+Type: FolderType
+Children:
+- File: types/types.yaml
+- Name: RSAMachine1
+  Id: g=03f8c3cdd9a49ad2201e76282dc443a7
+  Type: RSAMachine
+  Children:
+  - Name: f0
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: ft
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: so
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: RecipeStepRSA1
+    Type: RecipeStepRSA
+    Children:
+    - Name: FaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: dsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: tsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: psp
+      Type: BaseDataVariableType
+      DataType: Float
+  - Name: RecipeStepRSA2
+    Type: RecipeStepRSA
+    Children:
+    - Name: FaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: dsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: tsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: psp
+      Type: BaseDataVariableType
+      DataType: Float
+  - Name: RecipeStepRSA3
+    Type: RecipeStepRSA
+    Children:
+    - Name: FaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: dsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: tsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: psp
+      Type: BaseDataVariableType
+      DataType: Float

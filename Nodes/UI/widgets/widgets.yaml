@@ -1,0 +1,228 @@
+Name: widgets
+Type: FolderType
+Children:
+- Name: RecipeCreator
+  Id: g=bc1f5b4a382a90333b5c45f73837f8dc
+  Supertype: ColumnLayout
+  ReferenceType: HasComponent
+  Children:
+  - Name: Width
+    Type: BaseVariableType
+    DataType: Size
+    ModellingRule: Optional
+    Value: 630.0
+  - Name: Height
+    Type: BaseVariableType
+    DataType: Size
+    ModellingRule: Optional
+    Value: 570.0
+  - Name: LeftMargin
+    Type: BaseVariableType
+    DataType: Size
+    ModellingRule: Optional
+    Value: 390.0
+  - Name: TopMargin
+    Type: BaseVariableType
+    DataType: Size
+    ModellingRule: Optional
+    Value: 570.0
+  - Name: RecipeNameTbx
+    Type: TextBox
+    Children:
+    - Name: Text
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+    - Name: Width
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 110.0
+    - Name: HorizontalAlignment
+      Type: BaseVariableType
+      DataType: HorizontalAlignment
+      ModellingRule: Optional
+      Value: 3
+    - Name: PlaceholderText
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      ModellingRule: Optional
+      Value: {"LocaleId":"en-US","Text":"recipe name"}
+  - Name: RecipeVersionTbx
+    Type: TextBox
+    Children:
+    - Name: Text
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+    - Name: Width
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 110.0
+    - Name: HorizontalAlignment
+      Type: BaseVariableType
+      DataType: HorizontalAlignment
+      ModellingRule: Optional
+      Value: 3
+    - Name: PlaceholderText
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      ModellingRule: Optional
+      Value: {"LocaleId":"en-US","Text":"recipe version"}
+  - Name: Button1
+    Type: Button
+    Children:
+    - Name: Text
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      ModellingRule: Optional
+      Value: {"LocaleId":"en-US","Text":"create recipe"}
+    - Name: HorizontalAlignment
+      Type: BaseVariableType
+      DataType: HorizontalAlignment
+      ModellingRule: Optional
+      Value: 3
+    - Name: Height
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 40.0
+    - Name: MouseClickEventHandler1
+      Type: EventHandler
+      Children:
+      - Name: ListenEventType
+        Type: PropertyType
+        DataType: NodeId
+        Value: "/Types/EventTypes/BaseEventType/MouseEvent/MouseClickEvent"
+      - Name: MethodsToCall
+        Type: BaseObjectType
+        Children:
+        - Name: MethodContainer1
+          Type: BaseObjectType
+          Children:
+          - Name: ns=2;ObjectPointer
+            Type: NodePointer
+            DataType: NodeId
+            Value: "/Objects/recipex_example/Recipes/CycleRecipeSchema"
+            Children:
+            - Name: Kind
+              Type: PropertyType
+              DataType: NodeId
+              Value: "/Types/ObjectTypes/BaseObjectType"
+          - Name: ns=2;Method
+            Type: BaseDataVariableType
+            DataType: String
+            Value: "CreateRecipe"
+          - Name: InputArguments
+            Type: BaseObjectType
+            Children:
+            - Name: RecipeId
+              Type: BaseDataVariableType
+              DataType: RecipeId
+              Description: {"NamespaceIndex":9,"TextId":"CreateRecipeRecipeIdDescription"}
+              Value: 
+               {
+                "TypeId": {
+                 "Id": 10,
+                 "Namespace": 9
+                },
+                "Body": {
+                 "Name": "",
+                 "Version": "../../../../../../RecipeNameTbx/Text"
+                }
+               }
+              Children:
+              - Name: DynamicLink_field.at(0)
+                Type: DynamicLink
+                DataType: NodePath
+                Value: "../../../../../../RecipeNameTbx/Text"
+                Children:
+                - Name: ParentElementAccess
+                  Type: BaseVariableType
+                  DataType: ElementAccess
+                  Value: 
+                   {
+                    "TypeId": {
+                     "Id": 313,
+                     "Namespace": 1
+                    },
+                    "Body": {
+                     "ArrayIndex": [],
+                     "FieldIndexes": [{
+                       "TypeId": {
+                        "Id": 311,
+                        "Namespace": 1
+                       },
+                       "Body": {
+                        "FieldPos": 0,
+                        "ArrayIndex": []
+                       }
+                      }]
+                    }
+                   }
+              - Name: DynamicLink_field.at(1)
+                Type: DynamicLink
+                DataType: NodePath
+                Value: "../../../../../../RecipeVersionTbx/Text"
+                Children:
+                - Name: ParentElementAccess
+                  Type: BaseVariableType
+                  DataType: ElementAccess
+                  Value: 
+                   {
+                    "TypeId": {
+                     "Id": 313,
+                     "Namespace": 1
+                    },
+                    "Body": {
+                     "ArrayIndex": [],
+                     "FieldIndexes": [{
+                       "TypeId": {
+                        "Id": 311,
+                        "Namespace": 1
+                       },
+                       "Body": {
+                        "FieldPos": 1,
+                        "ArrayIndex": []
+                       }
+                      }]
+                    }
+                   }
+          - Name: OutputArguments
+            Type: BaseObjectType
+            Children:
+            - Name: Result
+              Type: BaseDataVariableType
+              DataType: CreateRecipeResultCode
+              Description: {"NamespaceIndex":9,"TextId":"CreateRecipeResultDescription"}
+      - Name: EventArguments
+        Type: MouseClickEvent
+        Children:
+        - Name: EventId
+          Type: PropertyType
+          DataType: ByteString
+        - Name: EventType
+          Type: PropertyType
+          DataType: NodeId
+        - Name: SourceNode
+          Type: PropertyType
+          DataType: NodeId
+        - Name: SourceName
+          Type: PropertyType
+          DataType: String
+        - Name: Time
+          Type: PropertyType
+          DataType: UtcTime
+        - Name: ReceiveTime
+          Type: PropertyType
+          DataType: UtcTime
+        - Name: Message
+          Type: PropertyType
+          DataType: LocalizedText
+        - Name: Severity
+          Type: PropertyType
+          DataType: UInt16
+  - Name: VerticalGap
+    Type: BaseDataVariableType
+    DataType: Size
+    ModellingRule: Optional
+    Value: 20.0

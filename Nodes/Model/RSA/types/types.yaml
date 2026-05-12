@@ -1,0 +1,77 @@
+Name: types
+Type: FolderType
+Children:
+- Name: RecipeStepRSA
+  Id: g=8e75382c8b2b62c2404fb12d5f15a766
+  Supertype: BaseObjectType
+  Children:
+  - Name: FaseType
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: dsp
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: tsp
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: psp
+    Type: BaseDataVariableType
+    DataType: Float
+- Name: RSAMachine
+  Id: g=e0f0d30e0bcf9f357517f5021f2b803c
+  Supertype: BaseObjectType
+  Children:
+  - Name: f0
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: ft
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: so
+    Type: BaseDataVariableType
+    DataType: Float
+  - Name: RecipeStepRSA1
+    Type: RecipeStepRSA
+    Children:
+    - Name: FaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: dsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: tsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: psp
+      Type: BaseDataVariableType
+      DataType: Float
+  - Name: RecipeStepRSA2
+    Type: RecipeStepRSA
+    Children:
+    - Name: FaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: dsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: tsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: psp
+      Type: BaseDataVariableType
+      DataType: Float
+  - Name: RecipeStepRSA3
+    Type: RecipeStepRSA
+    Children:
+    - Name: FaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: dsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: tsp
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: psp
+      Type: BaseDataVariableType
+      DataType: Float

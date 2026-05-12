@@ -1,2 +1,101 @@
 Name: Model
 Type: ModelCategoryFolder
+Children:
+- Class: DataType
+  Name: RecipeStatuses
+  Id: g=330609fdb67fb2d65b6d4f2e0119b971
+  Supertype: Enumeration
+  EnumDefinition: 
+   {
+    "Name": "RecipeStatuses",
+    "DataType": {
+     "IdType": 2,
+     "Id": "330609fdb67fb2d65b6d4f2e0119b971",
+     "Namespace": 7
+    },
+    "Fields": [{
+      "Name": "Value0",
+      "Value": 0,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "draft"
+      }
+     },{
+      "Name": "Value1",
+      "Value": 1,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "prepared"
+      }
+     },{
+      "Name": "Value2",
+      "Value": 2,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "approved"
+      }
+     },{
+      "Name": "Value3",
+      "Value": 3,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "released"
+      }
+     }]
+   }
+  Children:
+  - Name: ns=0;EnumValues
+    Type: BaseDataVariableType
+    DataType: EnumValueType
+    ModellingRule: None
+    ValueRank: OneDimension
+    ArrayDimensions: [0]
+    Value: [{"TypeId":{"Id":7594},"Body":{"Value":0,"DisplayName":{"LocaleId":"en-US","Text":"draft"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"LocaleId":"en-US","Text":"prepared"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"LocaleId":"en-US","Text":"approved"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"LocaleId":"en-US","Text":"released"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+- Class: DataType
+  Name: RecipeGroupIds
+  Id: g=bc213e2c37c1b6222df386e307cc7783
+  Supertype: Enumeration
+  EnumDefinition: 
+   {
+    "Name": "RecipeGroupIds",
+    "DataType": {
+     "IdType": 2,
+     "Id": "bc213e2c37c1b6222df386e307cc7783",
+     "Namespace": 7
+    },
+    "Fields": [{
+      "Name": "Value0",
+      "Value": 1,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "warmup"
+      },
+      "Description": {
+       "LocaleId": "en-US",
+       "Text": ""
+      }
+     },{
+      "Name": "Value1",
+      "Value": 2,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "b&d"
+      }
+     },{
+      "Name": "Value2",
+      "Value": 3,
+      "DisplayName": {
+       "LocaleId": "en-US",
+       "Text": "filter sterilization"
+      }
+     }]
+   }
+  Children:
+  - Name: ns=0;EnumValues
+    Type: BaseDataVariableType
+    DataType: EnumValueType
+    ModellingRule: None
+    ValueRank: OneDimension
+    ArrayDimensions: [0]
+    Value: [{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"LocaleId":"en-US","Text":"warmup"},"Description":{"LocaleId":"en-US","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"LocaleId":"en-US","Text":"b&d"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"LocaleId":"en-US","Text":"filter sterilization"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+- File: RSA/RSA.yaml
