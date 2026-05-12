@@ -421,7 +421,7 @@ Children:
           Type: PropertyType
           DataType: UInt16
 - File: RecipesEditor/RecipesEditor.yaml
-- Name: MainWindow
+- Name: SandboxWindow
   Id: g=01a7e8933afd7c95fe894b0859308138
   Supertype: Window
   Children:
@@ -484,7 +484,7 @@ Children:
       - Name: Panel
         Type: NodePointer
         DataType: NodeId
-        Value: "/Objects/recipex_example/UI/Screens/recipesList"
+        Value: "/Objects/recipex_example/UI/Screens/sandboxScreens/recipesList"
         Children:
         - Name: Kind
           Type: PropertyType
@@ -565,7 +565,7 @@ Children:
                   Type: BaseDataVariableType
                   DataType: NodeId
                   Description: {"NamespaceIndex":3,"TextId":"ChangePanelNewPanelDescription"}
-                  Value: "/Objects/recipex_example/UI/Screens/recipesList"
+                  Value: "/Objects/recipex_example/UI/Screens/sandboxScreens/recipesList"
                 - Name: AliasNode
                   Type: BaseDataVariableType
                   DataType: NodeId
@@ -605,5 +605,4 @@ Children:
           Value: 130.0
 - File: Screens/Screens.yaml
 - File: Keyboards/Keyboards.yaml
-- File: RowTemplates/RowTemplates.yaml
-- File: widgets/widgets.yaml
+- File: sandbox/sandbox.yaml

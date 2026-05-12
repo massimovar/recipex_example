@@ -1,0 +1,5 @@
+Name: sandbox
+Type: FolderType
+Children:
+- File: RowTemplates/RowTemplates.yaml
+- File: widgets/widgets.yaml

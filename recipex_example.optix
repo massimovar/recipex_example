@@ -83,15 +83,15 @@ Project:
    Module: FTOptix.NetLogic
    Version: 4.0
  Statistics:
-  TotalNodeCount: 2313
-  Objects: 517
+  TotalNodeCount: 2327
+  Objects: 520
   ObjectTypes: 25
-  Variables: 1769
+  Variables: 1780
   VariableTypes: 0
   DataTypes: 2
   Methods: 0
   References: 58
   ReferenceTypes: 0
-  Files: 32
+  Files: 34
  Nodes:
  - File: Nodes/recipex_example.yaml

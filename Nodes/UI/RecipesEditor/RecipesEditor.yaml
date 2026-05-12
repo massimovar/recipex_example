@@ -1662,7 +1662,7 @@ Children:
               DataType: LocalizedText
               ReferenceType: HasParameter
               ModellingRule: Optional
-              Value: {"LocaleId":"en-US","Text":"SELECT * FROM EditModel WHERE RecipeName = {#name:sql_literal} AND RecipeVersion = {#version:sql_literal} ORDER BY DisplayName"}
+              Value: {"LocaleId":"en-US","Text":"SELECT * FROM EditModel WHERE RecipeName = {#name:sql_literal} AND RecipeVersion = {#version:sql_literal} ORDER BY DisplayName ASC"}
             - Name: ns=2;Sourcename
               Type: BaseDataVariableType
               DataType: BaseDataType
@@ -1704,6 +1704,26 @@ Children:
               Type: NodePointer
               DataType: NodeId
               Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
+              Children:
+              - Name: Kind
+                Type: PropertyType
+                DataType: NodeId
+          - Name: TypeSelector2
+            Type: TypeSelector
+            Children:
+            - Name: Template
+              Type: NodePointer
+              DataType: NodeId
+              Value: "/Objects/recipex_example/UI/RecipesEditor/Components/RecipeEditListViewRow/RecipeStep"
+              Children:
+              - Name: Kind
+                Type: PropertyType
+                DataType: NodeId
+                Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container/Panel/ListViewRow"
+            - Name: Type
+              Type: NodePointer
+              DataType: NodeId
+              Value: "/Objects/recipex_example/Model/RSA/types/RecipeStepRSA"
               Children:
               - Name: Kind
                 Type: PropertyType
