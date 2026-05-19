@@ -474,33 +474,6 @@ Children:
             Type: BaseDataVariableType
             DataType: String
             Value: "GenerateTestRecipes"
-          - Name: InputArguments
-            Type: BaseObjectType
-            Children:
-            - Name: count
-              Type: BaseDataVariableType
-              DataType: Int32
-              Value: 10
-            - Name: recipeFamily
-              Type: BaseDataVariableType
-              DataType: Float
-              Value: 1.0
-            - Name: activeStepCount
-              Type: BaseDataVariableType
-              DataType: Int32
-              Value: 3
-            - Name: namePrefix
-              Type: BaseDataVariableType
-              DataType: String
-              Value: "TEST_"
-            - Name: statusInt
-              Type: BaseDataVariableType
-              DataType: Int32
-              Value: 1
-            - Name: overwriteExistingTestRecipes
-              Type: BaseDataVariableType
-              DataType: Boolean
-              Value: true
       - Name: EventArguments
         Type: MouseClickEvent
         Children:
@@ -594,24 +567,6 @@ Children:
             Type: BaseDataVariableType
             DataType: String
             Value: "BulkDeleteTestRecipes"
-          - Name: InputArguments
-            Type: BaseObjectType
-            Children:
-            - Name: namePrefix
-              Type: BaseDataVariableType
-              DataType: String
-              Value: "TEST_"
-            - Name: onlyCreatedByThisTool
-              Type: BaseDataVariableType
-              DataType: Boolean
-              Value: true
-            - Name: dryRun
-              Type: BaseDataVariableType
-              DataType: Boolean
-            - Name: confirmPhysicalDelete
-              Type: BaseDataVariableType
-              DataType: Boolean
-              Value: true
       - Name: EventArguments
         Type: MouseClickEvent
         Children:

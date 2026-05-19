@@ -108,7 +108,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/RecipeFamily@BrowseName"
+            Value: "{RowItem}/f0@BrowseName"
       - Name: SpinBox1
         Type: SpinBox
         Children:
@@ -119,7 +119,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/RecipeFamily"
+            Value: "{RowItem}/f0"
       - Name: Parameter
         Type: Alias
         DataType: NodeId

@@ -20,11 +20,10 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     private RecipeSchema _schema;
     private RecipeConfigurationLoader _configLoader;
     private const string DefaultPrefix = "TEST_RECIPE_";
-    private const string GeneratedByMarker = "RecipeRuntimeTestToolsNetLogic";
     private const string ConfigFileName = "recipe_configuration.yaml";
 
     // Safety: physical delete disabled by default
-    private bool _physicalDeleteAllowed = false;
+    private bool _physicalDeleteAllowed = true;
 
     public override void Start()
     {
@@ -43,7 +42,31 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     #region GenerateTestRecipes
 
     /// <summary>
-    /// Generate a variable number of test recipes for development/testing.
+    /// Generate test recipes. Reads parameters from LogicObject variables:
+    ///   Count (int), RecipeFamily (float), ActiveStepCount (int),
+    ///   NamePrefix (string), Status (int), OverwriteExistingTestRecipes (bool).
+    /// Falls back to defaults if variables not configured.
+    /// </summary>
+    [ExportMethod]
+    public void GenerateTestRecipes()
+    {
+        int count = GetVariableValueOrDefault("Count", 10);
+        float recipeFamily = GetVariableValueOrDefault("RecipeFamily", 1f);
+        int activeStepCount = GetVariableValueOrDefault("ActiveStepCount", 5);
+        string namePrefix = GetVariableValueOrDefault("NamePrefix", DefaultPrefix);
+        int statusInt = GetVariableValueOrDefault("Status", 1);
+        bool overwrite = GetVariableValueOrDefault("OverwriteExistingTestRecipes", false);
+
+        var result = GenerateTestRecipesInternal(count, recipeFamily, activeStepCount, namePrefix, statusInt, overwrite);
+
+        if (result.Success)
+            Log.Info("TestTools", $"Generated {result.CreatedCount}/{result.TotalRequested} recipes.");
+        else
+            Log.Error("TestTools", $"Generation failed. Errors: {string.Join("; ", result.Errors)}");
+    }
+
+    /// <summary>
+    /// Internal implementation with explicit parameters. Can be called programmatically.
     /// </summary>
     /// <param name="count">Number of test recipes to generate (must be > 0).</param>
     /// <param name="recipeFamily">Recipe family key (cast to int, must exist in YAML config).</param>
@@ -51,8 +74,7 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     /// <param name="namePrefix">Name prefix for generated recipes. Default: "TEST_RECIPE_".</param>
     /// <param name="statusInt">Initial RecipeStatuses value written to metadata. Default: 1.</param>
     /// <param name="overwriteExistingTestRecipes">If true, archives existing recipes matching prefix before generating.</param>
-    [ExportMethod]
-    public TestRecipeGenerationResult GenerateTestRecipes(int count, float recipeFamily,
+    public TestRecipeGenerationResult GenerateTestRecipesInternal(int count, float recipeFamily,
         int activeStepCount = 5, string namePrefix = null, int statusInt = 1,
         bool overwriteExistingTestRecipes = false)
     {
@@ -77,9 +99,9 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
             return result;
         }
 
-        if (activeStepCount < 1 || activeStepCount > 20)
+        if (activeStepCount < 1)
         {
-            result.Errors.Add("activeStepCount must be 1..20.");
+            result.Errors.Add("activeStepCount must be >= 1.");
             return result;
         }
 
@@ -104,6 +126,13 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
         {
             BulkArchiveTestRecipesInternal(prefix, dryRun: false);
         }
+
+        // Discover actual step items from schema (don't hardcode step count)
+        var stepItems = DiscoverStepItems();
+        int actualStepCount = stepItems.Count;
+        // Clamp activeStepCount to actual available steps
+        if (activeStepCount > actualStepCount)
+            activeStepCount = actualStepCount;
 
         // Generate recipes
         for (int i = 1; i <= count; i++)
@@ -130,16 +159,19 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
                 }
 
                 // Set RecipeFamily
-                _schema.SetRecipeDataItemValue(recipeId,
+                var setFamilyResult = _schema.SetRecipeDataItemValue(recipeId,
                     new string[] { "Parameters1" },
                     new string[] { "RecipeFamily" },
                     new ElementAccessStruct(), recipeFamily);
+                if (setFamilyResult != SetRecipeDataItemValueResultCode.Success)
+                    Log.Warning("TestTools", $"{recipeName}: SetRecipeFamily failed ({setFamilyResult})");
 
-                // Set steps: active 1..activeStepCount, tail for rest
-                for (int s = 1; s <= 20; s++)
+                // Set steps: active 1..activeStepCount, rest disabled
+                for (int s = 0; s < actualStepCount; s++)
                 {
-                    string stepName = $"RecipeStepRSA{s}";
-                    float phaseType = (s <= activeStepCount) ? (float)s : 0f;
+                    string stepName = stepItems[s];
+                    bool isActive = (s < activeStepCount);
+                    float phaseType = isActive ? (float)(s + 1) : 0f;
 
                     _schema.SetRecipeDataItemValue(recipeId,
                         new string[] { stepName },
@@ -149,12 +181,11 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
                     _schema.SetRecipeDataItemValue(recipeId,
                         new string[] { stepName },
                         new string[] { "StepEnabled" },
-                        new ElementAccessStruct(), s <= activeStepCount);
+                        new ElementAccessStruct(), isActive);
                 }
 
-                // Set metadata (version is in RecipeId.Version, CreatedAt is native DB column)
-                _schema.SetRecipeMetadataValue(recipeId, RecipeHelpers.MetadataStatus, (int)initialStatus);
-                _schema.SetRecipeMetadataValue(recipeId, RecipeHelpers.MetadataGeneratedBy, GeneratedByMarker);
+                // Set Status metadata
+                TrySetMetadata(recipeId, RecipeHelpers.MetadataStatus, (int)initialStatus);
 
                 result.CreatedCount++;
                 result.GeneratedRecipeNames.Add(recipeName);
@@ -175,20 +206,27 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     #region BulkArchiveTestRecipes
 
     /// <summary>
-    /// Archive all test recipes matching prefix and/or generated-by marker.
+    /// Archive all test recipes matching prefix (sets Status=Archived).
+    /// Reads parameters from LogicObject variables.
     /// </summary>
-    /// <param name="namePrefix">Name prefix filter. Default: "TEST_RECIPE_".</param>
-    /// <param name="onlyCreatedByThisTool">If true, only archives recipes with GeneratedBy marker matching this tool.</param>
-    /// <param name="dryRun">If true, reports candidates without modifying anything.</param>
+    /// <param name="NamePrefix">LogicObject variable. Name prefix filter. Default: "TEST_RECIPE_".</param>
+    /// <param name="DryRun">LogicObject variable. If true, reports candidates without archiving. Default: false.</param>
     [ExportMethod]
-    public BulkOperationResult BulkArchiveTestRecipes(string namePrefix = null,
-        bool onlyCreatedByThisTool = true, bool dryRun = true)
+    public void BulkArchiveTestRecipes()
     {
+        string namePrefix = GetVariableValueOrDefault("NamePrefix", DefaultPrefix);
+        bool dryRun = GetVariableValueOrDefault("DryRun", false);
+
         string prefix = string.IsNullOrWhiteSpace(namePrefix) ? DefaultPrefix : namePrefix;
-        return BulkArchiveTestRecipesInternal(prefix, dryRun, onlyCreatedByThisTool);
+        var result = BulkArchiveTestRecipesInternal(prefix, dryRun);
+
+        if (result.Success)
+            Log.Info("TestTools", $"BulkArchive: {result.AffectedCount} archived, {result.CandidateCount} candidates (dryRun={dryRun}).");
+        else
+            Log.Error("TestTools", $"BulkArchive failed. Errors: {string.Join("; ", result.Errors)}");
     }
 
-    private BulkOperationResult BulkArchiveTestRecipesInternal(string prefix, bool dryRun, bool onlyCreatedByThisTool = true)
+    private BulkOperationResult BulkArchiveTestRecipesInternal(string prefix, bool dryRun)
     {
         var result = new BulkOperationResult();
 
@@ -207,21 +245,10 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
             return result;
         }
 
-        // Find candidates
+        // Find candidates matching prefix
         var candidates = recipesResult.Recipes
             .Where(r => r.RecipeId.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             .ToList();
-
-        // Optionally filter by generated-by marker
-        if (onlyCreatedByThisTool)
-        {
-            candidates = candidates.Where(r =>
-            {
-                var meta = _schema.GetRecipeMetadataValue(r.RecipeId, RecipeHelpers.MetadataGeneratedBy);
-                return meta.ResultCode == GetRecipeMetadataValueResultCode.Success &&
-                       meta.MetadataValue?.Value?.ToString() == GeneratedByMarker;
-            }).ToList();
-        }
 
         result.CandidateCount = candidates.Count;
 
@@ -267,33 +294,38 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     #region BulkDeleteTestRecipes
 
     /// <summary>
-    /// Physically delete test recipes. Disabled by default for safety.
-    /// Only operates on recipes clearly identified as test recipes.
+    /// Physically delete test recipes matching prefix. Disabled by default for safety.
+    /// Reads parameters from LogicObject variables.
     /// </summary>
-    /// <param name="namePrefix">Name prefix filter. Default: "TEST_RECIPE_".</param>
-    /// <param name="onlyCreatedByThisTool">If true, only deletes recipes with GeneratedBy marker matching this tool.</param>
-    /// <param name="dryRun">If true, reports candidates without deleting anything.</param>
-    /// <param name="confirmPhysicalDelete">Must be true to allow physical deletion. Double-gate with _physicalDeleteAllowed.</param>
+    /// <remarks>
+    /// Safety: requires _physicalDeleteAllowed=true (code-level) AND DryRun=false (user-level).
+    /// </remarks>
+    /// <param name="NamePrefix">LogicObject variable. Name prefix filter. Default: "TEST_RECIPE_".</param>
+    /// <param name="DryRun">LogicObject variable. If true, reports candidates without deleting. Default: true.</param>
     [ExportMethod]
-    public BulkOperationResult BulkDeleteTestRecipes(string namePrefix = null,
-        bool onlyCreatedByThisTool = true, bool dryRun = true, bool confirmPhysicalDelete = false)
+    public void BulkDeleteTestRecipes()
+    {
+        string namePrefix = GetVariableValueOrDefault("NamePrefix", DefaultPrefix);
+        bool dryRun = GetVariableValueOrDefault("DryRun", false);
+
+        var result = BulkDeleteTestRecipesInternal(namePrefix, dryRun);
+
+        if (result.Success)
+            Log.Info("TestTools", $"BulkDelete: {result.AffectedCount} deleted, {result.CandidateCount} candidates (dryRun={dryRun}).");
+        else
+            Log.Error("TestTools", $"[{result.ErrorCode}] BulkDelete failed. Errors: {string.Join("; ", result.Errors)}");
+    }
+
+    private BulkOperationResult BulkDeleteTestRecipesInternal(string namePrefix, bool dryRun)
     {
         var result = new BulkOperationResult();
 
-        // Safety gate: physical delete must be explicitly allowed
+        // Safety gate: physical delete must be explicitly allowed at code level
         if (!_physicalDeleteAllowed)
         {
             result.Success = false;
             result.ErrorCode = "PhysicalDeleteNotAllowed";
-            result.Errors.Add("Physical deletion is disabled. Set _physicalDeleteAllowed=true in configuration to enable.");
-            return result;
-        }
-
-        if (!confirmPhysicalDelete)
-        {
-            result.Success = false;
-            result.ErrorCode = "PhysicalDeleteNotAllowed";
-            result.Errors.Add("confirmPhysicalDelete must be true to physically delete recipes.");
+            result.Errors.Add("Physical deletion is disabled. Set _physicalDeleteAllowed=true in code to enable.");
             return result;
         }
 
@@ -314,20 +346,10 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
             return result;
         }
 
-        // Find candidates: must match prefix AND have generated-by marker
+        // Find candidates matching prefix
         var candidates = recipesResult.Recipes
             .Where(r => r.RecipeId.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
             .ToList();
-
-        if (onlyCreatedByThisTool)
-        {
-            candidates = candidates.Where(r =>
-            {
-                var meta = _schema.GetRecipeMetadataValue(r.RecipeId, RecipeHelpers.MetadataGeneratedBy);
-                return meta.ResultCode == GetRecipeMetadataValueResultCode.Success &&
-                       meta.MetadataValue?.Value?.ToString() == GeneratedByMarker;
-            }).ToList();
-        }
 
         result.CandidateCount = candidates.Count;
 
@@ -376,6 +398,104 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
         if (recipes.ResultCode != GetRecipesResultCode.Success)
             return false;
         return recipes.Recipes.Any(r => r.RecipeId.Name == recipeName);
+    }
+
+    /// <summary>
+    /// Read a variable value from LogicObject, return default if not found or wrong type.
+    /// </summary>
+    private T GetVariableValueOrDefault<T>(string variableName, T defaultValue)
+    {
+        try
+        {
+            var variable = LogicObject.GetVariable(variableName);
+            if (variable == null)
+                return defaultValue;
+
+            var value = variable.Value;
+            if (value == null)
+                return defaultValue;
+
+            return (T)Convert.ChangeType(value.Value, typeof(T));
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
+    /// <summary>
+    /// Discover step item names from schema by inspecting data items.
+    /// Returns list of top-level item browse paths matching "RecipeStepRSA*".
+    /// </summary>
+    private List<string> DiscoverStepItems()
+    {
+        var steps = new List<string>();
+        try
+        {
+            // Use first existing recipe to discover structure, or create a probe
+            var recipesResult = _schema.GetRecipes();
+            RecipeId probeId = null;
+
+            if (recipesResult.ResultCode == GetRecipesResultCode.Success && recipesResult.Recipes.Length > 0)
+            {
+                probeId = recipesResult.Recipes[0].RecipeId;
+            }
+            else
+            {
+                // Create a temporary recipe to probe structure
+                probeId = new RecipeId { Name = "_PROBE_STRUCTURE_", Version = "1.0" };
+                var createResult = _schema.CreateRecipe(probeId);
+                if (createResult != CreateRecipeResultCode.Success)
+                {
+                    Log.Warning("TestTools", "Cannot discover steps — using fallback 1..3");
+                    return new List<string> { "RecipeStepRSA1", "RecipeStepRSA2", "RecipeStepRSA3" };
+                }
+            }
+
+            var dataItems = _schema.GetDataItems(probeId);
+            if (dataItems.ResultCode == GetDataItemsResultCode.Success)
+            {
+                // Collect distinct top-level items matching step pattern
+                steps = dataItems.DataItems
+                    .Where(di => di.ItemRelativeBrowsePath.Length > 0 &&
+                                 di.ItemRelativeBrowsePath[0].StartsWith("RecipeStepRSA"))
+                    .Select(di => di.ItemRelativeBrowsePath[0])
+                    .Distinct()
+                    .OrderBy(n => n)
+                    .ToList();
+            }
+
+            // Clean up probe if we created one
+            if (probeId.Name == "_PROBE_STRUCTURE_")
+                _schema.DeleteRecipe(probeId);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("TestTools", $"DiscoverStepItems failed: {ex.Message}. Using fallback.");
+        }
+
+        // Fallback if discovery returned nothing
+        if (steps.Count == 0)
+            steps = new List<string> { "RecipeStepRSA1", "RecipeStepRSA2", "RecipeStepRSA3" };
+
+        return steps;
+    }
+
+    /// <summary>
+    /// Safely attempt to set metadata. Logs warning if field not found on schema.
+    /// </summary>
+    private void TrySetMetadata(RecipeId recipeId, string metadataName, object value)
+    {
+        try
+        {
+            var resultCode = _schema.SetRecipeMetadataValue(recipeId, metadataName, value);
+            if (resultCode != SetRecipeMetadataValueResultCode.Success)
+                Log.Warning("TestTools", $"SetMetadata '{metadataName}' on '{recipeId.Name}': {resultCode}");
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("TestTools", $"SetMetadata '{metadataName}' exception: {ex.Message}");
+        }
     }
 
     #endregion

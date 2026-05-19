@@ -18,7 +18,6 @@ public static class RecipeHelpers
     // Note: Version is stored natively in RecipeId.Version (Recipes.Version DB column), not as metadata
     // Note: CreatedAt is a native Recipes DB column — no custom metadata needed for creation timestamp
     public const string MetadataStatus = "Status";
-    public const string MetadataGeneratedBy = "GeneratedBy";
 
     // Valid forward transitions: key=from, value=allowed targets
     private static readonly Dictionary<RecipeStatuses, RecipeStatuses[]> AllowedTransitions = new Dictionary<RecipeStatuses, RecipeStatuses[]>

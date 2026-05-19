@@ -1,0 +1,40 @@
+﻿recipeFamilies:
+  1:
+    name: "Recipe family 1"
+    allowedPhaseTypes: [1, 2, 3]
+    phaseTypes:
+      1:
+        name: "Phase type 1"
+        enabledStepParameters: [1, 2, 3]
+      2:
+        name: "Phase type 2"
+        enabledStepParameters: [1, 2, 3]
+      3:
+        name: "Phase type 3"
+        enabledStepParameters: [1, 2, 3]
+  2:
+    name: "Recipe family 2"
+    allowedPhaseTypes: [1, 2, 3]
+    phaseTypes:
+      1:
+        name: "Phase type 1"
+        enabledStepParameters: [1, 2, 3]
+      2:
+        name: "Phase type 2"
+        enabledStepParameters: [1, 2, 3]
+      3:
+        name: "Phase type 3"
+        enabledStepParameters: [1, 2, 3]
+  3:
+    name: "Recipe family 3"
+    allowedPhaseTypes: [1, 2, 3]
+    phaseTypes:
+      1:
+        name: "Phase type 1"
+        enabledStepParameters: [1, 2, 3]
+      2:
+        name: "Phase type 2"
+        enabledStepParameters: [1, 2, 3]
+      3:
+        name: "Phase type 3"
+        enabledStepParameters: [1, 2, 3]
