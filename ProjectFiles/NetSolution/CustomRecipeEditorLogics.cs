@@ -7,6 +7,7 @@ using FTOptix.HMIProject;
 using FTOptix.NetLogic;
 using FTOptix.Core;
 using FTOptix.RecipeX;
+using FTOptix.Alarm;
 using OpcUa = UAManagedCore.OpcUa;
 #endregion
 

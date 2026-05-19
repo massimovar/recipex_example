@@ -5,6 +5,7 @@ using UAManagedCore;
 using FTOptix.HMIProject;
 using FTOptix.NetLogic;
 using FTOptix.Core;
+using FTOptix.Alarm;
 using OpcUa = UAManagedCore.OpcUa;
 
 /// <summary>
@@ -18,10 +19,6 @@ public static class RecipeHelpers
     // Note: CreatedAt is a native Recipes DB column — no custom metadata needed for creation timestamp
     public const string MetadataStatus = "Status";
     public const string MetadataGeneratedBy = "GeneratedBy";
-
-    // Role naming convention: "recipe_manage_{statusName}".
-    // Roles are resolved at runtime from the roles folder node — not hardcoded paths.
-    private const string RolePrefix = "recipe_manage_";
 
     // Valid forward transitions: key=from, value=allowed targets
     private static readonly Dictionary<RecipeStatuses, RecipeStatuses[]> AllowedTransitions = new Dictionary<RecipeStatuses, RecipeStatuses[]>
@@ -96,69 +93,6 @@ public static class RecipeHelpers
         }
         status = default;
         return false;
-    }
-
-    #endregion
-
-    #region Authorization helpers
-
-    /// <summary>
-    /// Resolve the role node for a given recipe status from the provided roles folder.
-    /// Convention: role BrowseName = "recipe_manage_{statusNameLowercase}".
-    /// Returns null if role node not found (role not configured in project).
-    /// </summary>
-    public static IUANode GetRequiredRoleNode(IUANode rolesFolder, RecipeStatuses status)
-    {
-        if (rolesFolder == null)
-            return null;
-
-        string roleName = $"{RolePrefix}{status.ToString().ToLower()}";
-        return rolesFolder.Get(roleName);
-    }
-
-    /// <summary>
-    /// Check if a user node has the role/group required to manage a recipe with the given status.
-    /// rolesFolder: the resolved Roles node (from NetLogic variable), not a hardcoded path.
-    /// </summary>
-    public static bool IsUserAuthorized(IUANode userNode, IUANode rolesFolder, RecipeStatuses recipeStatus)
-    {
-        if (userNode == null)
-            return false;
-
-        // Resolve role node from the injected roles folder
-        IUANode roleNode = GetRequiredRoleNode(rolesFolder, recipeStatus);
-        if (roleNode == null)
-            return false; // Role not configured in project
-
-        return UserHasRole(userNode, roleNode);
-    }
-
-    /// <summary>
-    /// Check if a user node has a reference (HasGroup or HasRole) to the given role node.
-    /// Uses node identity (NodeId) comparison — not string-based.
-    /// </summary>
-    private static bool UserHasRole(IUANode userNode, IUANode roleNode)
-    {
-        try
-        {
-            var targetNodeId = roleNode.NodeId;
-
-            // Check group membership by node identity
-            var userGroups = userNode.Refs.GetObjects(FTOptix.Core.ReferenceTypes.HasGroup, false);
-            if (userGroups != null && userGroups.Any(g => g.NodeId == targetNodeId))
-                return true;
-
-            // Check role assignment by node identity
-            var userRoles = userNode.Refs.GetObjects(FTOptix.Core.ReferenceTypes.HasRole, false);
-            if (userRoles != null && userRoles.Any(r => r.NodeId == targetNodeId))
-                return true;
-
-            return false;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     #endregion

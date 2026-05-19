@@ -6,6 +6,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using UAManagedCore;
 using FTOptix.NetLogic;
+using FTOptix.Alarm;
 
 /// <summary>
 /// YAML configuration model for recipe families, phase types, and parameter enablement.

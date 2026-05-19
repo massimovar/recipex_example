@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FTOptix.Alarm;
 
 /// <summary>
 /// Recipe lifecycle statuses. Maps to RecipeX metadata "Status" field.

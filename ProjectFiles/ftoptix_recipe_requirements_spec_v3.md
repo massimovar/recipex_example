@@ -8,7 +8,6 @@ The solution must provide:
 
 - Runtime-safe recipe lifecycle management.
 - Controlled recipe versioning.
-- Role-based recipe management authorization.
 - Validation of recipe step ordering before recipe usage.
 - Recipe duplication and archival instead of destructive deletion.
 - Full-model comparison between recipes.
@@ -55,7 +54,6 @@ The following items are not part of the first implementation:
 - Dedicated logging/audit requirement.
 - PLC communication implementation.
 - Database schema changes outside RecipeX capabilities.
-- Full role administration UI.
 
 ---
 
@@ -125,8 +123,8 @@ Values:
 
 | Status | Meaning | Directly editable |
 |---|---|---|
-| `template` | Recipe used as a starting point for new recipes. | Yes, if the user has role `recipe_manage_template`. |
-| `draft` | Recipe under creation or modification. | Yes, if the user has role `recipe_manage_draft`. |
+| `template` | Recipe used as a starting point for new recipes. | Yes |
+| `draft` | Recipe under creation or modification. | Yes |
 | `prepared` | Recipe prepared and ready for review. | No. A new recipe revision must be created if changes are required. |
 | `approved` | Recipe approved but not yet released. | No. A new recipe revision must be created if changes are required. |
 | `released` | Recipe released for production use. | No. A new major revision must be created if changes are required. |
@@ -347,68 +345,7 @@ Examples:
 
 ---
 
-## 10. Authorization requirements
-
-Recipe management permissions are based on FT Optix roles defined in the project at:
-
-```text
-Security/Roles
-```
-
-There is one role for each recipe status:
-
-```text
-recipe_manage_draft
-recipe_manage_prepared
-recipe_manage_approved
-recipe_manage_released
-recipe_manage_archived
-recipe_manage_template
-```
-
-### 10.1 Role resolution
-
-Roles are not hardcoded in NetLogic code. The NetLogic resolves them at runtime:
-
-1. The NetLogic has a `Roles` variable of type `NodeId` pointing to the `Security/Roles` folder node.
-2. At startup, the NetLogic resolves the `Roles` NodeId to obtain the roles folder.
-3. For a given status, the required role is found by BrowseName convention: `recipe_manage_{statusName}`.
-4. Authorization is checked by NodeId identity (user's group/role references vs. resolved role node).
-
-If a role node does not exist under the configured folder, authorization for that status fails.
-
-### 10.2 Naming convention
-
-| Recipe Status | Required Role BrowseName |
-|---|---|
-| `draft` | `recipe_manage_draft` |
-| `prepared` | `recipe_manage_prepared` |
-| `approved` | `recipe_manage_approved` |
-| `released` | `recipe_manage_released` |
-| `archived` | `recipe_manage_archived` |
-| `template` | `recipe_manage_template` |
-
-### 10.3 Enforcement
-
-The rule is:
-
-```text
-A user can manage a recipe only if the user has the role associated with the recipe current Status.
-```
-
-In this context, "manage" includes:
-
-- Editing, when editing is allowed by lifecycle rules.
-- Creating a new version from the recipe.
-- Duplicating the recipe.
-- Changing the recipe status.
-- Archiving the recipe.
-
-Authorization must be enforced in NetLogic, not only in the UI.
-
----
-
-## 11. Required NetLogic: RecipeSchemaNetLogic
+## 10. Required NetLogic: RecipeSchemaNetLogic
 
 `RecipeSchemaNetLogic` must be created as a child of the RecipeSchema node.
 
@@ -420,10 +357,9 @@ The NetLogic node must have the following variables configured in the FTOptix ID
 
 | Variable | DataType | Points to | Purpose |
 |---|---|---|---|
-| `Roles` | NodeId | `Security/Roles` folder | Runtime role resolution for authorization. |
 | `RecipeStatuses` | NodeId | `Model/RecipeStatuses` enumeration | Startup validation that C# enum matches model. |
 
-Both variables are resolved at `Start()`. If `Roles` is missing or invalid, all authorization checks fail. If `RecipeStatuses` is missing, startup validation is skipped with a warning.
+The variable is resolved at `Start()`. If `RecipeStatuses` is missing, startup validation is skipped with a warning.
 
 ### 11.2 Public methods
 
@@ -465,16 +401,15 @@ The method must:
 
 1. Validate input values.
 2. Reject duplicate recipe names.
-3. If `sourceRecipeName` is provided, verify that the current user has the role required to manage the source recipe current status.
-4. Create the recipe using the configured RecipeX schema.
-5. Initialize recipe identity and metadata:
+3. Create the recipe using the configured RecipeX schema.
+4. Initialize recipe identity and metadata:
    - `RecipeId.Version = "1.0"` (native DB column), unless inherited from a controlled duplication/update operation.
    - `Status = draft` (custom metadata), unless a different allowed initial status is explicitly requested.
-6. If `sourceRecipeName` is provided, copy recipe values from the source recipe.
-7. If no source recipe is provided, initialize one visible/editable empty step and set remaining steps to unused tail steps.
-8. Apply `RecipeFamily` / `PhaseType` enablement rules.
-9. Validate the resulting recipe.
-10. Persist the recipe only if validation succeeds.
+5. If `sourceRecipeName` is provided, copy recipe values from the source recipe.
+6. If no source recipe is provided, initialize one visible/editable empty step and set remaining steps to unused tail steps.
+7. Apply `RecipeFamily` / `PhaseType` enablement rules.
+8. Validate the resulting recipe.
+9. Persist the recipe only if validation succeeds.
 
 ---
 
@@ -497,20 +432,19 @@ Update a draft recipe or create a new revision from a non-draft recipe.
 The method must:
 
 1. Load the source recipe.
-2. Verify that the current user has the role required to manage the source recipe current status.
-3. Read the source recipe `Status` and `Version`.
-4. If source `Status == draft`:
+2. Read the source recipe `Status` and `Version`.
+3. If source `Status == draft`:
    - Apply changes to the draft recipe.
    - Keep the same version unless project rules require a minor revision also for draft saves.
-5. If source `Status != draft`:
+4. If source `Status != draft`:
    - Create a new recipe record with `newRecipeName`.
    - If source `Status != released`, increment minor version.
    - If source `Status == released`, increment major version and reset minor to `0`.
    - Set the new recipe `Status = draft`.
-6. Copy values from `updatedModelRoot`.
-7. Apply enablement rules.
-8. Validate the recipe.
-9. Persist only if validation succeeds.
+5. Copy values from `updatedModelRoot`.
+6. Apply enablement rules.
+7. Validate the recipe.
+8. Persist only if validation succeeds.
 
 The original non-draft recipe must remain unchanged.
 
@@ -529,9 +463,8 @@ Inputs:
 Behavior:
 
 1. Load the recipe.
-2. Verify that the current user has the role required to manage the recipe current status.
-3. Reject the operation if the recipe is already `archived`.
-4. Set `Status = archived`.
+2. Reject the operation if the recipe is already `archived`.
+3. Set `Status = archived`.
 
 ---
 
@@ -549,11 +482,10 @@ Approval comments and electronic signatures are not required in the first implem
 Behavior:
 
 1. Load the recipe.
-2. Verify that the current user has the role required to manage the recipe current status.
-3. Validate the requested status transition.
-4. Reject backward transitions.
-5. If `newStatus == released`, run full recipe validation and reject release if validation fails.
-6. Set the new status.
+2. Validate the requested status transition.
+3. Reject backward transitions.
+4. If `newStatus == released`, run full recipe validation and reject release if validation fails.
+5. Set the new status.
 
 Invalid examples:
 
@@ -581,15 +513,14 @@ Inputs:
 Behavior:
 
 1. Load the source recipe.
-2. Verify that the current user has the role required to manage the source recipe current status.
-3. Create a new recipe with `newRecipeName`.
-4. Copy all recipe values.
-5. Set `Version = 1.0` unless this method is being used internally by `UpdateRecipe`.
-6. Set `Status = draft`.
-7. If `newRecipeFamily` is provided, update `RecipeFamily`.
-8. Recompute enablement rules.
-9. Validate the new recipe.
-10. Persist only if valid.
+2. Create a new recipe with `newRecipeName`.
+3. Copy all recipe values.
+4. Set `Version = 1.0` unless this method is being used internally by `UpdateRecipe`.
+5. Set `Status = draft`.
+6. If `newRecipeFamily` is provided, update `RecipeFamily`.
+7. Recompute enablement rules.
+8. Validate the new recipe.
+9. Persist only if valid.
 
 ---
 
@@ -877,14 +808,13 @@ GeneratedAt = yyyy-MM-ddTHH:mm:ss
 
 If RecipeX does not support custom metadata, the marker must be encoded in the recipe name prefix.
 
-### 22.8 Authorization and safety
+### 22.8 Safety
 
 The runtime test tool must be protected.
 
 Recommended options:
 
 - Expose it only in development/test builds.
-- Hide it behind a dedicated testing role, for example `recipe_test_tools`.
 - Disable it by configuration in production.
 
 The test tool must never bypass core validation rules.
@@ -999,7 +929,6 @@ RecipeNotFound
 InvalidRecipeName
 InvalidVersionFormat
 InvalidStatusTransition
-Unauthorized
 RecipeIsNotDirectlyEditable
 ReleasedRecipeIsImmutable
 InvalidStepSequence
@@ -1041,8 +970,6 @@ Recommended rules:
    - Version parser.
    - Version incrementer.
    - Status transition validator.
-   - Role resolver from recipe status.
-   - Authorization checker.
    - Step sequence validator.
    - Enablement-rule applier.
 5. Implement `ValidateRecipe`.
@@ -1050,7 +977,7 @@ Recommended rules:
 7. Implement `DuplicateRecipe`.
 8. Implement `UpdateRecipe` as direct draft update or revision creation for non-draft recipes.
 9. Implement `DeleteRecipe` as archive operation.
-10. Implement `UpdateRecipeStatus` with role-based authorization checks.
+10. Implement `UpdateRecipeStatus`.
 11. Implement `CompareRecipes` with full-model comparison.
 12. Implement ListView edit-model NetLogic.
 13. Implement `RecipeRuntimeTestToolsNetLogic` for test recipe generation and cleanup.
@@ -1078,7 +1005,6 @@ Recommended rules:
 
 ### 27.3 Status management
 
-- Only users with the role matching the recipe current status can manage the recipe and update its status.
 - Invalid and backward status transitions are rejected.
 - Releasing a recipe requires successful validation.
 - Electronic signature and approval comment are not required in the first implementation.
@@ -1150,11 +1076,10 @@ The following decisions are confirmed for the first implementation.
 3. Backward status transitions are not allowed.
 4. Only `draft` recipes are directly editable.
 5. Recipe comparison must compare the full model, including disabled parameters.
-6. Recipe management authorization is role-based.
-7. The YAML configuration file must be stored in the FT Optix `ProjectFiles` directory.
-8. Electronic signature and approval comment are not required in the first implementation.
-9. Runtime recipe generation and bulk cleanup are testing utilities only.
-10. Design-time YAML template generation is required to help initialize configuration.
+6. The YAML configuration file must be stored in the FT Optix `ProjectFiles` directory.
+7. Electronic signature and approval comment are not required in the first implementation.
+8. Runtime recipe generation and bulk cleanup are testing utilities only.
+9. Design-time YAML template generation is required to help initialize configuration.
 
 ---
 
@@ -1165,7 +1090,6 @@ The UI should be built on top of the NetLogic methods, not around them.
 Recommended UI behavior:
 
 - Hide or disable edit controls for non-draft recipes, unless the command creates a new revision.
-- Hide or disable management actions when the current user does not have the role associated with the recipe current status.
 - Display validation errors returned by `ValidateRecipe`.
 - Display only enabled step parameters for the selected `PhaseType`.
 - Provide explicit add-before and add-after commands.
@@ -1212,14 +1136,6 @@ The implementation must deliver:
    - Allowed phase types.
    - Enabled step parameters per phase type.
 
-6. Role-based authorization logic for:
-   - `recipe_manage_draft`
-   - `recipe_manage_prepared`
-   - `recipe_manage_approved`
-   - `recipe_manage_released`
-   - `recipe_manage_archived`
-   - `recipe_manage_template`
+6. Structured method results.
 
-7. Structured method results.
-
-8. Validation logic suitable for both runtime protection and UI feedback.
+7. Validation logic suitable for both runtime protection and UI feedback.

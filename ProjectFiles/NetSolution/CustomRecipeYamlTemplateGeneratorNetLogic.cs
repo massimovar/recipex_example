@@ -6,6 +6,7 @@ using UAManagedCore;
 using FTOptix.HMIProject;
 using FTOptix.NetLogic;
 using FTOptix.Core;
+using FTOptix.Alarm;
 #endregion
 
 /// <summary>

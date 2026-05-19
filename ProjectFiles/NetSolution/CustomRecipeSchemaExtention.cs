@@ -7,6 +7,7 @@ using FTOptix.HMIProject;
 using FTOptix.NetLogic;
 using FTOptix.Core;
 using FTOptix.RecipeX;
+using FTOptix.Alarm;
 using OpcUa = UAManagedCore.OpcUa;
 #endregion
 
@@ -21,7 +22,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
     private const string ConfigFileName = "recipe_configuration.yaml";
 
     // Resolved from NetLogic NodeId variables — not hardcoded paths
-    private IUANode _rolesFolder;
     private IUANode _recipeStatusesEnum;
 
     public override void Start()
@@ -32,19 +32,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         {
             Log.Error("RecipeSchemaNetLogic", "Owner is not a RecipeSchema. NetLogic must be child of RecipeSchema.");
             return;
-        }
-
-        // Resolve Roles folder from the configured NodeId variable
-        var rolesVar = LogicObject.GetVariable("Roles");
-        if (rolesVar != null)
-        {
-            NodeId rid = (NodeId)rolesVar.Value;
-            if (rid != null && rid != NodeId.Empty)
-                _rolesFolder = InformationModel.Get(rid);
-        }
-        if (_rolesFolder == null)
-        {
-            Log.Error("RecipeSchemaNetLogic", "Roles variable not configured or node not found. Authorization will fail.");
         }
 
         // Resolve RecipeStatuses enumeration from the configured NodeId variable
@@ -81,50 +68,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
     public override void Stop()
     {
         // No periodic resources to clean up
-    }
-
-    /// <summary>
-    /// Resolve the current session user from the LogicObject context.
-    /// Returns null if no user session is available (e.g. design-time or no login).
-    /// </summary>
-    private IUANode GetCurrentUser()
-    {
-        try
-        {
-            // In FTOptix, when called from UI context, the Session handler 
-            // is implicitly available. Get user from the session associated
-            // with this LogicObject's context.
-            var session = LogicObject.Context?.Sessions?.CurrentSessionHandler;
-            if (session == null)
-                return null;
-
-            return session.User;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Check authorization for the current user on a given recipe status.
-    /// Uses the Roles folder node resolved at startup from the NetLogic variable.
-    /// </summary>
-    private bool IsAuthorized(RecipeStatuses status)
-    {
-        if (_rolesFolder == null)
-        {
-            Log.Error("RecipeSchemaNetLogic", "Roles folder not resolved. Cannot authorize.");
-            return false;
-        }
-
-        var user = GetCurrentUser();
-        if (user == null)
-        {
-            Log.Warning("RecipeSchemaNetLogic", "No user session found for authorization check.");
-            return false;
-        }
-        return RecipeHelpers.IsUserAuthorized(user, _rolesFolder, status);
     }
 
     /// <summary>
@@ -198,15 +141,12 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         if (RecipeExists(recipeName))
             return RecipeOperationResult.Fail("RecipeAlreadyExists", $"Recipe '{recipeName}' already exists.");
 
-        // If source specified, verify authorization on source
+        // If source specified, verify it exists
         if (!string.IsNullOrWhiteSpace(sourceRecipeName))
         {
             var sourceStatus = GetRecipeStatus(sourceRecipeName);
             if (sourceStatus == null)
                 return RecipeOperationResult.Fail("RecipeNotFound", $"Source recipe '{sourceRecipeName}' not found.");
-
-            if (!IsAuthorized(sourceStatus.Value))
-                return RecipeOperationResult.Fail("Unauthorized", $"User not authorized to manage source recipe (status={sourceStatus.Value}).");
         }
 
         // Create the recipe in RecipeX store
@@ -279,10 +219,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         var status = GetRecipeStatus(sourceRecipeName);
         if (status == null)
             return RecipeOperationResult.Fail("RecipeNotFound", $"Cannot read status for recipe '{sourceRecipeName}'.");
-
-        // Auth check
-        if (!IsAuthorized(status.Value))
-            return RecipeOperationResult.Fail("Unauthorized", $"User not authorized to manage recipe (status={status.Value}).");
 
         var currentVersion = GetRecipeVersion(sourceRecipeName);
         if (currentVersion == null)
@@ -378,10 +314,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         if (status == null)
             return RecipeOperationResult.Fail("RecipeNotFound", $"Cannot read status for recipe '{recipeName}'.");
 
-        // Auth check
-        if (!IsAuthorized(status.Value))
-            return RecipeOperationResult.Fail("Unauthorized", $"User not authorized to manage recipe (status={status.Value}).");
-
         // Already archived
         if (status.Value == RecipeStatuses.Archived)
             return RecipeOperationResult.Fail("InvalidStatusTransition", "Recipe is already archived.");
@@ -414,10 +346,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         var currentStatus = GetRecipeStatus(recipeName);
         if (currentStatus == null)
             return RecipeOperationResult.Fail("RecipeNotFound", $"Cannot read status for recipe '{recipeName}'.");
-
-        // Auth check on current status
-        if (!IsAuthorized(currentStatus.Value))
-            return RecipeOperationResult.Fail("Unauthorized", $"User not authorized to manage recipe (status={currentStatus.Value}).");
 
         // Validate transition
         if (!RecipeHelpers.IsTransitionAllowed(currentStatus.Value, newStatus))
@@ -465,10 +393,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         var sourceStatus = GetRecipeStatus(sourceRecipeName);
         if (sourceStatus == null)
             return RecipeOperationResult.Fail("RecipeNotFound", $"Cannot read status for source recipe.");
-
-        // Auth on source
-        if (!IsAuthorized(sourceStatus.Value))
-            return RecipeOperationResult.Fail("Unauthorized", $"User not authorized to manage source recipe (status={sourceStatus.Value}).");
 
         if (RecipeExists(newRecipeName))
             return RecipeOperationResult.Fail("RecipeAlreadyExists", $"Recipe '{newRecipeName}' already exists.");
