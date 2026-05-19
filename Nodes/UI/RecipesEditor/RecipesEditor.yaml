@@ -1723,7 +1723,7 @@ Children:
             - Name: Type
               Type: NodePointer
               DataType: NodeId
-              Value: "/Objects/recipex_example/Model/RSA/types/Parameters"
+              Value: "/Objects/recipex_example/Model/RSA/types/RecipeMainParameters"
               Children:
               - Name: Kind
                 Type: PropertyType

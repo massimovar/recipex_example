@@ -197,7 +197,7 @@ Children:
     - Name: Kind
       Type: PropertyType
       DataType: NodeId
-      Value: "/Objects/recipex_example/Model/RSA/types/Parameters"
+      Value: "/Objects/recipex_example/Model/RSA/types/RecipeMainParameters"
   - Name: Width
     Type: BaseVariableType
     DataType: Size
@@ -249,7 +249,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/f0@BrowseName"
+            Value: "{RowItem}/RecipeFamily@BrowseName"
       - Name: SpinBox1
         Type: SpinBox
         Children:
@@ -260,7 +260,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/f0"
+            Value: "{RowItem}/RecipeFamily"
       - Name: Parameter
         Type: Alias
         DataType: NodeId
@@ -483,7 +483,7 @@ Children:
         - Name: DynamicLink
           Type: DynamicLink
           DataType: NodePath
-          Value: "{RowItem}/FaseType@NodeId"
+          Value: "{RowItem}/PhaseType@NodeId"
           Children:
           - Name: Mode
             Type: BaseVariableType

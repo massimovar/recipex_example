@@ -1,3 +1,22 @@
 Name: Roles
 Id: g=168315c4ba704e70bb13e35de715eb03
 Type: RolesCategoryFolder
+Children:
+- Name: recipe_manage_draft
+  Id: g=82f9420b886e518bc0a2dcf49d40821d
+  Type: ns=1;RoleType
+- Name: recipe_manage_prepared
+  Id: g=d86f6c30c74befe70b39143bef49610d
+  Type: ns=1;RoleType
+- Name: recipe_manage_approved
+  Id: g=ab3b20c76c4aa04c39dfd4fadf081bfb
+  Type: ns=1;RoleType
+- Name: recipe_manage_released
+  Id: g=204027cc76629f97ad2930aac45d4c2b
+  Type: ns=1;RoleType
+- Name: recipe_manage_archived
+  Id: g=bd8693a788b97dfde2f0903f38733ce8
+  Type: ns=1;RoleType
+- Name: recipe_manage_template
+  Id: g=faa4e3665be313cc168ebc1b4e0b82d0
+  Type: ns=1;RoleType
