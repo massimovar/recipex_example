@@ -1,0 +1,13 @@
+{
+	"folders": [ 
+		{ 
+			"path": "." 
+		} 
+	], 
+	"settings" : {
+		"typescript.tsc.autoDetect": "off",
+		"chat.tools.terminal.autoApprove": {
+			"dotnet build": true
+		}
+	}
+}

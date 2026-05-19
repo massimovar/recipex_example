@@ -1,190 +1,6 @@
 Name: RecipeEditListViewRow
 Type: FolderType
 Children:
-- Name: TemplateListViewRow
-  Id: g=8c090a22ced961c7977d01a0d4a86f39
-  Supertype: ListViewRow
-  ReferenceType: HasComponent
-  Children:
-  - Name: Width
-    Type: BaseVariableType
-    DataType: Size
-    ModellingRule: Optional
-    Value: 920.0
-  - Name: Height
-    Type: BaseVariableType
-    DataType: Size
-    ModellingRule: Optional
-    Value: 64.0
-  - Name: HorizontalAlignment
-    Type: BaseVariableType
-    DataType: HorizontalAlignment
-    ModellingRule: Optional
-    Value: 3
-  - Name: Background
-    Type: Rectangle
-    Children:
-    - Name: Width
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 50.0
-    - Name: Height
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 50.0
-    - Name: HorizontalAlignment
-      Type: BaseVariableType
-      DataType: HorizontalAlignment
-      ModellingRule: Optional
-      Value: 3
-    - Name: VerticalAlignment
-      Type: BaseVariableType
-      DataType: VerticalAlignment
-      ModellingRule: Optional
-      Value: 3
-    - Name: BorderColor
-      Type: BaseDataVariableType
-      DataType: Color
-      ModellingRule: Optional
-      Value: "#b3b3b3"
-    - Name: BorderThickness
-      Type: BaseDataVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 1.0
-  - Name: Content
-    Type: RowLayout
-    Children:
-    - Name: Width
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 50.0
-    - Name: Height
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 50.0
-    - Name: HorizontalAlignment
-      Type: BaseVariableType
-      DataType: HorizontalAlignment
-      ModellingRule: Optional
-      Value: 3
-    - Name: VerticalAlignment
-      Type: BaseVariableType
-      DataType: VerticalAlignment
-      ModellingRule: Optional
-      Value: 3
-    - Name: ParameterName
-      Type: Label
-      Children:
-      - Name: Text
-        Type: BaseDataVariableType
-        DataType: LocalizedText
-        Children:
-        - Name: DynamicLink
-          Type: DynamicLink
-          DataType: NodePath
-          Value: "{RowItem}@BrowseName"
-      - Name: VerticalAlignment
-        Type: BaseVariableType
-        DataType: VerticalAlignment
-        ModellingRule: Optional
-        Value: 2
-      - Name: LeftMargin
-        Type: BaseVariableType
-        DataType: Size
-        ModellingRule: Optional
-      - Name: BottomMargin
-        Type: BaseVariableType
-        DataType: Size
-        ModellingRule: Optional
-      - Name: HorizontalAlignment
-        Type: BaseVariableType
-        DataType: HorizontalAlignment
-        ModellingRule: Optional
-        Value: 3
-    - Name: HorizontalGap
-      Type: BaseDataVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 16.0
-    - Name: LeftMargin
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 16.0
-    - Name: TopMargin
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 16.0
-    - Name: RightMargin
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 16.0
-    - Name: BottomMargin
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 16.0
-    - Name: ParameterValue
-      Type: TextBox
-      Children:
-      - Name: Text
-        Type: BaseDataVariableType
-        DataType: LocalizedText
-        Children:
-        - Name: DynamicLink
-          Type: DynamicLink
-          DataType: NodePath
-          Value: "{RowItem}"
-          Children:
-          - Name: Mode
-            Type: BaseVariableType
-            DataType: DynamicLinkMode
-            ModellingRule: Optional
-            Value: 2
-      - Name: Width
-        Type: BaseVariableType
-        DataType: Size
-        ModellingRule: Optional
-        Value: 110.0
-      - Name: VerticalAlignment
-        Type: BaseVariableType
-        DataType: VerticalAlignment
-        ModellingRule: Optional
-        Value: 2
-      - Name: HorizontalAlignment
-        Type: BaseVariableType
-        DataType: HorizontalAlignment
-        ModellingRule: Optional
-        Value: 3
-      - Name: ValueChangeBehaviour
-        Type: BaseDataVariableType
-        DataType: ValueChangeBehaviour
-        ModellingRule: Optional
-        Value: 1
-      - Name: TopMargin
-        Type: BaseVariableType
-        DataType: Size
-        ModellingRule: Optional
-        Value: 1.0
-      - Name: BottomMargin
-        Type: BaseVariableType
-        DataType: Size
-        ModellingRule: Optional
-  - Name: RowItem
-    Type: Alias
-    DataType: NodeId
-    Children:
-    - Name: Kind
-      Type: PropertyType
-      DataType: NodeId
-      Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
 - Name: RecipeGeneralParameters
   Id: g=d20d5dfd89f9b2283aab74e0f788852c
   Supertype: ListViewRow
@@ -236,6 +52,49 @@ Children:
       DataType: VerticalAlignment
       ModellingRule: Optional
       Value: 3
+    - Name: RecipeFamily
+      Type: ParameterTemplate
+      Children:
+      - Name: Label1
+        Type: Label
+        Children:
+        - Name: Text
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+          Children:
+          - Name: DynamicLink
+            Type: DynamicLink
+            DataType: NodePath
+            Value: "{RowItem}/RecipeFamily@BrowseName"
+      - Name: SpinBox1
+        Type: SpinBox
+        Children:
+        - Name: Value
+          Type: BaseDataVariableType
+          DataType: Double
+          Children:
+          - Name: DynamicLink
+            Type: DynamicLink
+            DataType: NodePath
+            Value: "{RowItem}/RecipeFamily"
+      - Name: Parameter
+        Type: Alias
+        DataType: NodeId
+        Children:
+        - Name: Kind
+          Type: PropertyType
+          DataType: NodeId
+          Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
+        - Name: DynamicLink
+          Type: DynamicLink
+          DataType: NodePath
+          Value: "{RowItem}/RecipeFamily@NodeId"
+          Children:
+          - Name: Mode
+            Type: BaseVariableType
+            DataType: DynamicLinkMode
+            ModellingRule: Optional
+            Value: 2
     - Name: f0
       Type: ParameterTemplate
       Children:
@@ -393,7 +252,7 @@ Children:
     DataType: HorizontalAlignment
     ModellingRule: Optional
     Value: 3
-  - Name: parametersLayout
+  - Name: StepProperties
     Type: RowLayout
     Children:
     - Name: Width
@@ -416,7 +275,7 @@ Children:
       DataType: VerticalAlignment
       ModellingRule: Optional
       Value: 3
-    - Name: step
+    - Name: PhaseType
       Type: Label
       Children:
       - Name: Text
@@ -426,7 +285,7 @@ Children:
         - Name: DynamicLink
           Type: DynamicLink
           DataType: NodePath
-          Value: "{RowItem}@BrowseName"
+          Value: "{RowItem}/PhaseType@BrowseName"
       - Name: VerticalAlignment
         Type: BaseVariableType
         DataType: VerticalAlignment
@@ -447,178 +306,84 @@ Children:
         DataType: Size
         ModellingRule: Optional
         Value: 20.0
-    - Name: FaseType
-      Type: ParameterTemplate
+      - Name: Width
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 150.0
+    - Name: StepName
+      Type: Label
       Children:
-      - Name: Label1
-        Type: Label
+      - Name: Text
+        Type: BaseDataVariableType
+        DataType: LocalizedText
         Children:
-        - Name: Text
-          Type: BaseDataVariableType
-          DataType: LocalizedText
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}@BrowseName"
-      - Name: SpinBox1
-        Type: SpinBox
-        Children:
-        - Name: Value
-          Type: BaseDataVariableType
-          DataType: Double
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}"
-      - Name: Parameter
-        Type: Alias
-        DataType: NodeId
-        Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
         - Name: DynamicLink
           Type: DynamicLink
           DataType: NodePath
-          Value: "{RowItem}/PhaseType@NodeId"
+          Value: "{RowItem}/StepName@BrowseName"
+      - Name: VerticalAlignment
+        Type: BaseVariableType
+        DataType: VerticalAlignment
+        ModellingRule: Optional
+        Value: 2
+      - Name: FontSize
+        Type: BaseDataVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 20.0
+      - Name: HorizontalAlignment
+        Type: BaseVariableType
+        DataType: HorizontalAlignment
+        ModellingRule: Optional
+        Value: 2
+      - Name: RightMargin
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 20.0
+      - Name: Width
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 150.0
+    - Name: Switch1
+      Type: Switch
+      Children:
+      - Name: Checked
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Children:
+        - Name: DynamicLink
+          Type: DynamicLink
+          DataType: NodePath
+          Value: "{RowItem}/StepEnabled"
           Children:
           - Name: Mode
             Type: BaseVariableType
             DataType: DynamicLinkMode
             ModellingRule: Optional
             Value: 2
-    - Name: dsp
-      Type: ParameterTemplate
-      Children:
-      - Name: Label1
-        Type: Label
-        Children:
-        - Name: Text
-          Type: BaseDataVariableType
-          DataType: LocalizedText
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}@BrowseName"
-      - Name: SpinBox1
-        Type: SpinBox
-        Children:
-        - Name: Value
-          Type: BaseDataVariableType
-          DataType: Double
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}"
-      - Name: Parameter
-        Type: Alias
-        DataType: NodeId
-        Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
-        - Name: DynamicLink
-          Type: DynamicLink
-          DataType: NodePath
-          Value: "{RowItem}/dsp@NodeId"
-          Children:
-          - Name: Mode
-            Type: BaseVariableType
-            DataType: DynamicLinkMode
-            ModellingRule: Optional
-            Value: 2
-    - Name: tsp
-      Type: ParameterTemplate
-      Children:
-      - Name: Label1
-        Type: Label
-        Children:
-        - Name: Text
-          Type: BaseDataVariableType
-          DataType: LocalizedText
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}@BrowseName"
-      - Name: SpinBox1
-        Type: SpinBox
-        Children:
-        - Name: Value
-          Type: BaseDataVariableType
-          DataType: Double
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}"
-      - Name: Parameter
-        Type: Alias
-        DataType: NodeId
-        Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
-        - Name: DynamicLink
-          Type: DynamicLink
-          DataType: NodePath
-          Value: "{RowItem}/tsp@NodeId"
-          Children:
-          - Name: Mode
-            Type: BaseVariableType
-            DataType: DynamicLinkMode
-            ModellingRule: Optional
-            Value: 2
-    - Name: psp
-      Type: ParameterTemplate
-      Children:
-      - Name: Label1
-        Type: Label
-        Children:
-        - Name: Text
-          Type: BaseDataVariableType
-          DataType: LocalizedText
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}@BrowseName"
-      - Name: SpinBox1
-        Type: SpinBox
-        Children:
-        - Name: Value
-          Type: BaseDataVariableType
-          DataType: Double
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{Parameter}"
-      - Name: Parameter
-        Type: Alias
-        DataType: NodeId
-        Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
-        - Name: DynamicLink
-          Type: DynamicLink
-          DataType: NodePath
-          Value: "{RowItem}/psp@NodeId"
-          Children:
-          - Name: Mode
-            Type: BaseVariableType
-            DataType: DynamicLinkMode
-            ModellingRule: Optional
-            Value: 2
+      - Name: Width
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 150.0
+      - Name: VerticalAlignment
+        Type: BaseVariableType
+        DataType: VerticalAlignment
+        ModellingRule: Optional
+        Value: 2
+      - Name: CheckedText
+        Type: BaseDataVariableType
+        DataType: LocalizedText
+        ModellingRule: Optional
+        Value: {"LocaleId":"en-US","Text":"step enabled"}
+      - Name: UncheckedText
+        Type: BaseDataVariableType
+        DataType: LocalizedText
+        ModellingRule: Optional
+        Value: {"LocaleId":"en-US","Text":"step disabled"}
 - Name: ParameterTemplate
   Id: g=8c21c5e31dc9de598ce06b30e4118a42
   Supertype: RowLayout
