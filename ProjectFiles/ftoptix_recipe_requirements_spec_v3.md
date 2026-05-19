@@ -113,7 +113,15 @@ Each recipe has the following properties.
 
 ### 5.2 RecipeStatuses enum
 
-The `RecipeStatuses` enumeration must contain the following values:
+The `RecipeStatuses` enumeration is defined in the FTOptix Model at:
+
+```text
+Model/RecipeStatuses
+```
+
+It is the single source of truth. The C# code maintains a mirror enum for type safety, validated at startup against the model node.
+
+Values:
 
 | Status | Meaning | Directly editable |
 |---|---|---|
@@ -341,7 +349,11 @@ Examples:
 
 ## 10. Authorization requirements
 
-Recipe management permissions are based on FT Optix roles.
+Recipe management permissions are based on FT Optix roles defined in the project at:
+
+```text
+Security/Roles
+```
 
 There is one role for each recipe status:
 
@@ -353,6 +365,30 @@ recipe_manage_released
 recipe_manage_archived
 recipe_manage_template
 ```
+
+### 10.1 Role resolution
+
+Roles are not hardcoded in NetLogic code. The NetLogic resolves them at runtime:
+
+1. The NetLogic has a `Roles` variable of type `NodeId` pointing to the `Security/Roles` folder node.
+2. At startup, the NetLogic resolves the `Roles` NodeId to obtain the roles folder.
+3. For a given status, the required role is found by BrowseName convention: `recipe_manage_{statusName}`.
+4. Authorization is checked by NodeId identity (user's group/role references vs. resolved role node).
+
+If a role node does not exist under the configured folder, authorization for that status fails.
+
+### 10.2 Naming convention
+
+| Recipe Status | Required Role BrowseName |
+|---|---|
+| `draft` | `recipe_manage_draft` |
+| `prepared` | `recipe_manage_prepared` |
+| `approved` | `recipe_manage_approved` |
+| `released` | `recipe_manage_released` |
+| `archived` | `recipe_manage_archived` |
+| `template` | `recipe_manage_template` |
+
+### 10.3 Enforcement
 
 The rule is:
 
@@ -368,17 +404,6 @@ In this context, "manage" includes:
 - Changing the recipe status.
 - Archiving the recipe.
 
-Role mapping:
-
-| Recipe Status | Required Role |
-|---|---|
-| `draft` | `recipe_manage_draft` |
-| `prepared` | `recipe_manage_prepared` |
-| `approved` | `recipe_manage_approved` |
-| `released` | `recipe_manage_released` |
-| `archived` | `recipe_manage_archived` |
-| `template` | `recipe_manage_template` |
-
 Authorization must be enforced in NetLogic, not only in the UI.
 
 ---
@@ -389,7 +414,18 @@ Authorization must be enforced in NetLogic, not only in the UI.
 
 It owns recipe lifecycle and business operations.
 
-Public methods:
+### 11.1 Required NetLogic variables
+
+The NetLogic node must have the following variables configured in the FTOptix IDE:
+
+| Variable | DataType | Points to | Purpose |
+|---|---|---|---|
+| `Roles` | NodeId | `Security/Roles` folder | Runtime role resolution for authorization. |
+| `RecipeStatuses` | NodeId | `Model/RecipeStatuses` enumeration | Startup validation that C# enum matches model. |
+
+Both variables are resolved at `Start()`. If `Roles` is missing or invalid, all authorization checks fail. If `RecipeStatuses` is missing, startup validation is skipped with a warning.
+
+### 11.2 Public methods
 
 ```text
 CreateRecipe

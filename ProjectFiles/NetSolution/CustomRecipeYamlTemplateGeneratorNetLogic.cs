@@ -20,14 +20,36 @@ public class CustomRecipeYamlTemplateGeneratorNetLogic : BaseNetLogic
 
     /// <summary>
     /// Generate a template YAML configuration file in ProjectFiles.
+    /// Reads optional config from LogicObject variables:
+    ///   OutputFileName (string), FamilyCount (int), PhaseTypeCount (int),
+    ///   StepParameterCount (int), OverwriteExistingFile (bool).
+    /// Falls back to sensible defaults if variables not configured.
     /// </summary>
     [ExportMethod]
-    public RecipeOperationResult GenerateYamlConfigurationTemplate(
-        string outputFileName = "recipe_configuration_template.yaml",
-        int familyCount = 1,
-        int phaseTypeCount = 20,
-        int stepParameterCount = 20,
-        bool overwriteExistingFile = false)
+    public void GenerateYamlConfigurationTemplate()
+    {
+        // Read config from LogicObject variables, fall back to defaults
+        string outputFileName = GetVariableValueOrDefault("OutputFileName", "recipe_configuration_template.yaml");
+        int familyCount = GetVariableValueOrDefault("FamilyCount", 1);
+        int phaseTypeCount = GetVariableValueOrDefault("PhaseTypeCount", 20);
+        int stepParameterCount = GetVariableValueOrDefault("StepParameterCount", 20);
+        bool overwriteExistingFile = GetVariableValueOrDefault("OverwriteExistingFile", true);
+
+        var result = GenerateYamlConfigurationTemplateInternal(
+            outputFileName, familyCount, phaseTypeCount, stepParameterCount, overwriteExistingFile);
+
+        if (result.Success)
+            Log.Info("RecipeYamlTemplateGenerator", result.Message);
+        else
+            Log.Error("RecipeYamlTemplateGenerator", $"[{result.ErrorCode}] {result.Message}");
+    }
+
+    /// <summary>
+    /// Internal implementation with explicit parameters. Can be called programmatically.
+    /// </summary>
+    private RecipeOperationResult GenerateYamlConfigurationTemplateInternal(
+        string outputFileName, int familyCount, int phaseTypeCount,
+        int stepParameterCount, bool overwriteExistingFile)
     {
         // Validate inputs
         if (string.IsNullOrWhiteSpace(outputFileName))
@@ -76,7 +98,6 @@ public class CustomRecipeYamlTemplateGeneratorNetLogic : BaseNetLogic
             return RecipeOperationResult.Fail("StoreError", $"Failed to write file: {ex.Message}");
         }
 
-        Log.Info("RecipeYamlTemplateGeneratorNetLogic", $"YAML template generated: {fullPath}");
         return RecipeOperationResult.Ok($"Template generated: {fullPath}");
     }
 
@@ -148,6 +169,32 @@ public class CustomRecipeYamlTemplateGeneratorNetLogic : BaseNetLogic
         }
 
         return sb.ToString();
+    }
+
+    #endregion
+
+    #region Variable helpers
+
+    private string GetVariableValueOrDefault(string variableName, string defaultValue)
+    {
+        var variable = LogicObject.GetVariable(variableName);
+        if (variable == null) return defaultValue;
+        string val = (string)variable.Value;
+        return string.IsNullOrWhiteSpace(val) ? defaultValue : val;
+    }
+
+    private int GetVariableValueOrDefault(string variableName, int defaultValue)
+    {
+        var variable = LogicObject.GetVariable(variableName);
+        if (variable == null) return defaultValue;
+        return (int)variable.Value;
+    }
+
+    private bool GetVariableValueOrDefault(string variableName, bool defaultValue)
+    {
+        var variable = LogicObject.GetVariable(variableName);
+        if (variable == null) return defaultValue;
+        return (bool)variable.Value;
     }
 
     #endregion

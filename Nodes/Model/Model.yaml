@@ -18,42 +18,42 @@ Children:
       "Value": 0,
       "DisplayName": {
        "LocaleId": "en-US",
-       "Text": "draft"
+       "Text": "Template"
       }
      },{
       "Name": "Value1",
       "Value": 1,
       "DisplayName": {
        "LocaleId": "en-US",
-       "Text": "prepared"
+       "Text": "Draft"
       }
      },{
       "Name": "Value2",
       "Value": 2,
       "DisplayName": {
        "LocaleId": "en-US",
-       "Text": "approved"
+       "Text": "Prepared"
       }
      },{
       "Name": "Value3",
       "Value": 3,
       "DisplayName": {
        "LocaleId": "en-US",
-       "Text": "released"
+       "Text": "Approved"
       }
      },{
       "Name": "Value4",
       "Value": 4,
       "DisplayName": {
        "LocaleId": "en-US",
-       "Text": "archived"
+       "Text": "Released"
       }
      },{
       "Name": "Value5",
       "Value": 5,
       "DisplayName": {
        "LocaleId": "en-US",
-       "Text": "template"
+       "Text": "Archived"
       }
      }]
    }
@@ -64,7 +64,7 @@ Children:
     ModellingRule: None
     ValueRank: OneDimension
     ArrayDimensions: [0]
-    Value: [{"TypeId":{"Id":7594},"Body":{"Value":0,"DisplayName":{"LocaleId":"en-US","Text":"draft"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"LocaleId":"en-US","Text":"prepared"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"LocaleId":"en-US","Text":"approved"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"LocaleId":"en-US","Text":"released"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":4,"DisplayName":{"LocaleId":"en-US","Text":"archived"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":5,"DisplayName":{"LocaleId":"en-US","Text":"template"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+    Value: [{"TypeId":{"Id":7594},"Body":{"Value":0,"DisplayName":{"LocaleId":"en-US","Text":"Template"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"LocaleId":"en-US","Text":"Draft"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"LocaleId":"en-US","Text":"Prepared"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"LocaleId":"en-US","Text":"Approved"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":4,"DisplayName":{"LocaleId":"en-US","Text":"Released"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":5,"DisplayName":{"LocaleId":"en-US","Text":"Archived"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
 - Class: DataType
   Name: RecipeGroupIds
   Id: g=bc213e2c37c1b6222df386e307cc7783

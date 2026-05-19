@@ -182,6 +182,7 @@ Children:
       DataType: NodeId
       Value: "/Objects/recipex_example/Security/Roles"
   - Name: CustomRecipeSchemaTestTools
+    Id: g=6c2b7d90f92a2736686fcb4d8dc02181
     Type: NetLogic
     Children:
     - Class: Method
@@ -223,11 +224,19 @@ Children:
       Value: 180
     - Class: Method
       Name: GenerateYamlConfigurationTemplate
-      Children:
-      - Name: ns=0;InputArguments
-        Type: BaseVariableType
-        DataType: Argument
-        ReferenceType: HasProperty
-        ValueRank: OneDimension
-        ArrayDimensions: [0]
-        Value: [{"TypeId":{"Id":296},"Body":{"Name":"outputFileName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"familyCount","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"phaseTypeCount","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"stepParameterCount","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"overwriteExistingFile","DataType":{"Id":1},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+    - Name: FamilyCount
+      Type: BaseDataVariableType
+      DataType: Int32
+      Value: 3
+    - Name: PhaseTypeCount
+      Type: BaseDataVariableType
+      DataType: Int32
+      Value: 20
+    - Name: StepParameterCount
+      Type: BaseDataVariableType
+      DataType: Int32
+      Value: 20
+    - Name: OverwriteExistingFile
+      Type: BaseDataVariableType
+      DataType: Boolean
+      Value: true

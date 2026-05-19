@@ -28,32 +28,7 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     public override void Start()
     {
         // Resolve RecipeSchema — must be passed or found in model
-        // Convention: this NetLogic is placed under a node that has a variable pointing to RecipeSchema
-        var schemaVar = LogicObject.GetVariable("RecipeSchemaNodeId");
-        if (schemaVar != null && schemaVar.Value != null)
-        {
-            var schemaNodeId = (NodeId)schemaVar.Value.Value;
-            _schema = InformationModel.Get(schemaNodeId) as RecipeSchema;
-        }
-
-        if (_schema == null)
-        {
-            // Fallback: try to find in owner hierarchy
-            var owner = LogicObject.Owner;
-            while (owner != null)
-            {
-                if (owner is RecipeSchema rs)
-                {
-                    _schema = rs;
-                    break;
-                }
-                owner = owner.Owner;
-            }
-        }
-
-        if (_schema == null)
-            Log.Warning("RecipeRuntimeTestToolsNetLogic", "RecipeSchema not found. Set RecipeSchemaNodeId variable.");
-
+        _schema = (RecipeSchema) Owner;
         // Load config
         _configLoader = new RecipeConfigurationLoader();
         string configPath = RecipeHelpers.GetConfigFilePath(ConfigFileName);
@@ -69,6 +44,12 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     /// <summary>
     /// Generate a variable number of test recipes for development/testing.
     /// </summary>
+    /// <param name="count">Number of test recipes to generate (must be > 0).</param>
+    /// <param name="recipeFamily">Recipe family key (cast to int, must exist in YAML config).</param>
+    /// <param name="activeStepCount">Steps 1..N marked active/enabled; rest get PhaseType=0. Range: 1–20.</param>
+    /// <param name="namePrefix">Name prefix for generated recipes. Default: "TEST_RECIPE_".</param>
+    /// <param name="statusInt">Initial RecipeStatuses value written to metadata. Default: 1.</param>
+    /// <param name="overwriteExistingTestRecipes">If true, archives existing recipes matching prefix before generating.</param>
     [ExportMethod]
     public TestRecipeGenerationResult GenerateTestRecipes(int count, float recipeFamily,
         int activeStepCount = 5, string namePrefix = null, int statusInt = 1,
@@ -195,6 +176,9 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     /// <summary>
     /// Archive all test recipes matching prefix and/or generated-by marker.
     /// </summary>
+    /// <param name="namePrefix">Name prefix filter. Default: "TEST_RECIPE_".</param>
+    /// <param name="onlyCreatedByThisTool">If true, only archives recipes with GeneratedBy marker matching this tool.</param>
+    /// <param name="dryRun">If true, reports candidates without modifying anything.</param>
     [ExportMethod]
     public BulkOperationResult BulkArchiveTestRecipes(string namePrefix = null,
         bool onlyCreatedByThisTool = true, bool dryRun = true)
@@ -285,6 +269,10 @@ public class CustomRecipeSchemaTestTools : BaseNetLogic
     /// Physically delete test recipes. Disabled by default for safety.
     /// Only operates on recipes clearly identified as test recipes.
     /// </summary>
+    /// <param name="namePrefix">Name prefix filter. Default: "TEST_RECIPE_".</param>
+    /// <param name="onlyCreatedByThisTool">If true, only deletes recipes with GeneratedBy marker matching this tool.</param>
+    /// <param name="dryRun">If true, reports candidates without deleting anything.</param>
+    /// <param name="confirmPhysicalDelete">Must be true to allow physical deletion. Double-gate with _physicalDeleteAllowed.</param>
     [ExportMethod]
     public BulkOperationResult BulkDeleteTestRecipes(string namePrefix = null,
         bool onlyCreatedByThisTool = true, bool dryRun = true, bool confirmPhysicalDelete = false)

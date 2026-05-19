@@ -246,7 +246,7 @@ public static class RecipeHelpers
     /// </summary>
     public static string GetProjectFilesPath()
     {
-        var resourceUri = new FTOptix.Core.ResourceUri("%PROJECTDIR%");
+        var resourceUri = ResourceUri.FromProjectRelativePath(string.Empty);
         string projectDir = resourceUri.Uri;
         // ProjectFiles is a sibling of NetSolution within ProjectFiles
         // The %PROJECTDIR% resolves to the ProjectFiles directory
