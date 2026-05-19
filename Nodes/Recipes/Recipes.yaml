@@ -104,16 +104,6 @@ Children:
         ArrayDimensions: [0]
         Value: [{"TypeId":{"Id":296},"Body":{"Name":"recipeName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
     - Class: Method
-      Name: CompareRecipes
-      Children:
-      - Name: ns=0;InputArguments
-        Type: BaseVariableType
-        DataType: Argument
-        ReferenceType: HasProperty
-        ValueRank: OneDimension
-        ArrayDimensions: [0]
-        Value: [{"TypeId":{"Id":296},"Body":{"Name":"leftRecipeName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"rightRecipeName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-    - Class: Method
       Name: CreateRecipe
       Children:
       - Name: ns=0;InputArguments
@@ -215,28 +205,3 @@ Children:
         ValueRank: OneDimension
         ArrayDimensions: [0]
         Value: [{"TypeId":{"Id":296},"Body":{"Name":"count","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"recipeFamily","DataType":{"Id":10},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"activeStepCount","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"namePrefix","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"statusInt","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"overwriteExistingTestRecipes","DataType":{"Id":1},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-  - Name: CustomRecipeYamlTemplateGeneratorNetLogic
-    Type: NetLogic
-    Children:
-    - Name: BehaviourStartPriority
-      Type: BehaviourStartPriorityVariableType
-      DataType: Byte
-      Value: 180
-    - Class: Method
-      Name: GenerateYamlConfigurationTemplate
-    - Name: FamilyCount
-      Type: BaseDataVariableType
-      DataType: Int32
-      Value: 3
-    - Name: PhaseTypeCount
-      Type: BaseDataVariableType
-      DataType: Int32
-      Value: 20
-    - Name: StepParameterCount
-      Type: BaseDataVariableType
-      DataType: Int32
-      Value: 20
-    - Name: OverwriteExistingFile
-      Type: BaseDataVariableType
-      DataType: Boolean
-      Value: true

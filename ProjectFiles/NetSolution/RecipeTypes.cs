@@ -71,32 +71,6 @@ public class RecipeValidationResult
 }
 
 /// <summary>
-/// Result of recipe comparison.
-/// </summary>
-public class RecipeComparisonResult
-{
-    public bool Success { get; set; }
-    public string ErrorCode { get; set; }
-    public string Message { get; set; }
-    public List<RecipeDifference> Differences { get; set; } = new List<RecipeDifference>();
-}
-
-/// <summary>
-/// Single difference found between two recipes.
-/// </summary>
-public class RecipeDifference
-{
-    public string Path { get; set; }
-    public string LeftValue { get; set; }
-    public string RightValue { get; set; }
-
-    public override string ToString()
-    {
-        return $"Recipe difference | Path='{Path}' | Left='{LeftValue}' | Right='{RightValue}'";
-    }
-}
-
-/// <summary>
 /// Result of test recipe generation.
 /// </summary>
 public class TestRecipeGenerationResult

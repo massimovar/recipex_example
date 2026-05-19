@@ -10,7 +10,6 @@ The solution must provide:
 - Controlled recipe versioning.
 - Validation of recipe step ordering before recipe usage.
 - Recipe duplication and archival instead of destructive deletion.
-- Full-model comparison between recipes.
 - A separate ListView edit-model logic to support future UI development.
 - Runtime-only test utilities to generate and bulk-delete test recipes.
 - Design-time utility logic to generate a YAML configuration template.
@@ -369,7 +368,6 @@ UpdateRecipe
 DeleteRecipe
 UpdateRecipeStatus
 DuplicateRecipe
-CompareRecipes
 ValidateRecipe
 ApplyRecipeEnablementRules
 ```
@@ -521,36 +519,6 @@ Behavior:
 7. Recompute enablement rules.
 8. Validate the new recipe.
 9. Persist only if valid.
-
----
-
-## 17. Method specification: CompareRecipes
-
-Compare two recipes and return the differences.
-
-The comparison must always compare the full model, including disabled parameters.
-
-Inputs:
-
-| Input | Type | Required | Description |
-|---|---|---:|---|
-| `leftRecipeName` | String | Yes | First recipe to compare. |
-| `rightRecipeName` | String | Yes | Second recipe to compare. |
-
-Behavior:
-
-1. Load both recipes.
-2. Compare `Version` (from `RecipeId.Version`) and `Status` (from metadata).
-3. Compare machine-level parameters.
-4. Compare all recipe steps.
-5. Compare all step parameters.
-6. Return every difference with a stable path.
-
-Recommended difference format:
-
-```text
-Recipe difference | Path='RSAMachine1/Step03/StepParameter05/ParameterValue' | Left='12.5' | Right='13.0'
-```
 
 ---
 
@@ -954,7 +922,6 @@ Recommended rules:
 - Create/update operations should build a complete candidate recipe first, then persist only when valid.
 - Re-running `ApplyRecipeEnablementRules` must be safe.
 - Archiving an already archived recipe should return a controlled error or no-op result, according to the selected project convention.
-- Comparison must not modify recipe data.
 - Test recipe generation must be safe to retry when deterministic names are used.
 - Bulk archive/delete operations must support `dryRun` mode.
 - Bulk physical delete must be disabled by default.
@@ -978,10 +945,9 @@ Recommended rules:
 8. Implement `UpdateRecipe` as direct draft update or revision creation for non-draft recipes.
 9. Implement `DeleteRecipe` as archive operation.
 10. Implement `UpdateRecipeStatus`.
-11. Implement `CompareRecipes` with full-model comparison.
-12. Implement ListView edit-model NetLogic.
-13. Implement `RecipeRuntimeTestToolsNetLogic` for test recipe generation and cleanup.
-14. Add UI bindings after the production logic is stable.
+11. Implement ListView edit-model NetLogic.
+12. Implement `RecipeRuntimeTestToolsNetLogic` for test recipe generation and cleanup.
+13. Add UI bindings after the production logic is stable.
 
 ---
 
@@ -1035,14 +1001,7 @@ Recommended rules:
 - After add/delete operations, active steps remain contiguous and unused steps are at the tail.
 - Adding the 21st active step is rejected.
 
-### 27.8 Comparison
-
-- Two recipes can be compared.
-- Comparison is performed on the full model, including disabled parameters.
-- Differences are returned with stable paths.
-- Comparison does not modify either recipe.
-
-### 27.9 Runtime test recipe generation
+### 27.8 Runtime test recipe generation
 
 - A variable number of test recipes can be generated.
 - Generated test recipes are clearly identifiable by prefix and/or metadata marker.
@@ -1050,7 +1009,7 @@ Recommended rules:
 - Generation rejects invalid count and invalid active step count.
 - Generation does not overwrite existing recipes unless explicitly requested.
 
-### 27.10 Runtime bulk cleanup
+### 27.9 Runtime bulk cleanup
 
 - Test recipes can be found by prefix and/or generated-by marker.
 - Bulk archive supports `dryRun` mode.
@@ -1058,7 +1017,7 @@ Recommended rules:
 - Physical deletion is disabled by default.
 - Physical deletion, if implemented, affects only recipes clearly identified as test recipes.
 
-### 27.11 Design-time YAML template generation
+### 27.10 Design-time YAML template generation
 
 - A YAML configuration template can be generated in the FT Optix `ProjectFiles` directory.
 - The generated YAML is syntactically valid.
@@ -1075,11 +1034,10 @@ The following decisions are confirmed for the first implementation.
 2. `template` recipes are editable.
 3. Backward status transitions are not allowed.
 4. Only `draft` recipes are directly editable.
-5. Recipe comparison must compare the full model, including disabled parameters.
-6. The YAML configuration file must be stored in the FT Optix `ProjectFiles` directory.
-7. Electronic signature and approval comment are not required in the first implementation.
-8. Runtime recipe generation and bulk cleanup are testing utilities only.
-9. Design-time YAML template generation is required to help initialize configuration.
+5. The YAML configuration file must be stored in the FT Optix `ProjectFiles` directory.
+6. Electronic signature and approval comment are not required in the first implementation.
+7. Runtime recipe generation and bulk cleanup are testing utilities only.
+8. Design-time YAML template generation is required to help initialize configuration.
 
 ---
 
@@ -1110,7 +1068,6 @@ The implementation must deliver:
    - `DeleteRecipe`
    - `UpdateRecipeStatus`
    - `DuplicateRecipe`
-   - `CompareRecipes`
    - `ValidateRecipe`
    - `ApplyRecipeEnablementRules`
 
