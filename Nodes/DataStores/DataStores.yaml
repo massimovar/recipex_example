@@ -247,6 +247,18 @@ Children:
         - Name: draft
           Type: StoreColumn
           DataType: Boolean
+        - Name: prepared
+          Type: StoreColumn
+          DataType: Boolean
+        - Name: approved
+          Type: StoreColumn
+          DataType: Boolean
+        - Name: released
+          Type: StoreColumn
+          DataType: Boolean
+        - Name: archived
+          Type: StoreColumn
+          DataType: Boolean
   - Class: Reference
     Target: ns=10;i=30
     Direction: Forward

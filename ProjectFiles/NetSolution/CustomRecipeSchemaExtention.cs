@@ -445,6 +445,53 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
     #endregion
 
+    #region SetRecipeMetadataBoolField
+
+    // All bool metadata fields on the RecipeSchema
+    private static readonly string[] BoolMetadataFields = { "template", "draft", "prepared", "approved", "released", "archived" };
+
+    /// <summary>
+    /// Set one bool metadata field to true, all others to false.
+    /// Uses RecipeSchema.SetRecipeMetadataValue for each field.
+    /// Takes recipeName + recipeVersion to build RecipeId directly.
+    /// </summary>
+    [ExportMethod]
+    public void SetRecipeMetadataBoolField(string recipeName, string recipeVersion, string fieldName, out bool success)
+    {
+        success = false;
+
+        if (string.IsNullOrWhiteSpace(recipeName))
+        { Log.Error(Tag, "SetRecipeMetadataBoolField: recipe name cannot be empty."); return; }
+
+        if (string.IsNullOrWhiteSpace(recipeVersion))
+        { Log.Error(Tag, "SetRecipeMetadataBoolField: recipe version cannot be empty."); return; }
+
+        if (string.IsNullOrWhiteSpace(fieldName))
+        { Log.Error(Tag, "SetRecipeMetadataBoolField: field name cannot be empty."); return; }
+
+        // Validate field name against known bool metadata fields
+        if (!BoolMetadataFields.Contains(fieldName, StringComparer.OrdinalIgnoreCase))
+        {
+            Log.Error(Tag, $"SetRecipeMetadataBoolField: '{fieldName}' is not a valid bool metadata field. " +
+                           $"Valid: {string.Join(", ", BoolMetadataFields)}");
+            return;
+        }
+
+        var recipeId = new RecipeId { Name = recipeName, Version = recipeVersion };
+
+        // Set target field true, all others false
+        foreach (var f in BoolMetadataFields)
+        {
+            bool val = f.Equals(fieldName, StringComparison.OrdinalIgnoreCase);
+            _schema.SetRecipeMetadataValue(recipeId, f, val);
+        }
+
+        success = true;
+        Log.Info(Tag, $"SetRecipeMetadataBoolField: '{fieldName}' = true on '{recipeName}' v{recipeVersion}, others cleared.");
+    }
+
+    #endregion
+
     #region Internal methods
 
     private bool RecipeExists(string recipeName)

@@ -90,10 +90,24 @@ Children:
       Type: Metadata
       DataType: Boolean
       ReferenceType: HasOrderedComponent
+      Value: true
     - Name: draft
       Type: Metadata
       DataType: Boolean
+    - Name: prepared
+      Type: Metadata
+      DataType: Boolean
+    - Name: approved
+      Type: Metadata
+      DataType: Boolean
+    - Name: released
+      Type: Metadata
+      DataType: Boolean
+    - Name: archived
+      Type: Metadata
+      DataType: Boolean
   - Name: CustomRecipeSchemaExtention
+    Id: g=6632ba231293999b753bde0ca0e27af4
     Type: NetLogic
     Children:
     - Class: Method
@@ -215,11 +229,20 @@ Children:
         ValueRank: OneDimension
         ArrayDimensions: [0]
         Value: [{"TypeId":{"Id":296},"Body":{"Name":"success","DataType":{"Id":1},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-    - Name: RecipeStatuses
-      Type: BaseDataVariableType
-      DataType: NodeId
-      Value: "/Objects/recipex_example/Model/RecipeStatuses"
-    - Name: Roles
-      Type: BaseDataVariableType
-      DataType: NodeId
-      Value: "/Objects/recipex_example/Security/Roles"
+    - Class: Method
+      Name: SetRecipeMetadataBoolField
+      Children:
+      - Name: ns=0;InputArguments
+        Type: BaseVariableType
+        DataType: Argument
+        ReferenceType: HasProperty
+        ValueRank: OneDimension
+        ArrayDimensions: [0]
+        Value: [{"TypeId":{"Id":296},"Body":{"Name":"recipeName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"recipeVersion","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"fieldName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+      - Name: ns=0;OutputArguments
+        Type: BaseVariableType
+        DataType: Argument
+        ReferenceType: HasProperty
+        ValueRank: OneDimension
+        ArrayDimensions: [0]
+        Value: [{"TypeId":{"Id":296},"Body":{"Name":"success","DataType":{"Id":1},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]

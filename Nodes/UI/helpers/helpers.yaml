@@ -1,46 +1,90 @@
 Name: helpers
 Type: FolderType
 Children:
-- Name: RecipeStatusLabel
-  Id: g=88914b763e5bf2ab9616d786f6c146d5
-  Supertype: Label
+- Name: RecipeStatusCheckbox
+  Id: g=b77e75db41c8beb73d082a5dd95adbf5
+  Supertype: CheckBox
   ReferenceType: HasComponent
   Children:
-  - Name: Text
+  - Name: Checked
     Type: BaseDataVariableType
-    DataType: LocalizedText
-    Value: {"LocaleId":"en-US","Text":"not loaded"}
-  - Name: EnumeratorManager
-    Type: NetLogic
-    Children:
-    - Name: enumeration
-      Type: BaseDataVariableType
-      DataType: NodeId
-      Value: "/Objects/recipex_example/Model/RecipeStatuses"
-    - Name: index
-      Type: BaseDataVariableType
-      DataType: Int32
-      Children:
-      - Name: DynamicLink
-        Type: DynamicLink
-        DataType: NodePath
-        Value: "../../StatusValue"
-        Children:
-        - Name: Mode
-          Type: BaseVariableType
-          DataType: DynamicLinkMode
-          ModellingRule: Optional
-          Value: 2
-  - Name: StatusValue
-    Type: BaseDataVariableType
-    DataType: String
-- Name: Button1
-  Id: g=8c9ce9f42062c402127853137e8004ee
-  Supertype: Button
-  ReferenceType: HasComponent
-  Children:
-  - Name: Text
-    Type: BaseDataVariableType
-    DataType: LocalizedText
+    DataType: Boolean
+  - Name: VerticalAlignment
+    Type: BaseVariableType
+    DataType: VerticalAlignment
     ModellingRule: Optional
-    Value: {"LocaleId":"en-US","Text":"Button1"}
+    Value: 2
+  - Name: ModifiedValueHandler1
+    Type: EventHandler
+    Children:
+    - Name: ListenEventType
+      Type: PropertyType
+      DataType: NodeId
+      Value: "/Types/EventTypes/BaseEventType/UserValueChanged"
+    - Name: MethodsToCall
+      Type: BaseObjectType
+      Children:
+      - Name: MethodContainer1
+        Type: BaseObjectType
+        Children:
+        - Name: ns=2;ObjectPointer
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/Recipes/RecipeSchema1/CustomRecipeSchemaExtention"
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/ObjectTypes/BaseObjectType"
+        - Name: ns=2;Method
+          Type: BaseDataVariableType
+          DataType: String
+          Value: "SetRecipeMetadataBoolField"
+        - Name: InputArguments
+          Type: BaseObjectType
+          Children:
+          - Name: recipeName
+            Type: BaseDataVariableType
+            DataType: String
+          - Name: recipeVersion
+            Type: BaseDataVariableType
+            DataType: String
+          - Name: fieldName
+            Type: BaseDataVariableType
+            DataType: String
+        - Name: OutputArguments
+          Type: BaseObjectType
+          Children:
+          - Name: success
+            Type: BaseDataVariableType
+            DataType: Boolean
+    - Name: EventArguments
+      Type: UserValueChanged
+      Children:
+      - Name: NewValue
+        Type: BaseDataVariableType
+        DataType: BaseDataType
+      - Name: EventId
+        Type: PropertyType
+        DataType: ByteString
+      - Name: EventType
+        Type: PropertyType
+        DataType: NodeId
+      - Name: SourceNode
+        Type: PropertyType
+        DataType: NodeId
+      - Name: SourceName
+        Type: PropertyType
+        DataType: String
+      - Name: Time
+        Type: PropertyType
+        DataType: UtcTime
+      - Name: ReceiveTime
+        Type: PropertyType
+        DataType: UtcTime
+      - Name: Message
+        Type: PropertyType
+        DataType: LocalizedText
+      - Name: Severity
+        Type: PropertyType
+        DataType: UInt16
