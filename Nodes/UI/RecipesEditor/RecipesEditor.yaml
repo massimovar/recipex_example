@@ -272,6 +272,11 @@ Children:
         ModellingRule: Optional
         ValueRank: OneDimension
         ArrayDimensions: [0]
+  - Name: BottomMargin
+    Type: BaseVariableType
+    DataType: Size
+    ModellingRule: Optional
+    Value: 30.0
 - Name: RecipeList
   Id: g=fe7b1fc5a7964a82a4cba377084ba99e
   Supertype: Panel
@@ -290,6 +295,33 @@ Children:
       DataType: VerticalAlignment
       ModellingRule: Optional
       Value: 3
+    - Name: TextBox1
+      Type: TextBox
+      Children:
+      - Name: Text
+        Type: BaseDataVariableType
+        DataType: LocalizedText
+        Children:
+        - Name: DynamicLink
+          Type: DynamicLink
+          DataType: NodePath
+          Value: "../../RecipeListView/RecipeListView/Query"
+          Children:
+          - Name: Mode
+            Type: BaseVariableType
+            DataType: DynamicLinkMode
+            ModellingRule: Optional
+            Value: 2
+      - Name: Width
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 110.0
+      - Name: HorizontalAlignment
+        Type: BaseVariableType
+        DataType: HorizontalAlignment
+        ModellingRule: Optional
+        Value: 3
     - Name: Header
       Type: RowLayout
       Children:
@@ -1378,6 +1410,11 @@ Children:
           DataType: LocalizedText
           ModellingRule: Optional
           Value: {"LocaleId":"en-US","Text":"Editing:"}
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
       - Name: EditingRecipeValue
         Type: Label
         Children:
@@ -1421,12 +1458,15 @@ Children:
           Type: BaseVariableType
           DataType: Size
           ModellingRule: Optional
-          Value: 1.0
         - Name: TopMargin
           Type: BaseVariableType
           DataType: Size
           ModellingRule: Optional
-          Value: -1.0
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
       - Name: EditingRecipeStatusText
         Type: Label
         Children:
@@ -1439,22 +1479,249 @@ Children:
           DataType: FontWeightEnum
           ModellingRule: Optional
           Value: 400
-      - Name: EditingRecipeStatusValue
-        Type: Label
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
+      - Name: RecipeStatusLabel1
+        Type: RecipeStatusLabel
         Children:
         - Name: Text
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+          Value: {"LocaleId":"en-US","Text":"not loaded"}
+        - Name: EnumeratorManager
+          Type: NetLogic
+          Children:
+          - Name: enumeration
+            Type: BaseDataVariableType
+            DataType: NodeId
+            Value: "/Objects/recipex_example/Model/RecipeStatuses"
+          - Name: index
+            Type: BaseDataVariableType
+            DataType: Int32
+            Children:
+            - Name: DynamicLink
+              Type: DynamicLink
+              DataType: NodePath
+              Value: "../../StatusValue"
+        - Name: StatusValue
+          Type: BaseDataVariableType
+          DataType: String
+          Children:
+          - Name: DynamicLink
+            Type: DynamicLink
+            DataType: NodePath
+            Value: "{RecipeSchemaAlias}/Status"
+            Children:
+            - Name: Mode
+              Type: BaseVariableType
+              DataType: DynamicLinkMode
+              ModellingRule: Optional
+              Value: 2
+        - Name: VerticalAlignment
+          Type: BaseVariableType
+          DataType: VerticalAlignment
+          ModellingRule: Optional
+          Value: 2
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
+      - Name: ComboBox1
+        Type: ComboBox
+        Children:
+        - Name: Text
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+        - Name: Model
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/Model/RecipeStatuses"
+          Children:
+          - Name: ItemKind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+        - Name: SelectedValue
+          Type: BaseDataVariableType
+          DataType: BaseDataType
+          Children:
+          - Name: DynamicLink
+            Type: DynamicLink
+            DataType: NodePath
+            Value: "{RecipeSchemaAlias}/Status"
+            Children:
+            - Name: Mode
+              Type: BaseVariableType
+              DataType: DynamicLinkMode
+              ModellingRule: Optional
+              Value: 2
+        - Name: SelectedItem
+          Type: NodePointer
+          DataType: NodeId
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
+        - Name: UISelectedItem
+          Type: BaseDataVariableType
+          DataType: NodeId
+          AccessLevel: Read
+        - Name: UISelectedValue
+          Type: BaseDataVariableType
+          DataType: BaseDataType
+          AccessLevel: Read
+        - Class: Reference
+          Target: ns=3;i=480
+          Direction: Forward
+        - Name: Width
+          Type: BaseVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 160.0
+        - Name: Item
+          Type: Alias
+          DataType: NodeId
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/VariableTypes/BaseVariableType/BaseDataVariableType"
+        - Name: VerticalAlignment
+          Type: BaseVariableType
+          DataType: VerticalAlignment
+          ModellingRule: Optional
+          Value: 2
+        - Name: DisplayValuePath
           Type: BaseDataVariableType
           DataType: LocalizedText
           Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RecipeSchemaAlias}/Status"
-        - Name: FontWeight
+            Value: "{Item}@DisplayName"
+        - Name: SelectedValuePath
           Type: BaseDataVariableType
-          DataType: FontWeightEnum
+          DataType: BaseDataType
+          Children:
+          - Name: DynamicLink
+            Type: DynamicLink
+            DataType: NodePath
+            Value: "{Item}"
+        - Name: LeftMargin
+          Type: BaseVariableType
+          DataType: Size
           ModellingRule: Optional
-          Value: 400
+          Value: -1.0
+        - Name: TopMargin
+          Type: BaseVariableType
+          DataType: Size
+          ModellingRule: Optional
+        - Name: BottomMargin
+          Type: BaseVariableType
+          DataType: Size
+          ModellingRule: Optional
+      - Name: UpdateStatusBtn
+        Type: Button
+        Children:
+        - Name: Text
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+          ModellingRule: Optional
+          Value: {"LocaleId":"en-US","Text":"update recipe status"}
+        - Name: MouseClickEventHandler1
+          Type: EventHandler
+          Children:
+          - Name: ListenEventType
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/EventTypes/BaseEventType/MouseEvent/MouseClickEvent"
+          - Name: MethodsToCall
+            Type: BaseObjectType
+            Children:
+            - Name: MethodContainer1
+              Type: BaseObjectType
+              Children:
+              - Name: ns=2;ObjectPointer
+                Type: NodePointer
+                DataType: NodeId
+                Value: "/Objects/recipex_example/Recipes/RecipeSchema1/CustomRecipeSchemaExtention"
+                Children:
+                - Name: Kind
+                  Type: PropertyType
+                  DataType: NodeId
+                  Value: "/Types/ObjectTypes/BaseObjectType"
+              - Name: ns=2;Method
+                Type: BaseDataVariableType
+                DataType: String
+                Value: "SetRecipeMetadataField"
+              - Name: InputArguments
+                Type: BaseObjectType
+                Children:
+                - Name: recipeName
+                  Type: BaseDataVariableType
+                  DataType: String
+                  Children:
+                  - Name: DynamicLink
+                    Type: DynamicLink
+                    DataType: NodePath
+                    Value: "{RecipeEditSelectedID}>Name"
+                - Name: metadataField
+                  Type: BaseDataVariableType
+                  DataType: String
+                  Children:
+                  - Name: DynamicLink
+                    Type: DynamicLink
+                    DataType: NodePath
+                    Value: "{RecipeSchemaAlias}/Status@BrowseName"
+                - Name: metadataValue
+                  Type: BaseDataVariableType
+                  DataType: String
+                  Children:
+                  - Name: DynamicLink
+                    Type: DynamicLink
+                    DataType: NodePath
+                    Value: "../../../../../../ComboBox1/SelectedValue"
+              - Name: OutputArguments
+                Type: BaseObjectType
+                Children:
+                - Name: success
+                  Type: BaseDataVariableType
+                  DataType: Boolean
+          - Name: EventArguments
+            Type: MouseClickEvent
+            Children:
+            - Name: EventId
+              Type: PropertyType
+              DataType: ByteString
+            - Name: EventType
+              Type: PropertyType
+              DataType: NodeId
+            - Name: SourceNode
+              Type: PropertyType
+              DataType: NodeId
+            - Name: SourceName
+              Type: PropertyType
+              DataType: String
+            - Name: Time
+              Type: PropertyType
+              DataType: UtcTime
+            - Name: ReceiveTime
+              Type: PropertyType
+              DataType: UtcTime
+            - Name: Message
+              Type: PropertyType
+              DataType: LocalizedText
+            - Name: Severity
+              Type: PropertyType
+              DataType: UInt16
       - Name: ActiveRecipeText
         Type: Label
         Children:
@@ -1467,6 +1734,11 @@ Children:
           DataType: FontWeightEnum
           ModellingRule: Optional
           Value: 400
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
       - Name: ActiveRecipeValue
         Type: Label
         Children:
@@ -1506,6 +1778,11 @@ Children:
           DataType: FontWeightEnum
           ModellingRule: Optional
           Value: 700
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
       - Name: HorizontalGap
         Type: BaseDataVariableType
         DataType: Size
@@ -1726,80 +2003,7 @@ Children:
           Type: BaseVariableType
           DataType: Size
           ModellingRule: Optional
-          Value: 30.0
-        - Name: CustomRecipeEditorLogics
-          Type: NetLogic
-          Children:
-          - Class: Method
-            Name: AddStepAfter
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"position","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-          - Class: Method
-            Name: AddStepBefore
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"position","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-          - Class: Method
-            Name: ApplyEditModelEnablementRules
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"configFilePath","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-          - Class: Method
-            Name: DeleteStep
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"position","DataType":{"Id":6},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-          - Class: Method
-            Name: InitializeEditModel
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-          - Class: Method
-            Name: NormalizeSteps
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-          - Class: Method
-            Name: ValidateEditModel
-            Children:
-            - Name: ns=0;InputArguments
-              Type: BaseVariableType
-              DataType: Argument
-              ReferenceType: HasProperty
-              ValueRank: OneDimension
-              ArrayDimensions: [0]
-              Value: [{"TypeId":{"Id":296},"Body":{"Name":"targetNodeId","DataType":{"Id":17},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+          Value: 40.0
     - Name: HorizontalAlignment
       Type: BaseVariableType
       DataType: HorizontalAlignment

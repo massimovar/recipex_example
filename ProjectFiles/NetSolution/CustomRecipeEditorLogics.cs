@@ -12,374 +12,392 @@ using OpcUa = UAManagedCore.OpcUa;
 #endregion
 
 /// <summary>
-/// RecipeListViewEditModelNetLogic: manages the edit-model for recipe step editing.
-/// Must be added as a child of the ListView used to create/edit recipe steps.
-/// Operates on a fixed 20-step structure where active steps are contiguous at the start.
+/// Per-step NetLogic for recipe EditModel step manipulation.
+/// Invariant: active steps (PT=1..N) occupy physical slots 1..N in order.
+/// Inactive steps (PT=0) occupy slots N+1..MaxSteps.
+/// All operations move actual step DATA between physical slots to maintain this invariant.
 /// </summary>
 public class CustomRecipeEditorLogics : BaseNetLogic
 {
     private const int MaxSteps = 20;
-    private IUANode _targetNode;
+    private const string LogCategory = "RecipeEditor";
 
-    public override void Start()
-    {
-        // The target node for editing is typically set via an alias or owner's variable
-        // Will be resolved when InitializeEditModel is called
-    }
+    // Sub-object names containing step parameters
+    private static readonly string[] ParameterObjects = { "dsp", "tsp", "psp" };
 
-    public override void Stop()
-    {
-    }
+    public override void Start() { }
+    public override void Stop() { }
 
-    #region InitializeEditModel
+    #region ExportMethods
 
     /// <summary>
-    /// Load the edit model with step data from the target node.
-    /// Resolves the target and reads current PhaseType values.
+    /// Insert a new empty step before this step's position.
+    /// Shifts data from position P..N right by one slot, clears slot P.
+    /// Not allowed on first step (PT=1) or inactive steps (PT=0).
     /// </summary>
     [ExportMethod]
-    public RecipeOperationResult InitializeEditModel(NodeId targetNodeId)
+    public void AddStepBefore(out bool success)
     {
-        if (targetNodeId == null || targetNodeId == NodeId.Empty)
-            return RecipeOperationResult.Fail("InvalidInput", "Target node ID is required.");
+        success = false;
 
-        _targetNode = InformationModel.Get(targetNodeId);
-        if (_targetNode == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "Target node not found in InformationModel.");
+        var myStep = ResolveMyStep();
+        if (myStep == null) { Log.Error(LogCategory, "AddStepBefore: cannot resolve step node."); return; }
 
-        return RecipeOperationResult.Ok("Edit model initialized.");
-    }
+        var target = myStep.Owner;
+        if (target == null) { Log.Error(LogCategory, "AddStepBefore: cannot resolve target node."); return; }
 
-    #endregion
-
-    #region AddStepBefore
-
-    /// <summary>
-    /// Insert a new active step before the specified position (1-based).
-    /// Shifts subsequent steps down. Rejects if 20 active steps already present.
-    /// </summary>
-    [ExportMethod]
-    public RecipeOperationResult AddStepBefore(NodeId targetNodeId, int position)
-    {
-        var phaseTypes = ReadPhaseTypes(targetNodeId);
-        if (phaseTypes == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "Cannot read step data from target node.");
-
-        int activeCount = RecipeHelpers.CountActiveSteps(phaseTypes);
-        if (activeCount >= MaxSteps)
-            return RecipeOperationResult.Fail("MaximumStepCountReached", "All 20 steps are already active.");
-
-        // Validate position: must be 1..activeCount+1
-        if (position < 1 || position > activeCount + 1)
-            return RecipeOperationResult.Fail("InvalidInput", $"Position must be between 1 and {activeCount + 1}.");
-
-        // Insert: shift active steps from position onwards by marking one more step active
-        // Strategy: convert tail step at end to active, then reorder
-        var newPhaseTypes = new List<float>(phaseTypes);
-
-        // Find first tail step and mark it active (temporarily)
-        int firstTailIndex = newPhaseTypes.FindIndex(pt => pt == 0f);
-        if (firstTailIndex < 0)
-            return RecipeOperationResult.Fail("MaximumStepCountReached", "No available tail step slot.");
-
-        // Shift step data down in the model: move step data from position-1 to activeCount-1 one slot forward
-        // Then clear the inserted position
-        // For simplicity: we rewrite PhaseTypes to have N+1 active steps with correct ordering
-        var activePhaseTypes = new List<float>();
-        for (int i = 0; i < activeCount + 1; i++)
+        float myPT = GetPhaseType(myStep);
+        if (myPT <= 1f)
         {
-            activePhaseTypes.Add(i + 1); // 1..N+1
-        }
-
-        // Fill remaining with 0
-        var resultPhaseTypes = new List<float>(activePhaseTypes);
-        while (resultPhaseTypes.Count < MaxSteps)
-            resultPhaseTypes.Add(0f);
-
-        // Write back PhaseTypes
-        WritePhaseTypes(targetNodeId, resultPhaseTypes);
-
-        // Normalize and apply
-        NormalizeStepsInternal(targetNodeId);
-
-        return RecipeOperationResult.Ok($"Step added before position {position}. Active steps: {activeCount + 1}.");
-    }
-
-    #endregion
-
-    #region AddStepAfter
-
-    /// <summary>
-    /// Insert a new active step after the specified position (1-based).
-    /// </summary>
-    [ExportMethod]
-    public RecipeOperationResult AddStepAfter(NodeId targetNodeId, int position)
-    {
-        // AddStepAfter(N) = AddStepBefore(N+1)
-        return AddStepBefore(targetNodeId, position + 1);
-    }
-
-    #endregion
-
-    #region DeleteStep
-
-    /// <summary>
-    /// Remove the step at the specified position (1-based).
-    /// Converts it to a tail step and re-normalizes.
-    /// </summary>
-    [ExportMethod]
-    public RecipeOperationResult DeleteStep(NodeId targetNodeId, int position)
-    {
-        var phaseTypes = ReadPhaseTypes(targetNodeId);
-        if (phaseTypes == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "Cannot read step data from target node.");
-
-        int activeCount = RecipeHelpers.CountActiveSteps(phaseTypes);
-
-        if (position < 1 || position > activeCount)
-            return RecipeOperationResult.Fail("InvalidInput", $"Position must be between 1 and {activeCount}.");
-
-        // Set the step at position to tail (0)
-        // Then re-normalize so active steps are contiguous 1..N-1
-        phaseTypes[position - 1] = 0f;
-
-        // Move all zeros to the end while preserving order of non-zero items
-        var active = phaseTypes.Where(pt => pt != 0f).ToList();
-        var result = new List<float>(active);
-        while (result.Count < MaxSteps)
-            result.Add(0f);
-
-        // Renumber active steps
-        result = RecipeHelpers.NormalizePhaseTypes(result);
-
-        // Write back
-        WritePhaseTypes(targetNodeId, result);
-
-        return RecipeOperationResult.Ok($"Step at position {position} deleted. Active steps: {active.Count}.");
-    }
-
-    #endregion
-
-    #region NormalizeSteps
-
-    /// <summary>
-    /// Re-normalize step PhaseType values: active steps become 1..N, tail steps become 0.
-    /// Idempotent.
-    /// </summary>
-    [ExportMethod]
-    public RecipeOperationResult NormalizeSteps(NodeId targetNodeId)
-    {
-        return NormalizeStepsInternal(targetNodeId);
-    }
-
-    private RecipeOperationResult NormalizeStepsInternal(NodeId targetNodeId)
-    {
-        var phaseTypes = ReadPhaseTypes(targetNodeId);
-        if (phaseTypes == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "Cannot read step data from target node.");
-
-        var normalized = RecipeHelpers.NormalizePhaseTypes(phaseTypes);
-        WritePhaseTypes(targetNodeId, normalized);
-
-        return RecipeOperationResult.Ok("Steps normalized.");
-    }
-
-    #endregion
-
-    #region ValidateEditModel
-
-    /// <summary>
-    /// Validate the current edit model step sequence.
-    /// </summary>
-    [ExportMethod]
-    public RecipeValidationResult ValidateEditModel(NodeId targetNodeId)
-    {
-        var phaseTypes = ReadPhaseTypes(targetNodeId);
-        if (phaseTypes == null)
-            return RecipeValidationResult.Invalid(new List<string> { "Cannot read step data from target node." });
-
-        var (isValid, errors) = RecipeHelpers.ValidateStepSequence(phaseTypes);
-
-        if (isValid)
-            return RecipeValidationResult.Valid();
-        return RecipeValidationResult.Invalid(errors);
-    }
-
-    #endregion
-
-    #region ApplyEditModelEnablementRules
-
-    /// <summary>
-    /// Apply enablement rules to the edit model target node.
-    /// Reads RecipeFamily from the target, then applies PhaseType-based enablement.
-    /// </summary>
-    [ExportMethod]
-    public RecipeOperationResult ApplyEditModelEnablementRules(NodeId targetNodeId, string configFilePath)
-    {
-        var target = InformationModel.Get(targetNodeId);
-        if (target == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "Target node not found.");
-
-        // Load config
-        var loader = new RecipeConfigurationLoader();
-        if (!loader.Load(configFilePath))
-            return RecipeOperationResult.Fail("ConfigurationInvalid",
-                $"Configuration invalid: {string.Join("; ", loader.ValidationErrors)}");
-
-        // Read RecipeFamily from target
-        var parameters1 = target.GetObject("Parameters1");
-        if (parameters1 == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "Parameters1 node not found on target.");
-
-        var familyVar = parameters1.GetVariable("RecipeFamily");
-        if (familyVar == null)
-            return RecipeOperationResult.Fail("RecipeNotFound", "RecipeFamily variable not found.");
-
-        int familyKey = (int)Convert.ToSingle(familyVar.Value.Value);
-
-        // Apply enablement to each step
-        for (int i = 1; i <= MaxSteps; i++)
-        {
-            string stepName = $"RecipeStepRSA{i}";
-            var stepNode = target.GetObject(stepName);
-            if (stepNode == null)
-                continue;
-
-            var phaseTypeVar = stepNode.GetVariable("PhaseType");
-            var stepEnabledVar = stepNode.GetVariable("StepEnabled");
-            if (phaseTypeVar == null || stepEnabledVar == null)
-                continue;
-
-            float phaseType = Convert.ToSingle(phaseTypeVar.Value.Value);
-
-            if (phaseType == 0f)
-            {
-                // Tail step: disable everything
-                stepEnabledVar.Value = false;
-                SetAllNodeParametersEnabled(stepNode, false);
-            }
-            else
-            {
-                int ptInt = (int)phaseType;
-                bool allowed = loader.IsPhaseTypeAllowed(familyKey, ptInt);
-                stepEnabledVar.Value = allowed;
-
-                if (allowed)
-                {
-                    var enabledParams = loader.GetEnabledParameters(familyKey, ptInt);
-                    SetNodeParametersEnabledByConfig(stepNode, enabledParams);
-                }
-                else
-                {
-                    SetAllNodeParametersEnabled(stepNode, false);
-                }
-            }
-        }
-
-        return RecipeOperationResult.Ok("Enablement rules applied to edit model.");
-    }
-
-    #endregion
-
-    #region Internal helpers
-
-    /// <summary>
-    /// Read PhaseType values from all 20 steps on the target node.
-    /// </summary>
-    private List<float> ReadPhaseTypes(NodeId targetNodeId)
-    {
-        var target = InformationModel.Get(targetNodeId);
-        if (target == null)
-            return null;
-
-        var phaseTypes = new List<float>();
-        for (int i = 1; i <= MaxSteps; i++)
-        {
-            string stepName = $"RecipeStepRSA{i}";
-            var stepNode = target.GetObject(stepName);
-            if (stepNode == null)
-            {
-                phaseTypes.Add(0f);
-                continue;
-            }
-
-            var ptVar = stepNode.GetVariable("PhaseType");
-            if (ptVar == null)
-            {
-                phaseTypes.Add(0f);
-                continue;
-            }
-
-            phaseTypes.Add(Convert.ToSingle(ptVar.Value.Value));
-        }
-
-        return phaseTypes;
-    }
-
-    /// <summary>
-    /// Write PhaseType values to all 20 steps on the target node.
-    /// </summary>
-    private void WritePhaseTypes(NodeId targetNodeId, List<float> phaseTypes)
-    {
-        var target = InformationModel.Get(targetNodeId);
-        if (target == null)
+            Log.Warning(LogCategory, "AddStepBefore: not allowed on first or inactive step.");
             return;
-
-        for (int i = 0; i < Math.Min(phaseTypes.Count, MaxSteps); i++)
-        {
-            string stepName = $"RecipeStepRSA{i + 1}";
-            var stepNode = target.GetObject(stepName);
-            if (stepNode == null)
-                continue;
-
-            var ptVar = stepNode.GetVariable("PhaseType");
-            if (ptVar != null)
-                ptVar.Value = phaseTypes[i];
-
-            // Update StepEnabled based on PhaseType
-            var enabledVar = stepNode.GetVariable("StepEnabled");
-            if (enabledVar != null)
-                enabledVar.Value = (phaseTypes[i] != 0f);
         }
+
+        var allSteps = GetAllStepNodes(target);
+        int activeCount = CountActive(allSteps);
+        if (activeCount >= MaxSteps)
+        {
+            Log.Warning(LogCategory, "AddStepBefore: max steps reached.");
+            return;
+        }
+
+        int insertPos = (int)myPT; // 1-based position to insert at
+
+        // Shift data RIGHT: from slot N down to insertPos, copy slot[i-1] -> slot[i]
+        // This opens a gap at insertPos
+        for (int i = activeCount; i >= insertPos; i--)
+        {
+            CopyStepContent(allSteps[i - 1], allSteps[i]);
+        }
+
+        // Clear the inserted slot and activate it
+        ClearStepContent(allSteps[insertPos - 1]);
+        SetPhaseType(allSteps[insertPos - 1], (float)insertPos);
+
+        // Reassign PTs for all active slots (1..N+1)
+        for (int i = 0; i <= activeCount; i++)
+        {
+            SetPhaseType(allSteps[i], (float)(i + 1));
+        }
+        // Ensure remaining slots are inactive
+        for (int i = activeCount + 1; i < allSteps.Count; i++)
+        {
+            SetPhaseType(allSteps[i], 0f);
+        }
+
+        success = true;
+        Log.Info(LogCategory, $"AddStepBefore: inserted at position {insertPos}. Active steps: {activeCount + 1}.");
     }
 
     /// <summary>
-    /// Disable/enable all step parameter children on a step node.
+    /// Append a new empty step at end of active sequence.
+    /// Not allowed on inactive steps (PT=0).
     /// </summary>
-    private void SetAllNodeParametersEnabled(IUANode stepNode, bool enabled)
+    [ExportMethod]
+    public void AddStepAfter(out bool success)
     {
-        foreach (var child in stepNode.Children)
+        success = false;
+
+        var myStep = ResolveMyStep();
+        if (myStep == null) { Log.Error(LogCategory, "AddStepAfter: cannot resolve step node."); return; }
+
+        var target = myStep.Owner;
+        if (target == null) { Log.Error(LogCategory, "AddStepAfter: cannot resolve target node."); return; }
+
+        float myPT = GetPhaseType(myStep);
+        if (myPT == 0f)
         {
-            if (child is IUAObject paramObj)
+            Log.Warning(LogCategory, "AddStepAfter: not allowed on inactive step.");
+            return;
+        }
+
+        var allSteps = GetAllStepNodes(target);
+        int activeCount = CountActive(allSteps);
+
+        if (activeCount >= MaxSteps)
+        {
+            Log.Warning(LogCategory, "AddStepAfter: max steps reached.");
+            return;
+        }
+
+        // Next slot after last active — clear and activate
+        int newSlot = activeCount; // 0-based index of slot N+1
+        ClearStepContent(allSteps[newSlot]);
+        SetPhaseType(allSteps[newSlot], (float)(activeCount + 1));
+
+        success = true;
+        Log.Info(LogCategory, $"AddStepAfter: activated step at position {activeCount + 1}. Active steps: {activeCount + 1}.");
+    }
+
+    /// <summary>
+    /// Move this step one position up by swapping all data with the step above.
+    /// Not allowed on first step (PT=1) or inactive steps (PT=0).
+    /// </summary>
+    [ExportMethod]
+    public void MoveStepUp(out bool success)
+    {
+        success = false;
+
+        var myStep = ResolveMyStep();
+        if (myStep == null) { Log.Error(LogCategory, "MoveStepUp: cannot resolve step node."); return; }
+
+        var target = myStep.Owner;
+        if (target == null) { Log.Error(LogCategory, "MoveStepUp: cannot resolve target node."); return; }
+
+        float myPT = GetPhaseType(myStep);
+        if (myPT <= 1f)
+        {
+            Log.Warning(LogCategory, "MoveStepUp: already at top or inactive.");
+            return;
+        }
+
+        var allSteps = GetAllStepNodes(target);
+        int myIndex = (int)myPT - 1;     // 0-based
+        int aboveIndex = myIndex - 1;
+
+        // Swap content (not PT) between this slot and slot above
+        SwapStepContent(allSteps[myIndex], allSteps[aboveIndex]);
+
+        success = true;
+        Log.Info(LogCategory, $"MoveStepUp: swapped position {(int)myPT} with {(int)myPT - 1}.");
+    }
+
+    /// <summary>
+    /// Move this step one position down by swapping all data with the step below.
+    /// Not allowed on last active step or inactive steps (PT=0).
+    /// </summary>
+    [ExportMethod]
+    public void MoveStepDown(out bool success)
+    {
+        success = false;
+
+        var myStep = ResolveMyStep();
+        if (myStep == null) { Log.Error(LogCategory, "MoveStepDown: cannot resolve step node."); return; }
+
+        var target = myStep.Owner;
+        if (target == null) { Log.Error(LogCategory, "MoveStepDown: cannot resolve target node."); return; }
+
+        float myPT = GetPhaseType(myStep);
+        if (myPT == 0f)
+        {
+            Log.Warning(LogCategory, "MoveStepDown: not allowed on inactive step.");
+            return;
+        }
+
+        var allSteps = GetAllStepNodes(target);
+        int activeCount = CountActive(allSteps);
+
+        if (myPT >= activeCount)
+        {
+            Log.Warning(LogCategory, "MoveStepDown: already at bottom active position.");
+            return;
+        }
+
+        int myIndex = (int)myPT - 1;     // 0-based
+        int belowIndex = myIndex + 1;
+
+        // Swap content (not PT) between this slot and slot below
+        SwapStepContent(allSteps[myIndex], allSteps[belowIndex]);
+
+        success = true;
+        Log.Info(LogCategory, $"MoveStepDown: swapped position {(int)myPT} with {(int)myPT + 1}.");
+    }
+
+    /// <summary>
+    /// Delete this step: shift data from slots after this one LEFT, deactivate last active slot.
+    /// Not allowed on inactive steps (PT=0).
+    /// </summary>
+    [ExportMethod]
+    public void DeleteStep(out bool success)
+    {
+        success = false;
+
+        var myStep = ResolveMyStep();
+        if (myStep == null) { Log.Error(LogCategory, "DeleteStep: cannot resolve step node."); return; }
+
+        var target = myStep.Owner;
+        if (target == null) { Log.Error(LogCategory, "DeleteStep: cannot resolve target node."); return; }
+
+        float myPT = GetPhaseType(myStep);
+        if (myPT == 0f)
+        {
+            Log.Warning(LogCategory, "DeleteStep: step is already inactive.");
+            return;
+        }
+
+        var allSteps = GetAllStepNodes(target);
+        int activeCount = CountActive(allSteps);
+        int deletePos = (int)myPT; // 1-based
+
+        // Shift data LEFT: from slot deletePos+1 to N, copy slot[i] -> slot[i-1]
+        for (int i = deletePos; i < activeCount; i++)
+        {
+            CopyStepContent(allSteps[i], allSteps[i - 1]);
+        }
+
+        // Clear and deactivate last active slot
+        ClearStepContent(allSteps[activeCount - 1]);
+        SetPhaseType(allSteps[activeCount - 1], 0f);
+
+        // Reassign PTs for remaining active slots
+        for (int i = 0; i < activeCount - 1; i++)
+        {
+            SetPhaseType(allSteps[i], (float)(i + 1));
+        }
+
+        success = true;
+        Log.Info(LogCategory, $"DeleteStep: removed position {deletePos}. Active steps: {activeCount - 1}.");
+    }
+
+    #endregion
+
+    #region Data Movement Helpers
+
+    /// <summary>
+    /// Swap all content (StepName, StepEnabled, parameters) between two step nodes.
+    /// PhaseType is NOT swapped — it always matches physical slot index.
+    /// </summary>
+    private void SwapStepContent(IUANode a, IUANode b)
+    {
+        // Swap StepName
+        SwapVariable(a, b, "StepName");
+        // Swap StepEnabled
+        SwapVariable(a, b, "StepEnabled");
+        // Swap parameter sub-objects
+        foreach (var paramName in ParameterObjects)
+        {
+            var objA = a.GetObject(paramName);
+            var objB = b.GetObject(paramName);
+            if (objA != null && objB != null)
             {
-                var enabledVar = paramObj.GetVariable("ParameterEnabled");
-                if (enabledVar != null)
-                    enabledVar.Value = enabled;
+                SwapVariable(objA, objB, "ParameterValue");
+                SwapVariable(objA, objB, "ParameterEnabled");
             }
         }
     }
 
     /// <summary>
-    /// Enable only configured parameters, disable all others.
-    /// Assumes step parameters are named with a numeric index or are enumerable.
+    /// Copy all content (StepName, StepEnabled, parameters) from src to dst.
+    /// PhaseType is NOT copied.
     /// </summary>
-    private void SetNodeParametersEnabledByConfig(IUANode stepNode, List<int> enabledIndexes)
+    private void CopyStepContent(IUANode src, IUANode dst)
     {
-        var enabledSet = new HashSet<int>(enabledIndexes);
-        int paramIndex = 1;
-
-        foreach (var child in stepNode.Children)
+        CopyVariable(src, dst, "StepName");
+        CopyVariable(src, dst, "StepEnabled");
+        foreach (var paramName in ParameterObjects)
         {
-            if (child is IUAObject paramObj)
+            var objSrc = src.GetObject(paramName);
+            var objDst = dst.GetObject(paramName);
+            if (objSrc != null && objDst != null)
             {
-                var enabledVar = paramObj.GetVariable("ParameterEnabled");
-                if (enabledVar != null)
-                {
-                    enabledVar.Value = enabledSet.Contains(paramIndex);
-                    paramIndex++;
-                }
+                CopyVariable(objSrc, objDst, "ParameterValue");
+                CopyVariable(objSrc, objDst, "ParameterEnabled");
             }
         }
+    }
+
+    /// <summary>
+    /// Clear step content to defaults (empty name, disabled, zero parameters).
+    /// PhaseType is NOT cleared here.
+    /// </summary>
+    private void ClearStepContent(IUANode step)
+    {
+        var nameVar = step.GetVariable("StepName");
+        if (nameVar != null) nameVar.Value = new LocalizedText("", "");
+
+        var enabledVar = step.GetVariable("StepEnabled");
+        if (enabledVar != null) enabledVar.Value = false;
+
+        foreach (var paramName in ParameterObjects)
+        {
+            var obj = step.GetObject(paramName);
+            if (obj == null) continue;
+            var pv = obj.GetVariable("ParameterValue");
+            if (pv != null) pv.Value = 0f;
+            var pe = obj.GetVariable("ParameterEnabled");
+            if (pe != null) pe.Value = false;
+        }
+    }
+
+    /// <summary>
+    /// Swap a single variable's value between two parent nodes.
+    /// </summary>
+    private void SwapVariable(IUANode parentA, IUANode parentB, string varName)
+    {
+        var vA = parentA.GetVariable(varName);
+        var vB = parentB.GetVariable(varName);
+        if (vA == null || vB == null) return;
+        var temp = vA.Value;
+        vA.Value = vB.Value;
+        vB.Value = temp;
+    }
+
+    /// <summary>
+    /// Copy a single variable's value from src parent to dst parent.
+    /// </summary>
+    private void CopyVariable(IUANode srcParent, IUANode dstParent, string varName)
+    {
+        var vSrc = srcParent.GetVariable(varName);
+        var vDst = dstParent.GetVariable(varName);
+        if (vSrc == null || vDst == null) return;
+        vDst.Value = vSrc.Value;
+    }
+
+    #endregion
+
+    #region Helpers
+
+    /// <summary>
+    /// Resolve this row's step node from "RowItem" variable on LogicObject.
+    /// </summary>
+    private IUANode ResolveMyStep()
+    {
+        var v = LogicObject.GetVariable("RowItem");
+        if (v == null) return null;
+        if (v.Value?.Value is NodeId id && id != NodeId.Empty)
+            return InformationModel.Get(id);
+        return null;
+    }
+
+    /// <summary>
+    /// Get all step nodes (RecipeStepRSA1..MaxSteps) from the target node.
+    /// Returns list indexed 0-based: index 0 = physical slot 1 (RecipeStepRSA1).
+    /// </summary>
+    private List<IUANode> GetAllStepNodes(IUANode target)
+    {
+        var steps = new List<IUANode>();
+        for (int i = 1; i <= MaxSteps; i++)
+        {
+            var step = target.GetObject($"RecipeStepRSA{i}");
+            if (step != null) steps.Add(step);
+        }
+        return steps;
+    }
+
+    /// <summary>
+    /// Read PhaseType from a step node. Returns 0 if not found.
+    /// </summary>
+    private float GetPhaseType(IUANode stepNode)
+    {
+        var v = stepNode.GetVariable("PhaseType");
+        return v != null ? Convert.ToSingle(v.Value.Value) : 0f;
+    }
+
+    /// <summary>
+    /// Write PhaseType value on step node.
+    /// </summary>
+    private void SetPhaseType(IUANode stepNode, float value)
+    {
+        var ptVar = stepNode.GetVariable("PhaseType");
+        if (ptVar != null) ptVar.Value = value;
+    }
+
+    /// <summary>
+    /// Count active steps (PhaseType > 0).
+    /// </summary>
+    private int CountActive(List<IUANode> steps)
+    {
+        return steps.Count(s => GetPhaseType(s) > 0f);
     }
 
     #endregion

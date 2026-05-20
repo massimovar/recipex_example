@@ -30,12 +30,12 @@ public class EnumeratorManager : BaseNetLogic
             if (index >= 0 && index < fields.Count)
             {
                 var field = fields[index];
-                label.LocalizedText = new LocalizedText(label.NodeId.NamespaceIndex,field.DisplayName.TextId);
+                label.LocalizedText = new LocalizedText(label.NodeId.NamespaceIndex, field.DisplayName.TextId);
             }
             else
             {
                 Log.Error($"Index {index} out of range for enumeration with {fields.Count} fields.");
-        }
+            }
         }
     }
 

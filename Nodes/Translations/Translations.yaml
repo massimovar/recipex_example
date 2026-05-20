@@ -9,7 +9,7 @@ Children:
   Value: 
    {
     "Type": 12,
-    "Dimensions": [7,3],
+    "Dimensions": [8,3],
     "Body": [
      "","en-US","it-IT",
      "RecipeTemplate","template","template",
@@ -17,6 +17,7 @@ Children:
      "RecipePrepared","prepared","preparata",
      "RecipeApproved","approved","approvata",
      "RecipeReleased","released","rilasciata",
-     "RecipeArchived","archived","archiviata"
+     "RecipeArchived","archived","archiviata",
+     "RecipeStatus","recipe status","stato ricetta"
     ]
    }
