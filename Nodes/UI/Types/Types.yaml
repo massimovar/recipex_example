@@ -1,0 +1,4 @@
+Name: Types
+Type: FolderType
+Children:
+- File: LoginForm/LoginForm.yaml

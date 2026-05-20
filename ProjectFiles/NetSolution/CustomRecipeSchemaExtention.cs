@@ -416,54 +416,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
     #endregion
 
-    #region SetRecipeMetadataField
-
-    /// <summary>
-    /// Set recipe metadata field via direct SQL on the store table.
-    /// Table name derived from RecipeSchema BrowseName: RecipeMetadata_{schemaName}.
-    /// No transition validation — raw metadata write.
-    /// </summary>
-    [ExportMethod]
-    public void SetRecipeMetadataField(string recipeName, string metadataField, string metadataValue, out bool success)
-    {
-        success = false;
-
-        if (string.IsNullOrWhiteSpace(recipeName))
-        { Log.Error(Tag, "SetRecipeMetadataField: recipe name cannot be empty."); return; }
-
-        if (string.IsNullOrWhiteSpace(metadataField))
-        { Log.Error(Tag, "SetRecipeMetadataField: metadata field cannot be empty."); return; }
-
-        var recipeId = GetLatestRecipeId(recipeName);
-        if (recipeId == null)
-        { Log.Error(Tag, $"SetRecipeMetadataField: recipe '{recipeName}' not found."); return; }
-
-        // Resolve store linked to RecipeSchema
-        var store = InformationModel.Get(_schema.Store) as Store;
-        if (store == null)
-        { Log.Error(Tag, "SetRecipeMetadataField: cannot resolve Store from RecipeSchema."); return; }
-
-        // Build table name from schema BrowseName (e.g. RecipeMetadata_RecipeSchema1)
-        string schemaName = ((IUANode)_schema).BrowseName;
-        string tableName = $"RecipeMetadata_{schemaName}";
-
-        // Escape values for SQL safety
-        string safeRecipeName = recipeName.Replace("'", "''");
-        string safeVersion = recipeId.Version.Replace("'", "''");
-        string safeMetadataField = metadataField.Replace("'", "''");
-        string safeMetadataValue = metadataValue.Replace("'", "''");
-
-        string query = $"UPDATE \"{tableName}\" SET \"{safeMetadataField}\" = '{safeMetadataValue}' " +
-                       $"WHERE \"Name\" = '{safeRecipeName}' AND \"Version\" = '{safeVersion}'";
-
-        store.Query(query, out string[] header, out object[,] resultSet);
-
-        success = true;
-        Log.Info(Tag, $"SetRecipeMetadataField: '{metadataField}' set to '{metadataValue}' on '{recipeName}' via store query.");
-    }
-
-    #endregion
-
     #region ApplyRecipeEnablementRules
 
     /// <summary>

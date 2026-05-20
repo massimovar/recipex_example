@@ -86,12 +86,14 @@ Children:
   - Name: Metadata
     Type: BaseObjectType
     Children:
-    - Name: Status
+    - Name: template
       Type: Metadata
-      DataType: RecipeStatuses
+      DataType: Boolean
       ReferenceType: HasOrderedComponent
+    - Name: draft
+      Type: Metadata
+      DataType: Boolean
   - Name: CustomRecipeSchemaExtention
-    Id: g=6632ba231293999b753bde0ca0e27af4
     Type: NetLogic
     Children:
     - Class: Method
@@ -221,20 +223,3 @@ Children:
       Type: BaseDataVariableType
       DataType: NodeId
       Value: "/Objects/recipex_example/Security/Roles"
-    - Class: Method
-      Name: SetRecipeMetadataField
-      Children:
-      - Name: ns=0;InputArguments
-        Type: BaseVariableType
-        DataType: Argument
-        ReferenceType: HasProperty
-        ValueRank: OneDimension
-        ArrayDimensions: [0]
-        Value: [{"TypeId":{"Id":296},"Body":{"Name":"recipeName","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"metadataField","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":296},"Body":{"Name":"metadataValue","DataType":{"Id":12},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
-      - Name: ns=0;OutputArguments
-        Type: BaseVariableType
-        DataType: Argument
-        ReferenceType: HasProperty
-        ValueRank: OneDimension
-        ArrayDimensions: [0]
-        Value: [{"TypeId":{"Id":296},"Body":{"Name":"success","DataType":{"Id":1},"ValueRank":-1,"ArrayDimensions":[],"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]

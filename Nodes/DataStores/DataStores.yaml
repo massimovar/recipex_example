@@ -241,9 +241,12 @@ Children:
           - Name: Nullable
             Type: BaseDataVariableType
             DataType: Boolean
-        - Name: Status
+        - Name: template
           Type: StoreColumn
-          DataType: RecipeStatuses
+          DataType: Boolean
+        - Name: draft
+          Type: StoreColumn
+          DataType: Boolean
   - Class: Reference
     Target: ns=10;i=30
     Direction: Forward

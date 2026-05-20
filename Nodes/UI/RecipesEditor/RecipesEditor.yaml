@@ -1513,7 +1513,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RecipeSchemaAlias}/Status"
+            Value: "{RecipeSchemaAlias}/RecipeStatus"
             Children:
             - Name: Mode
               Type: BaseVariableType
@@ -1530,7 +1530,7 @@ Children:
           DataType: Size
           ModellingRule: Optional
           Value: 20.0
-      - Name: ComboBox1
+      - Name: RecipeStatusSelector
         Type: ComboBox
         Children:
         - Name: Text
@@ -1551,17 +1551,6 @@ Children:
         - Name: SelectedValue
           Type: BaseDataVariableType
           DataType: BaseDataType
-          Children:
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-            Value: "{RecipeSchemaAlias}/Status"
-            Children:
-            - Name: Mode
-              Type: BaseVariableType
-              DataType: DynamicLinkMode
-              ModellingRule: Optional
-              Value: 2
         - Name: SelectedItem
           Type: NodePointer
           DataType: NodeId
@@ -1652,49 +1641,58 @@ Children:
               - Name: ns=2;ObjectPointer
                 Type: NodePointer
                 DataType: NodeId
-                Value: "/Objects/recipex_example/Recipes/RecipeSchema1/CustomRecipeSchemaExtention"
                 Children:
                 - Name: Kind
                   Type: PropertyType
                   DataType: NodeId
                   Value: "/Types/ObjectTypes/BaseObjectType"
+                - Name: DynamicLink
+                  Type: DynamicLink
+                  DataType: NodePath
+                  Value: "{RecipeSchemaAlias}@NodeId"
+                  Children:
+                  - Name: Mode
+                    Type: BaseVariableType
+                    DataType: DynamicLinkMode
+                    ModellingRule: Optional
+                    Value: 2
               - Name: ns=2;Method
                 Type: BaseDataVariableType
                 DataType: String
-                Value: "SetRecipeMetadataField"
+                Value: "SetRecipeMetadataValue"
               - Name: InputArguments
                 Type: BaseObjectType
                 Children:
-                - Name: recipeName
+                - Name: RecipeId
                   Type: BaseDataVariableType
-                  DataType: String
+                  DataType: RecipeId
+                  Description: {"NamespaceIndex":9,"TextId":"SetRecipeMetadataRecipeIdDescription"}
                   Children:
                   - Name: DynamicLink
                     Type: DynamicLink
                     DataType: NodePath
-                    Value: "{RecipeEditSelectedID}>Name"
-                - Name: metadataField
+                    Value: "{RecipeEditSelectedID}"
+                - Name: MetadataName
                   Type: BaseDataVariableType
                   DataType: String
+                  Description: {"NamespaceIndex":9,"TextId":"SetRecipeMetadataMetadataNameDescription"}
+                  Value: "RecipeStatus"
+                - Name: Value
+                  Type: BaseDataVariableType
+                  DataType: BaseDataType
+                  Description: {"NamespaceIndex":9,"TextId":"SetRecipeMetadataValueDescription"}
                   Children:
                   - Name: DynamicLink
                     Type: DynamicLink
                     DataType: NodePath
-                    Value: "{RecipeSchemaAlias}/Status@BrowseName"
-                - Name: metadataValue
-                  Type: BaseDataVariableType
-                  DataType: String
-                  Children:
-                  - Name: DynamicLink
-                    Type: DynamicLink
-                    DataType: NodePath
-                    Value: "../../../../../../ComboBox1/SelectedValue"
+                    Value: "../../../../../../RecipeStatusSelector/SelectedValue"
               - Name: OutputArguments
                 Type: BaseObjectType
                 Children:
-                - Name: success
+                - Name: Result
                   Type: BaseDataVariableType
-                  DataType: Boolean
+                  DataType: SetRecipeMetadataValueResultCode
+                  Description: {"NamespaceIndex":9,"TextId":"SetRecipeMetadataValueResultDescription"}
           - Name: EventArguments
             Type: MouseClickEvent
             Children:
@@ -1788,6 +1786,40 @@ Children:
         DataType: Size
         ModellingRule: Optional
         Value: 8.0
+      - Name: ActiveRecipeText1
+        Type: Label
+        Children:
+        - Name: Text
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+          Children:
+          - Name: DynamicLink
+            Type: DynamicLink
+            DataType: NodePath
+            Value: "../../RecipeStatusSelector/SelectedValue"
+        - Name: FontWeight
+          Type: BaseDataVariableType
+          DataType: FontWeightEnum
+          ModellingRule: Optional
+          Value: 400
+        - Name: FontSize
+          Type: BaseDataVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 20.0
+      - Name: HorizontalLayout1
+        Type: RowLayout
+        Children:
+        - Name: Width
+          Type: BaseVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 161.0
+        - Name: Height
+          Type: BaseVariableType
+          DataType: Size
+          ModellingRule: Optional
+          Value: 50.0
     - Name: RecipeParameters
       Type: Panel
       Children:

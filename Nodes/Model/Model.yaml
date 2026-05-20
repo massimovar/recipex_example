@@ -113,3 +113,7 @@ Children:
     ArrayDimensions: [0]
     Value: [{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"LocaleId":"en-US","Text":"warmup"},"Description":{"LocaleId":"en-US","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"LocaleId":"en-US","Text":"b&d"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"LocaleId":"en-US","Text":"filter sterilization"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
 - File: RSA/RSA.yaml
+- Name: Variable1
+  Type: BaseDataVariableType
+  DataType: Boolean
+  Value: true

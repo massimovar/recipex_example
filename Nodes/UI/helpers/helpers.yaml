@@ -34,3 +34,13 @@ Children:
   - Name: StatusValue
     Type: BaseDataVariableType
     DataType: String
+- Name: Button1
+  Id: g=8c9ce9f42062c402127853137e8004ee
+  Supertype: Button
+  ReferenceType: HasComponent
+  Children:
+  - Name: Text
+    Type: BaseDataVariableType
+    DataType: LocalizedText
+    ModellingRule: Optional
+    Value: {"LocaleId":"en-US","Text":"Button1"}

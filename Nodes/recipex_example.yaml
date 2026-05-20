@@ -28,6 +28,9 @@ Children:
       Type: PropertyType
       DataType: NodeId
       Value: "/Types/ObjectTypes/BaseObjectType/FolderType"
+  - Name: AuthenticationMode
+    Type: BaseDataVariableType
+    DataType: AuthenticationMode
 - Name: PasswordPolicy
   Type: PasswordPolicy
   Children:
@@ -44,7 +47,6 @@ Children:
   - Name: MinimumPasswordLength
     Type: BaseDataVariableType
     DataType: Byte
-    Value: 8
 - Name: AlarmConfiguration
   Type: PropertyGroup
 - File: UI/UI.yaml

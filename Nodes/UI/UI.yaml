@@ -237,19 +237,85 @@ Children:
     DataType: Size
     ModellingRule: Optional
     Value: 1080.0
-  - Name: VerticalLayout1
-    Type: ColumnLayout
+  - Name: NavigationPanel1
+    Type: NavigationPanel
     Children:
+    - Name: Panels
+      Type: BaseObjectType
+      Children:
+      - Name: Panel1
+        Type: NavigationPanelItem
+        Children:
+        - Name: Title
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+        - Name: Panel
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/UI/Screens/Recipes"
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
+      - Name: Panel2
+        Type: NavigationPanelItem
+        Children:
+        - Name: Title
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+        - Name: Panel
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/UI/Screens/UserAuditing"
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
+      - Name: Panel3
+        Type: NavigationPanelItem
+        Children:
+        - Name: Title
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+        - Name: Panel
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/UI/Screens/RecipesAuditing"
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
+    - Name: CurrentPanel
+      Type: NodePointer
+      DataType: NodeId
+      AccessLevel: Read
+      Children:
+      - Name: Kind
+        Type: PropertyType
+        DataType: NodeId
+        Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item"
+    - Name: CurrentTabIndex
+      Type: BaseDataVariableType
+      DataType: Int32
+    - Class: Reference
+      Target: ns=3;i=1181
+      Direction: Forward
+    - Class: Reference
+      Target: ns=3;i=1183
+      Direction: Forward
     - Name: Width
       Type: BaseVariableType
       DataType: Size
       ModellingRule: Optional
-      Value: 50.0
+      Value: 300.0
     - Name: Height
       Type: BaseVariableType
       DataType: Size
       ModellingRule: Optional
-      Value: 50.0
+      Value: 300.0
     - Name: HorizontalAlignment
       Type: BaseVariableType
       DataType: HorizontalAlignment
@@ -260,190 +326,80 @@ Children:
       DataType: VerticalAlignment
       ModellingRule: Optional
       Value: 3
-    - Name: RecipeEditor1
-      Type: RecipeEditor
+  - Name: ChangeUserDropdown1
+    Type: DropDownButton
+    WriteMask: BrowseName|DataType|Description|DisplayName|MinimumSamplingInterval|UserAccessLevel
+    Children:
+    - Name: Panel
+      Type: NodePointer
+      DataType: NodeId
+      Value: "/Objects/recipex_example/UI/Types/LoginForm/LoginDropdown"
       Children:
-      - Name: RecipeSchemaAlias
-        Type: Alias
+      - Name: Kind
+        Type: PropertyType
         DataType: NodeId
-        Value: "/Objects/recipex_example/Recipes/RecipeSchema1"
+        Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
+    - Name: Text
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Children:
+      - Name: StringFormatter1
+        Type: StringFormatter
         Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: {"Id":1,"Namespace":9}
-      - Name: RecipePanelLoader
-        Type: PanelLoader
-        Children:
-        - Name: Panel
-          Type: NodePointer
-          DataType: NodeId
-          Value: "/Objects/recipex_example/UI/RecipesEditor/RecipeList"
-          Children:
-          - Name: Kind
-            Type: PropertyType
-            DataType: NodeId
-            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
-        - Name: CurrentPanel
-          Type: NodePointer
-          DataType: NodeId
-          AccessLevel: Read
-          Children:
-          - Name: Kind
-            Type: PropertyType
-            DataType: NodeId
-            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item"
-        - Class: Reference
-          Target: ns=3;i=478
-          Direction: Forward
-        - Name: PanelAliasNode
+        - Name: Format
           Type: BaseDataVariableType
-          DataType: NodeId
-          ValueRank: ScalarOrOneDimension
+          DataType: LocalizedText
+          ReferenceType: HasParameter
+          ModellingRule: Optional
+          Value: {"LocaleId":"en-US","Text":"Current user: {0}"}
+        - Name: ns=2;Source0
+          Type: BaseDataVariableType
+          DataType: BaseDataType
+          ReferenceType: HasSource
           Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "../../ActiveRecipe@NodeId"
-      - Name: RecipeListDialogs
-        Type: PanelLoader
-        Children:
-        - Name: Panel
-          Type: NodePointer
-          DataType: NodeId
-          Children:
-          - Name: Kind
-            Type: PropertyType
-            DataType: NodeId
-            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
-        - Name: CurrentPanel
-          Type: NodePointer
-          DataType: NodeId
-          AccessLevel: Read
-          Children:
-          - Name: Kind
-            Type: PropertyType
-            DataType: NodeId
-            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item"
-        - Class: Reference
-          Target: ns=3;i=478
-          Direction: Forward
-      - Name: ActiveRecipe
-        Type: BaseDataVariableType
-        DataType: RecipeId
-      - Name: RecipeApplicationEventHandler1
-        Type: EventHandler
-        Children:
-        - Name: ListenEventType
-          Type: PropertyType
-          DataType: NodeId
-          Value: {"Id":102,"Namespace":9}
-        - Name: ListenObject
-          Type: NodePointer
-          DataType: NodeId
-          ReferenceType: HasProperty
-          Children:
-          - Name: Kind
-            Type: PropertyType
-            DataType: NodeId
-            Value: "/Types/ObjectTypes/BaseObjectType"
-          - Name: DynamicLink
-            Type: DynamicLink
-            DataType: NodePath
-        - Name: MethodsToCall
-          Type: BaseObjectType
-          Children:
-          - Name: MethodContainer1
-            Type: BaseObjectType
-            Children:
-            - Name: ObjectPointer
-              Type: NodePointer
-              DataType: NodeId
-              Value: "/Objects/Commands/VariableCommands"
-              Children:
-              - Name: Kind
-                Type: PropertyType
-                DataType: NodeId
-                Value: "/Types/ObjectTypes/BaseObjectType"
-            - Name: Method
-              Type: BaseDataVariableType
-              DataType: String
-              Value: "Set"
-            - Name: InputArguments
-              Type: BaseObjectType
-              Children:
-              - Name: VariableToModify
-                Type: BaseDataVariableType
-                DataType: VariablePointer
-                Children:
-                - Name: DynamicLink
-                  Type: DynamicLink
-                  DataType: NodePath
-                  Value: "../../../../../ActiveRecipe@NodeId"
-              - Name: Value
-                Type: BaseDataVariableType
-                DataType: RecipeId
-              - Name: ArrayIndex
-                Type: BaseDataVariableType
-                DataType: UInt32
-                ValueRank: ScalarOrOneDimension
-        - Name: EventArguments
-          Type: RecipeApplicationEvent
-          Children:
-          - Name: RecipeId
-            Type: PropertyType
-            DataType: RecipeId
-          - Name: TargetNodeId
-            Type: PropertyType
-            DataType: NodeId
-          - Name: MethodId
-            Type: PropertyType
-            DataType: NodeId
-          - Name: InputArguments
-            Type: PropertyType
-            DataType: BaseDataType
-            ValueRank: OneDimension
-            ArrayDimensions: [0]
-          - Name: ActionTimeStamp
-            Type: PropertyType
-            DataType: UtcTime
-          - Name: Status
-            Type: PropertyType
-            DataType: Boolean
-          - Name: ServerId
-            Type: PropertyType
-            DataType: String
-          - Name: ClientAuditEntryId
-            Type: PropertyType
-            DataType: String
-          - Name: ClientUserId
-            Type: PropertyType
-            DataType: String
-          - Name: EventId
-            Type: PropertyType
-            DataType: ByteString
-          - Name: EventType
-            Type: PropertyType
-            DataType: NodeId
-          - Name: SourceNode
-            Type: PropertyType
-            DataType: NodeId
-          - Name: SourceName
-            Type: PropertyType
-            DataType: String
-          - Name: Time
-            Type: PropertyType
-            DataType: UtcTime
-          - Name: ReceiveTime
-            Type: PropertyType
-            DataType: UtcTime
-          - Name: Message
-            Type: PropertyType
-            DataType: LocalizedText
-          - Name: Severity
-            Type: PropertyType
-            DataType: UInt16
+            Value: "{Session}/User@BrowseName"
+    - Name: HorizontalAlignment
+      Type: BaseVariableType
+      DataType: HorizontalAlignment
+      ModellingRule: Optional
+      Value: 1
+    - Name: TopMargin
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 8.0
+    - Name: RightMargin
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 8.0
+    - Name: Width
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 256.0
+    - Name: ns=5;LibraryReference
+      Type: ObjectLibraryReference
+      DataType: ObjectLibraryReferenceDataType
+      ModellingRule: None
+      Value: 
+       {
+        "TypeId": {
+         "Id": 72,
+         "Namespace": 5
+        },
+        "Body": {
+         "libraryGuid": "8ea1502378c4cf07e7542570d9a7a082",
+         "objectGuid": "b94068dffd4962c6e7633a4e541274d5",
+         "objectVersion": 1,
+         "highestIgnoredVersion": 0
+        }
+       }
 - File: RecipesEditor/RecipesEditor.yaml
 - File: Screens/Screens.yaml
 - File: Keyboards/Keyboards.yaml
 - File: helpers/helpers.yaml
+- File: Types/Types.yaml
