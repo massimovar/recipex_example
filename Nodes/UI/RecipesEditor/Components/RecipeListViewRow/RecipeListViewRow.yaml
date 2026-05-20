@@ -439,7 +439,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}template"
+              Value: "{RowItem}/Template"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -466,7 +466,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/draft"
+              Value: "{RowItem}/Draft"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -493,7 +493,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/prepared"
+              Value: "{RowItem}/Prepared"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -520,7 +520,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/approved"
+              Value: "{RowItem}/Approved"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -547,7 +547,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/released"
+              Value: "{RowItem}/Released"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -582,7 +582,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/archived"
+              Value: "{RowItem}/Archived"
               Children:
               - Name: Mode
                 Type: BaseVariableType

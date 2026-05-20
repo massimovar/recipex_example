@@ -6,6 +6,9 @@ using FTOptix.HMIProject;
 using FTOptix.NetLogic;
 using FTOptix.Core;
 using FTOptix.Alarm;
+using FTOptix.DataLogger;
+using FTOptix.EventLogger;
+using FTOptix.Recipe;
 using OpcUa = UAManagedCore.OpcUa;
 
 /// <summary>
@@ -168,30 +171,6 @@ public static class RecipeHelpers
     public static int CountActiveSteps(List<float> phaseTypes)
     {
         return phaseTypes.Count(pt => pt != 0f);
-    }
-
-    #endregion
-
-    #region Utility
-
-    /// <summary>
-    /// Resolve the FTOptix ProjectFiles directory path.
-    /// </summary>
-    public static string GetProjectFilesPath()
-    {
-        var resourceUri = ResourceUri.FromProjectRelativePath(string.Empty);
-        string projectDir = resourceUri.Uri;
-        // ProjectFiles is a sibling of NetSolution within ProjectFiles
-        // The %PROJECTDIR% resolves to the ProjectFiles directory
-        return projectDir;
-    }
-
-    /// <summary>
-    /// Build configuration file full path.
-    /// </summary>
-    public static string GetConfigFilePath(string fileName = "recipe_configuration.yaml")
-    {
-        return System.IO.Path.Combine(GetProjectFilesPath(), fileName);
     }
 
     #endregion

@@ -9,6 +9,8 @@ using FTOptix.Core;
 using FTOptix.RecipeX;
 using FTOptix.Store;
 using FTOptix.Alarm;
+using FTOptix.DataLogger;
+using FTOptix.EventLogger;
 using OpcUa = UAManagedCore.OpcUa;
 #endregion
 
@@ -19,8 +21,6 @@ using OpcUa = UAManagedCore.OpcUa;
 public class CustomRecipeSchemaExtention : BaseNetLogic
 {
     private RecipeSchema _schema;
-    private RecipeConfigurationLoader _configLoader;
-    private const string ConfigFileName = "recipe_configuration.yaml";
     private const string Tag = "RecipeSchemaNetLogic";
 
     private IUANode _recipeStatusesEnum;
@@ -49,18 +49,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         else
         {
             ValidateRecipeStatusesEnum();
-        }
-
-        // Load YAML configuration
-        _configLoader = new RecipeConfigurationLoader();
-        string configPath = RecipeHelpers.GetConfigFilePath(ConfigFileName);
-        if (!_configLoader.Load(configPath))
-        {
-            Log.Error(Tag, $"Configuration load failed. Errors: {string.Join("; ", _configLoader.ValidationErrors)}");
-        }
-        else
-        {
-            Log.Info(Tag, "Configuration loaded and validated successfully.");
         }
     }
 
@@ -102,9 +90,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
     {
         success = false;
 
-        if (!_configLoader.IsValid)
-        { Log.Error(Tag, "CreateRecipe: YAML configuration is invalid or not loaded."); return; }
-
         if (!RecipeHelpers.TryParseStatus(initialStatusInt, out RecipeStatuses initialStatus))
         { Log.Error(Tag, $"CreateRecipe: invalid initialStatus value: {initialStatusInt}"); return; }
 
@@ -113,10 +98,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
         if (string.IsNullOrWhiteSpace(recipeName))
         { Log.Error(Tag, "CreateRecipe: recipe name cannot be empty."); return; }
-
-        int familyKey = (int)recipeFamily;
-        if (_configLoader.GetFamily(familyKey) == null)
-        { Log.Error(Tag, $"CreateRecipe: recipe family {familyKey} is not configured."); return; }
 
         if (RecipeExists(recipeName))
         { Log.Warning(Tag, $"CreateRecipe: recipe '{recipeName}' already exists."); return; }
@@ -127,6 +108,7 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
             { Log.Error(Tag, $"CreateRecipe: source recipe '{sourceRecipeName}' not found."); return; }
         }
 
+        int familyKey = (int)recipeFamily;
         string version = "1.0";
         var recipeId = new RecipeId { Name = recipeName, Version = version };
 
@@ -150,9 +132,8 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         }
 
         _schema.SetRecipeMetadataValue(recipeId, RecipeHelpers.MetadataStatus, (int)initialStatus);
-        ApplyEnablementRulesInternal(recipeId, familyKey);
 
-        var (valid, errors) = ValidateRecipeInternal(recipeId, familyKey);
+        var (valid, errors) = ValidateRecipeInternal(recipeId);
         if (!valid)
         {
             _schema.DeleteRecipe(recipeId);
@@ -176,9 +157,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
     {
         success = false;
 
-        if (!_configLoader.IsValid)
-        { Log.Error(Tag, "UpdateRecipe: YAML configuration is invalid or not loaded."); return; }
-
         if (string.IsNullOrWhiteSpace(sourceRecipeName))
         { Log.Error(Tag, "UpdateRecipe: source recipe name cannot be empty."); return; }
 
@@ -194,8 +172,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         if (currentVersion == null)
         { Log.Error(Tag, "UpdateRecipe: cannot read version from source recipe."); return; }
 
-        int familyKey = (int)GetRecipeFamily(sourceId);
-
         if (RecipeHelpers.IsDirectlyEditable(status.Value))
         {
             var transferResult = _schema.TransferFromTargetToStore(sourceId, updatedModelRoot, overwrite: true, ErrorPolicy.Strict);
@@ -203,9 +179,7 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
                 transferResult != TransferFromTargetToStoreResultCode.SuccessRecipeCreated)
             { Log.Error(Tag, $"UpdateRecipe: TransferFromTargetToStore failed: {transferResult}"); return; }
 
-            ApplyEnablementRulesInternal(sourceId, familyKey);
-
-            var (valid, errors) = ValidateRecipeInternal(sourceId, familyKey);
+            var (valid, errors) = ValidateRecipeInternal(sourceId);
             if (!valid)
             { Log.Error(Tag, $"UpdateRecipe: validation failed. {string.Join("; ", errors)}"); return; }
 
@@ -237,9 +211,8 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
             }
 
             _schema.SetRecipeMetadataValue(newId, RecipeHelpers.MetadataStatus, (int)RecipeStatuses.Draft);
-            ApplyEnablementRulesInternal(newId, familyKey);
 
-            var (valid, errors) = ValidateRecipeInternal(newId, familyKey);
+            var (valid, errors) = ValidateRecipeInternal(newId);
             if (!valid)
             {
                 _schema.DeleteRecipe(newId);
@@ -315,8 +288,7 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
         if (newStatus == RecipeStatuses.Released)
         {
-            int familyKey = (int)GetRecipeFamily(recipeId);
-            var (valid, errors) = ValidateRecipeInternal(recipeId, familyKey);
+            var (valid, errors) = ValidateRecipeInternal(recipeId);
             if (!valid)
             { Log.Error(Tag, $"UpdateRecipeStatus: cannot release, validation failed. {string.Join("; ", errors)}"); return; }
         }
@@ -339,9 +311,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
     {
         success = false;
 
-        if (!_configLoader.IsValid)
-        { Log.Error(Tag, "DuplicateRecipe: YAML configuration is invalid or not loaded."); return; }
-
         if (string.IsNullOrWhiteSpace(sourceRecipeName))
         { Log.Error(Tag, "DuplicateRecipe: source recipe name cannot be empty."); return; }
 
@@ -355,11 +324,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         if (RecipeExists(newRecipeName))
         { Log.Warning(Tag, $"DuplicateRecipe: recipe '{newRecipeName}' already exists."); return; }
 
-        float family = newRecipeFamily > 0 ? newRecipeFamily : GetRecipeFamily(sourceId);
-        int familyKey = (int)family;
-        if (_configLoader.GetFamily(familyKey) == null)
-        { Log.Error(Tag, $"DuplicateRecipe: recipe family {familyKey} is not configured."); return; }
-
         string version = "1.0";
         var newId = new RecipeId { Name = newRecipeName, Version = version };
         var dupResult = _schema.DuplicateRecipe(sourceId, newId);
@@ -367,9 +331,8 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         { Log.Error(Tag, $"DuplicateRecipe: DuplicateRecipe failed: {dupResult}"); return; }
 
         _schema.SetRecipeMetadataValue(newId, RecipeHelpers.MetadataStatus, (int)RecipeStatuses.Draft);
-        ApplyEnablementRulesInternal(newId, familyKey);
 
-        var (valid, errors) = ValidateRecipeInternal(newId, familyKey);
+        var (valid, errors) = ValidateRecipeInternal(newId);
         if (!valid)
         {
             _schema.DeleteRecipe(newId);
@@ -400,8 +363,7 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         if (recipeId == null)
         { Log.Error(Tag, $"ValidateRecipe: recipe '{recipeName}' not found."); return; }
 
-        int familyKey = (int)GetRecipeFamily(recipeId);
-        var (valid, errors) = ValidateRecipeInternal(recipeId, familyKey);
+        var (valid, errors) = ValidateRecipeInternal(recipeId);
 
         if (!valid)
         {
@@ -416,42 +378,11 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
     #endregion
 
-    #region ApplyRecipeEnablementRules
-
-    /// <summary>
-    /// Apply PhaseType/RecipeFamily enablement rules to a recipe. Idempotent.
-    /// </summary>
-    [ExportMethod]
-    public void ApplyRecipeEnablementRules(string recipeName, out bool success)
-    {
-        success = false;
-
-        if (!_configLoader.IsValid)
-        { Log.Error(Tag, "ApplyRecipeEnablementRules: YAML configuration is invalid or not loaded."); return; }
-
-        if (string.IsNullOrWhiteSpace(recipeName))
-        { Log.Error(Tag, "ApplyRecipeEnablementRules: recipe name cannot be empty."); return; }
-
-        var recipeId = GetLatestRecipeId(recipeName);
-        if (recipeId == null)
-        { Log.Error(Tag, $"ApplyRecipeEnablementRules: recipe '{recipeName}' not found."); return; }
-
-        int familyKey = (int)GetRecipeFamily(recipeId);
-        ApplyEnablementRulesInternal(recipeId, familyKey);
-
-        success = true;
-        Log.Info(Tag, $"ApplyRecipeEnablementRules: rules applied to '{recipeName}'.");
-    }
-
-    #endregion
-
     #region SetRecipeMetadataBoolField
-
-    // All bool metadata fields on the RecipeSchema
-    private static readonly string[] BoolMetadataFields = { "template", "draft", "prepared", "approved", "released", "archived" };
 
     /// <summary>
     /// Set one bool metadata field to true, all others to false.
+    /// Field names derived from RecipeStatuses enum (lowercase).
     /// Uses RecipeSchema.SetRecipeMetadataValue for each field.
     /// Takes recipeName + recipeVersion to build RecipeId directly.
     /// </summary>
@@ -469,25 +400,106 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         if (string.IsNullOrWhiteSpace(fieldName))
         { Log.Error(Tag, "SetRecipeMetadataBoolField: field name cannot be empty."); return; }
 
-        // Validate field name against known bool metadata fields
-        if (!BoolMetadataFields.Contains(fieldName, StringComparer.OrdinalIgnoreCase))
+        // Derive valid field names from RecipeStatuses enum (lowercase)
+        var statusNames = Enum.GetNames(typeof(RecipeStatuses));
+
+        // Validate field name against enum values
+        if (!statusNames.Any(s => s.Equals(fieldName)))
         {
-            Log.Error(Tag, $"SetRecipeMetadataBoolField: '{fieldName}' is not a valid bool metadata field. " +
-                           $"Valid: {string.Join(", ", BoolMetadataFields)}");
+            Log.Error(Tag, $"SetRecipeMetadataBoolField: '{fieldName}' is not a valid RecipeStatuses value. " +
+                           $"Valid: {string.Join(", ", statusNames)}");
             return;
         }
 
         var recipeId = new RecipeId { Name = recipeName, Version = recipeVersion };
 
         // Set target field true, all others false
-        foreach (var f in BoolMetadataFields)
+        foreach (var s in statusNames)
         {
-            bool val = f.Equals(fieldName, StringComparison.OrdinalIgnoreCase);
-            _schema.SetRecipeMetadataValue(recipeId, f, val);
+            string metaKey = s;
+            bool val = s.Equals(fieldName);
+            var result = _schema.SetRecipeMetadataValue(recipeId, metaKey, val);
+            if (result != SetRecipeMetadataValueResultCode.Success)
+            {
+                Log.Error(Tag, $"SetRecipeMetadataBoolField: failed to set '{metaKey}' = {val} on '{recipeName}' v{recipeVersion}: {result}");
+                return;
+            }
         }
 
         success = true;
         Log.Info(Tag, $"SetRecipeMetadataBoolField: '{fieldName}' = true on '{recipeName}' v{recipeVersion}, others cleared.");
+    }
+
+    #endregion
+
+    #region GetRecipeStatus
+
+    /// <summary>
+    /// Returns the active status name (the only bool metadata field set to true)
+    /// among the RecipeStatuses enum values.
+    /// </summary>
+    [ExportMethod]
+    public void GetRecipeStatus(string recipeName, string recipeVersion, out string currentStatus, out bool success)
+    {
+        currentStatus = string.Empty;
+        success = false;
+
+        if (_schema == null)
+        { Log.Error(Tag, "Schema not initialized."); return; }
+
+        if (string.IsNullOrWhiteSpace(recipeName))
+        { Log.Error(Tag, "GetRecipeStatus: recipe name cannot be empty."); return; }
+
+        if (string.IsNullOrWhiteSpace(recipeVersion))
+        { Log.Error(Tag, "GetRecipeStatus: recipe version cannot be empty."); return; }
+
+        var recipeId = new RecipeId { Name = recipeName, Version = recipeVersion };
+
+        // Read each bool metadata field named after RecipeStatuses enum values
+        var statusNames = Enum.GetNames(typeof(RecipeStatuses));
+        string foundStatus = null;
+
+        foreach (var name in statusNames)
+        {
+            var result = _schema.GetRecipeMetadataValue(recipeId, name);
+            if (result.ResultCode != GetRecipeMetadataValueResultCode.Success)
+            {
+                Log.Warning(Tag, $"GetRecipeStatus: cannot read metadata '{name}' for '{recipeName}' v{recipeVersion}: {result.ResultCode}");
+                continue;
+            }
+
+            // Check if this field is true (handle bool, int, string representations)
+            object raw = result.MetadataValue?.Value;
+            bool isTrue = false;
+
+            if (raw is bool b) isTrue = b;
+            else if (raw is int i) isTrue = (i != 0);
+            else if (raw is long l) isTrue = (l != 0);
+            else if (raw is string s) isTrue = s.Equals("true", StringComparison.OrdinalIgnoreCase) || s == "1";
+            else Log.Warning(Tag, $"GetRecipeStatus: unexpected type for '{name}': {raw?.GetType().Name ?? "null"}");
+
+            if (isTrue)
+            {
+                if (foundStatus != null)
+                {
+                    // Multiple fields set to true — ambiguous state
+                    Log.Warning(Tag, $"GetRecipeStatus: multiple status fields true ('{foundStatus}' and '{name}'). Returning first.");
+                }
+                else
+                {
+                    foundStatus = name;
+                }
+            }
+        }
+
+        if (foundStatus == null)
+        {
+            Log.Warning(Tag, $"GetRecipeStatus: no bool status field is true for '{recipeName}' v{recipeVersion}.");
+            return;
+        }
+
+        currentStatus = foundStatus;
+        success = true;
     }
 
     #endregion
@@ -548,11 +560,13 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
     private void InitializeBlankRecipe(RecipeId recipeId, int familyKey)
     {
+        // Set RecipeFamily data item
         _schema.SetRecipeDataItemValue(recipeId,
             new string[] { "Parameters1" },
             new string[] { "RecipeFamily" },
             new ElementAccessStruct(), (float)familyKey);
 
+        // Initialize steps: first active, rest inactive
         for (int i = 1; i <= 20; i++)
         {
             string stepName = $"RecipeStepRSA{i}";
@@ -563,74 +577,18 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         }
     }
 
-    private void ApplyEnablementRulesInternal(RecipeId recipeId, int familyKey)
-    {
-        for (int i = 1; i <= 20; i++)
-        {
-            string stepName = $"RecipeStepRSA{i}";
-
-            var ptResult = _schema.GetRecipeDataItemValue(recipeId,
-                new string[] { stepName }, new string[] { "PhaseType" }, new ElementAccessStruct());
-
-            float phaseType = 0f;
-            if (ptResult.ResultCode == GetRecipeDataItemValueResultCode.Success && ptResult.DataItemValue != null)
-                phaseType = Convert.ToSingle(ptResult.DataItemValue);
-
-            if (phaseType == 0f)
-            {
-                _schema.SetRecipeDataItemValue(recipeId, new string[] { stepName },
-                    new string[] { "StepEnabled" }, new ElementAccessStruct(), false);
-                SetAllParametersEnabled(recipeId, stepName, false);
-            }
-            else
-            {
-                int ptInt = (int)phaseType;
-                bool phaseAllowed = _configLoader.IsPhaseTypeAllowed(familyKey, ptInt);
-
-                _schema.SetRecipeDataItemValue(recipeId, new string[] { stepName },
-                    new string[] { "StepEnabled" }, new ElementAccessStruct(), phaseAllowed);
-
-                if (phaseAllowed)
-                {
-                    var enabledParams = _configLoader.GetEnabledParameters(familyKey, ptInt);
-                    var enabledSet = new HashSet<int>(enabledParams);
-                    for (int p = 1; p <= 20; p++)
-                    {
-                        _schema.SetRecipeDataItemValue(recipeId,
-                            new string[] { stepName, $"StepParameter{p}" },
-                            new string[] { "ParameterEnabled" },
-                            new ElementAccessStruct(), enabledSet.Contains(p));
-                    }
-                }
-                else
-                {
-                    SetAllParametersEnabled(recipeId, stepName, false);
-                }
-            }
-        }
-    }
-
-    private void SetAllParametersEnabled(RecipeId recipeId, string stepName, bool enabled)
-    {
-        for (int p = 1; p <= 20; p++)
-        {
-            _schema.SetRecipeDataItemValue(recipeId,
-                new string[] { stepName, $"StepParameter{p}" },
-                new string[] { "ParameterEnabled" },
-                new ElementAccessStruct(), enabled);
-        }
-    }
-
     /// <summary>
-    /// Internal validation. Returns (isValid, errorList).
+    /// Internal validation: version format, status metadata, step sequence.
     /// </summary>
-    private (bool IsValid, List<string> Errors) ValidateRecipeInternal(RecipeId recipeId, int familyKey)
+    private (bool IsValid, List<string> Errors) ValidateRecipeInternal(RecipeId recipeId)
     {
         var errors = new List<string>();
 
+        // Version format check
         if (!RecipeVersion.TryParse(recipeId.Version, out _))
             errors.Add($"Version '{recipeId.Version}' is not valid major.minor format.");
 
+        // Status metadata exists and valid
         var statusMeta = _schema.GetRecipeMetadataValue(recipeId, RecipeHelpers.MetadataStatus);
         if (statusMeta.ResultCode != GetRecipeMetadataValueResultCode.Success)
             errors.Add("Status metadata is missing.");
@@ -642,9 +600,7 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
         else
             errors.Add("Status metadata has unexpected type.");
 
-        if (_configLoader.GetFamily(familyKey) == null)
-            errors.Add($"RecipeFamily {familyKey} is not configured.");
-
+        // Step sequence validation
         var phaseTypes = new List<float>();
         for (int i = 1; i <= 20; i++)
         {
@@ -664,16 +620,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
 
         var (_, seqErrors) = RecipeHelpers.ValidateStepSequence(phaseTypes);
         errors.AddRange(seqErrors);
-
-        if (_configLoader.GetFamily(familyKey) != null)
-        {
-            for (int i = 0; i < phaseTypes.Count; i++)
-            {
-                float pt = phaseTypes[i];
-                if (pt > 0f && !_configLoader.IsPhaseTypeAllowed(familyKey, (int)pt))
-                    errors.Add($"Step {i + 1}: PhaseType {(int)pt} is not allowed for family {familyKey}.");
-            }
-        }
 
         return (errors.Count == 0, errors);
     }

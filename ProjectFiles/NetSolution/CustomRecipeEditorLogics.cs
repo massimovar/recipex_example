@@ -8,6 +8,9 @@ using FTOptix.NetLogic;
 using FTOptix.Core;
 using FTOptix.RecipeX;
 using FTOptix.Alarm;
+using FTOptix.DataLogger;
+using FTOptix.EventLogger;
+using FTOptix.Recipe;
 using OpcUa = UAManagedCore.OpcUa;
 #endregion
 
@@ -19,13 +22,62 @@ using OpcUa = UAManagedCore.OpcUa;
 /// </summary>
 public class CustomRecipeEditorLogics : BaseNetLogic
 {
-    private const int MaxSteps = 20;
     private const string LogCategory = "RecipeEditor";
 
-    // Sub-object names containing step parameters
-    private static readonly string[] ParameterObjects = { "dsp", "tsp", "psp" };
+    // Resolved dynamically from RSAMachine type at Start()
+    private int MaxSteps;
+    private string[] ParameterObjects;
 
-    public override void Start() { }
+    public override void Start()
+    {
+        MaxSteps = 20; // safe default
+        ParameterObjects = Array.Empty<string>();
+
+        // Resolve RSAMachine type from LogicObject variable
+        var rsaVar = LogicObject.GetVariable("RSAMachine");
+        if (rsaVar == null)
+        {
+            Log.Error(LogCategory, "Start: RSAMachine variable not found on LogicObject.");
+            return;
+        }
+
+        NodeId rsaTypeId = (NodeId)rsaVar.Value;
+        if (rsaTypeId == null || rsaTypeId == NodeId.Empty)
+        {
+            Log.Error(LogCategory, "Start: RSAMachine NodeId is empty.");
+            return;
+        }
+
+        var rsaType = InformationModel.Get(rsaTypeId);
+        if (rsaType == null)
+        {
+            Log.Error(LogCategory, "Start: cannot resolve RSAMachine type node.");
+            return;
+        }
+
+        // Count RecipeStepRSA children → MaxSteps
+        var stepChildren = rsaType.Children
+            .OfType<IUANode>()
+            .Where(n => n.BrowseName.StartsWith("RecipeStepRSA", StringComparison.Ordinal))
+            .ToList();
+
+        if (stepChildren.Count > 0)
+            MaxSteps = stepChildren.Count;
+
+        // Get parameter object names from first step's RecipeStepParameter children
+        var firstStep = stepChildren.FirstOrDefault();
+        if (firstStep != null)
+        {
+            ParameterObjects = firstStep.Children
+                .OfType<IUAObject>()
+                .Where(o => o.Children.OfType<IUAVariable>().Any(v => v.BrowseName == "ParameterValue"))
+                .Select(o => o.BrowseName)
+                .ToArray();
+        }
+
+        Log.Info(LogCategory, $"Start: MaxSteps={MaxSteps}, ParameterObjects=[{string.Join(", ", ParameterObjects)}]");
+    }
+
     public override void Stop() { }
 
     #region ExportMethods

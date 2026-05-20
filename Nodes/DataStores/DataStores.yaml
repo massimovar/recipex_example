@@ -2,12 +2,66 @@ Name: DataStores
 Type: DataStoresCategoryFolder
 Children:
 - Name: EmbeddedDatabase1
-  Id: g=0a9ad8fa4ddb697648d5efa45e3d9ff3
+  Id: g=6154b035273fce9401de29ae84ea8b96
   Type: SQLiteStore
   Children:
   - Name: Tables
     Type: BaseObjectType
     Children:
+    - Name: UsersEventLogger
+      Type: SQLiteStoreTable
+      Children:
+      - Class: Reference
+        Target: ns=8;i=12
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=15
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=21
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=20
+        Direction: Forward
+      - Name: Columns
+        Type: BaseObjectType
+        Children:
+        - Name: SourceName
+          Type: StoreColumn
+          DataType: String
+        - Name: ActionTimeStamp
+          Type: StoreColumn
+          DataType: UtcTime
+        - Name: Username
+          Type: StoreColumn
+          DataType: String
+    - Name: RecipesLogger
+      Type: SQLiteStoreTable
+      Children:
+      - Class: Reference
+        Target: ns=8;i=12
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=15
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=21
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=20
+        Direction: Forward
+      - Name: Columns
+        Type: BaseObjectType
+        Children:
+        - Name: SourceName
+          Type: StoreColumn
+          DataType: String
+        - Name: ActionTimeStamp
+          Type: StoreColumn
+          DataType: UtcTime
+        - Name: RecipeId
+          Type: StoreColumn
+          DataType: RecipeId
     - Name: Recipes
       Type: SQLiteStoreTable
       Children:
@@ -241,22 +295,22 @@ Children:
           - Name: Nullable
             Type: BaseDataVariableType
             DataType: Boolean
-        - Name: template
+        - Name: Template
           Type: StoreColumn
           DataType: Boolean
-        - Name: draft
+        - Name: Draft
           Type: StoreColumn
           DataType: Boolean
-        - Name: prepared
+        - Name: Prepared
           Type: StoreColumn
           DataType: Boolean
-        - Name: approved
+        - Name: Approved
           Type: StoreColumn
           DataType: Boolean
-        - Name: released
+        - Name: Released
           Type: StoreColumn
           DataType: Boolean
-        - Name: archived
+        - Name: Archived
           Type: StoreColumn
           DataType: Boolean
   - Class: Reference

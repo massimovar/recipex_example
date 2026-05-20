@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using FTOptix.Alarm;
+using FTOptix.DataLogger;
+using FTOptix.EventLogger;
+using FTOptix.Recipe;
 
 /// <summary>
 /// Recipe lifecycle statuses. Maps to RecipeX metadata "Status" field.
@@ -13,90 +16,6 @@ public enum RecipeStatuses
     Approved = 3,
     Released = 4,
     Archived = 5
-}
-
-/// <summary>
-/// Structured result returned by all recipe operations.
-/// </summary>
-public class RecipeOperationResult
-{
-    public bool Success { get; set; }
-    public string ErrorCode { get; set; }
-    public string Message { get; set; }
-    public List<string> ValidationErrors { get; set; } = new List<string>();
-    public List<string> Warnings { get; set; } = new List<string>();
-
-    public static RecipeOperationResult Ok(string message = null)
-    {
-        return new RecipeOperationResult { Success = true, Message = message ?? "OK" };
-    }
-
-    public static RecipeOperationResult Fail(string errorCode, string message)
-    {
-        return new RecipeOperationResult { Success = false, ErrorCode = errorCode, Message = message };
-    }
-
-    public static RecipeOperationResult FailValidation(string errorCode, string message, List<string> errors)
-    {
-        return new RecipeOperationResult
-        {
-            Success = false,
-            ErrorCode = errorCode,
-            Message = message,
-            ValidationErrors = errors ?? new List<string>()
-        };
-    }
-}
-
-/// <summary>
-/// Result of recipe validation.
-/// </summary>
-public class RecipeValidationResult
-{
-    public bool IsValid { get; set; }
-    public List<string> Errors { get; set; } = new List<string>();
-    public List<string> Warnings { get; set; } = new List<string>();
-
-    public static RecipeValidationResult Valid() => new RecipeValidationResult { IsValid = true };
-
-    public static RecipeValidationResult Invalid(List<string> errors, List<string> warnings = null)
-    {
-        return new RecipeValidationResult
-        {
-            IsValid = false,
-            Errors = errors ?? new List<string>(),
-            Warnings = warnings ?? new List<string>()
-        };
-    }
-}
-
-/// <summary>
-/// Result of test recipe generation.
-/// </summary>
-public class TestRecipeGenerationResult
-{
-    public bool Success { get; set; }
-    public int TotalRequested { get; set; }
-    public int CreatedCount { get; set; }
-    public int SkippedCount { get; set; }
-    public int FailedCount { get; set; }
-    public List<string> GeneratedRecipeNames { get; set; } = new List<string>();
-    public List<string> Errors { get; set; } = new List<string>();
-}
-
-/// <summary>
-/// Result of bulk archive/delete operations.
-/// </summary>
-public class BulkOperationResult
-{
-    public bool Success { get; set; }
-    public string ErrorCode { get; set; }
-    public int CandidateCount { get; set; }
-    public int AffectedCount { get; set; }
-    public int SkippedCount { get; set; }
-    public int FailedCount { get; set; }
-    public List<string> AffectedRecipeNames { get; set; } = new List<string>();
-    public List<string> Errors { get; set; } = new List<string>();
 }
 
 /// <summary>

@@ -1152,6 +1152,10 @@ Children:
           DataType: DynamicLinkMode
           ModellingRule: Optional
           Value: 2
+    - Name: RSAMachine
+      Type: BaseDataVariableType
+      DataType: NodeId
+      Value: "/Objects/recipex_example/Model/RSA/types/RSAMachine"
 - Name: ParameterTemplate
   Id: g=8c21c5e31dc9de598ce06b30e4118a42
   Supertype: RowLayout

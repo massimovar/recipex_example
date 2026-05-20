@@ -333,7 +333,7 @@ Children:
     - Name: Panel
       Type: NodePointer
       DataType: NodeId
-      Value: "/Objects/recipex_example/UI/Types/LoginForm/LoginDropdown"
+      Value: "/Objects/recipex_example/UI/Types/LoginDropDown/LoginDropdown"
       Children:
       - Name: Kind
         Type: PropertyType
@@ -366,16 +366,6 @@ Children:
       DataType: HorizontalAlignment
       ModellingRule: Optional
       Value: 1
-    - Name: TopMargin
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 8.0
-    - Name: RightMargin
-      Type: BaseVariableType
-      DataType: Size
-      ModellingRule: Optional
-      Value: 8.0
     - Name: Width
       Type: BaseVariableType
       DataType: Size
@@ -398,8 +388,23 @@ Children:
          "highestIgnoredVersion": 0
         }
        }
+    - Name: Height
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 30.0
+    - Name: RightMargin
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 3.0
+    - Name: TopMargin
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 2.0
 - File: RecipesEditor/RecipesEditor.yaml
 - File: Screens/Screens.yaml
 - File: Keyboards/Keyboards.yaml
-- File: helpers/helpers.yaml
 - File: Types/Types.yaml
+- File: helpers/helpers.yaml

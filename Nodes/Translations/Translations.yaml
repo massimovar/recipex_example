@@ -9,7 +9,7 @@ Children:
   Value: 
    {
     "Type": 12,
-    "Dimensions": [8,3],
+    "Dimensions": [29,3],
     "Body": [
      "","en-US","it-IT",
      "RecipeTemplate","template","template",
@@ -18,6 +18,27 @@ Children:
      "RecipeApproved","approved","approvata",
      "RecipeReleased","released","rilasciata",
      "RecipeArchived","archived","archiviata",
-     "RecipeStatus","recipe status","stato ricetta"
+     "RecipeStatus","recipe status","stato ricetta",
+     "Old password","Old password","Vecchia password",
+     "LoginFormPasswordExpired","Password expired","Password scaduta",
+     "Login","Login","Login",
+     "New password","New password","Nuova password",
+     "Password","Password","Password",
+     "Confirm password","Confirm password","Conferma password",
+     "Change password","Change password","Cambia password",
+     "Your password is expired. Please enter a new one","Your password is expired.\nPlease enter a new one.","Password scaduta.\nImmetterne una nuova.",
+     "Current User:","Current User:","Utente corrente:",
+     "Logout","Logout","Logout",
+     "ChangePasswordFormSuccessMessage","Password changed successfully","Password cambiata con successo",
+     "ChangePasswordFormWrongOldPasswordMessage","Wrong old password","Vecchia password errata",
+     "ChangePasswordFormPasswordAlreadyUsedMessage","Password already used","Password già utilizzata",
+     "ChangePasswordFormPasswordChangedTooRecentlyMessage","Password changed too recently","Password cambiata troppo recentemente",
+     "ChangePasswordFormPasswordTooShortMessage","Password too short","Password troppo corta",
+     "ChangePasswordFormUserNotFoundMessage","User not found","Utente non trovato",
+     "ChangePasswordFormUnsupportedOperationMessage","Unsupported operation","Operazione non supportata",
+     "ChangePasswordFormPasswordMismatchMessage","Passwords do not match","Le password non coincidono",
+     "LoginFormLoginSuccessful","Login successful","Login riuscito",
+     "LoginFormAuthenticationFailed","Authentication failed","Autenticazione fallita",
+     "LoginFormInvalidAuthenticationModeForUser","Invalid authentication mode for user","Modalità di autenticazione non valida per l'utente"
     ]
    }

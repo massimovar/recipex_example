@@ -1,4 +1,5 @@
 Name: Types
 Type: FolderType
 Children:
+- File: LoginDropDown/LoginDropDown.yaml
 - File: LoginForm/LoginForm.yaml
