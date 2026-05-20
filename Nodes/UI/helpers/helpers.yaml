@@ -3,7 +3,7 @@ Type: FolderType
 Children:
 - Name: RecipeStatusCheckbox
   Id: g=b77e75db41c8beb73d082a5dd95adbf5
-  Supertype: CheckBox
+  Supertype: RadioButton
   ReferenceType: HasComponent
   Children:
   - Name: Checked
