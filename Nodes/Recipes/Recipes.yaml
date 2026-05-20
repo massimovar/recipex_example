@@ -73,7 +73,7 @@ Children:
   - Name: Store
     Type: NodePointer
     DataType: NodeId
-    Value: "/Objects/recipex_example/DataStores/EmbeddedDatabase1"
+    Value: "/Objects/recipex_example/DataStores/EmbeddedDatabase2"
     Children:
     - Name: Kind
       Type: PropertyType
@@ -171,31 +171,3 @@ Children:
       Type: BaseDataVariableType
       DataType: NodeId
       Value: "/Objects/recipex_example/Security/Roles"
-  - Name: CustomRecipeSchemaTestTools
-    Id: g=6c2b7d90f92a2736686fcb4d8dc02181
-    Type: NetLogic
-    Children:
-    - Class: Method
-      Name: BulkArchiveTestRecipes
-    - Class: Method
-      Name: BulkDeleteTestRecipes
-    - Class: Method
-      Name: GenerateTestRecipes
-    - Name: count
-      Type: BaseDataVariableType
-      DataType: Int32
-      Value: 5
-    - Name: recipeFamily
-      Type: BaseDataVariableType
-      DataType: Float
-      Value: 1.0
-    - Name: activeStepCount
-      Type: BaseDataVariableType
-      DataType: Int32
-      Value: 3
-    - Name: namePrefix
-      Type: BaseDataVariableType
-      DataType: String
-    - Name: overwriteExistingTestRecipes
-      Type: BaseDataVariableType
-      DataType: Boolean

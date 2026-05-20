@@ -9,8 +9,14 @@ Children:
   Value: 
    {
     "Type": 12,
-    "Dimensions": [1,2],
+    "Dimensions": [7,3],
     "Body": [
-     "","en-US"
+     "","en-US","it-IT",
+     "RecipeTemplate","template","template",
+     "RecipeDraft","draft","bozza",
+     "RecipePrepared","prepared","preparata",
+     "RecipeApproved","approved","approvata",
+     "RecipeReleased","released","rilasciata",
+     "RecipeArchived","archived","archiviata"
     ]
    }

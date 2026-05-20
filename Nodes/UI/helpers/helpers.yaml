@@ -1,0 +1,36 @@
+Name: helpers
+Type: FolderType
+Children:
+- Name: RecipeStatusLabel
+  Id: g=88914b763e5bf2ab9616d786f6c146d5
+  Supertype: Label
+  ReferenceType: HasComponent
+  Children:
+  - Name: Text
+    Type: BaseDataVariableType
+    DataType: LocalizedText
+    Value: {"LocaleId":"en-US","Text":"not loaded"}
+  - Name: EnumeratorManager
+    Type: NetLogic
+    Children:
+    - Name: enumeration
+      Type: BaseDataVariableType
+      DataType: NodeId
+      Value: "/Objects/recipex_example/Model/RecipeStatuses"
+    - Name: index
+      Type: BaseDataVariableType
+      DataType: Int32
+      Children:
+      - Name: DynamicLink
+        Type: DynamicLink
+        DataType: NodePath
+        Value: "../../StatusValue"
+        Children:
+        - Name: Mode
+          Type: BaseVariableType
+          DataType: DynamicLinkMode
+          ModellingRule: Optional
+          Value: 2
+  - Name: StatusValue
+    Type: BaseDataVariableType
+    DataType: String

@@ -224,6 +224,11 @@ Children:
             DataType: DynamicLinkMode
             ModellingRule: Optional
             Value: 2
+    - Name: LeftMargin
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 10.0
 - Name: RecipeStep
   Id: g=1b19cb0998d5e8242f66b5476dcb0957
   Supertype: ListViewRow
@@ -285,7 +290,39 @@ Children:
         - Name: DynamicLink
           Type: DynamicLink
           DataType: NodePath
-          Value: "{RowItem}/PhaseType@BrowseName"
+          Value: "{RowItem}/PhaseType@Value"
+      - Name: VerticalAlignment
+        Type: BaseVariableType
+        DataType: VerticalAlignment
+        ModellingRule: Optional
+        Value: 2
+      - Name: FontSize
+        Type: BaseDataVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 20.0
+      - Name: HorizontalAlignment
+        Type: BaseVariableType
+        DataType: HorizontalAlignment
+        ModellingRule: Optional
+        Value: 2
+      - Name: RightMargin
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 20.0
+      - Name: Width
+        Type: BaseVariableType
+        DataType: Size
+        ModellingRule: Optional
+        Value: 150.0
+    - Name: StepNameLabel
+      Type: Label
+      Children:
+      - Name: Text
+        Type: BaseDataVariableType
+        DataType: LocalizedText
+        Value: {"LocaleId":"en-US","Text":"stepname:"}
       - Name: VerticalAlignment
         Type: BaseVariableType
         DataType: VerticalAlignment
@@ -312,7 +349,7 @@ Children:
         ModellingRule: Optional
         Value: 150.0
     - Name: StepName
-      Type: Label
+      Type: TextBox
       Children:
       - Name: Text
         Type: BaseDataVariableType
@@ -321,22 +358,18 @@ Children:
         - Name: DynamicLink
           Type: DynamicLink
           DataType: NodePath
-          Value: "{RowItem}/StepName@BrowseName"
-      - Name: VerticalAlignment
-        Type: BaseVariableType
-        DataType: VerticalAlignment
-        ModellingRule: Optional
-        Value: 2
+          Value: "{RowItem}/StepName"
+          Children:
+          - Name: Mode
+            Type: BaseVariableType
+            DataType: DynamicLinkMode
+            ModellingRule: Optional
+            Value: 2
       - Name: FontSize
         Type: BaseDataVariableType
         DataType: Size
         ModellingRule: Optional
         Value: 20.0
-      - Name: HorizontalAlignment
-        Type: BaseVariableType
-        DataType: HorizontalAlignment
-        ModellingRule: Optional
-        Value: 2
       - Name: RightMargin
         Type: BaseVariableType
         DataType: Size
@@ -347,6 +380,16 @@ Children:
         DataType: Size
         ModellingRule: Optional
         Value: 150.0
+      - Name: HorizontalAlignment
+        Type: BaseVariableType
+        DataType: HorizontalAlignment
+        ModellingRule: Optional
+        Value: 2
+      - Name: VerticalAlignment
+        Type: BaseVariableType
+        DataType: VerticalAlignment
+        ModellingRule: Optional
+        Value: 2
     - Name: Switch1
       Type: Switch
       Children:
@@ -384,6 +427,11 @@ Children:
         DataType: LocalizedText
         ModellingRule: Optional
         Value: {"LocaleId":"en-US","Text":"step disabled"}
+    - Name: LeftMargin
+      Type: BaseVariableType
+      DataType: Size
+      ModellingRule: Optional
+      Value: 10.0
 - Name: ParameterTemplate
   Id: g=8c21c5e31dc9de598ce06b30e4118a42
   Supertype: RowLayout

@@ -17,43 +17,43 @@ Children:
       "Name": "Value0",
       "Value": 0,
       "DisplayName": {
-       "LocaleId": "en-US",
-       "Text": "Template"
+       "NamespaceIndex": 7,
+       "TextId": "RecipeTemplate"
       }
      },{
       "Name": "Value1",
       "Value": 1,
       "DisplayName": {
-       "LocaleId": "en-US",
-       "Text": "Draft"
+       "NamespaceIndex": 7,
+       "TextId": "RecipeDraft"
       }
      },{
       "Name": "Value2",
       "Value": 2,
       "DisplayName": {
-       "LocaleId": "en-US",
-       "Text": "Prepared"
+       "NamespaceIndex": 7,
+       "TextId": "RecipePrepared"
       }
      },{
       "Name": "Value3",
       "Value": 3,
       "DisplayName": {
-       "LocaleId": "en-US",
-       "Text": "Approved"
+       "NamespaceIndex": 7,
+       "TextId": "RecipeApproved"
       }
      },{
       "Name": "Value4",
       "Value": 4,
       "DisplayName": {
-       "LocaleId": "en-US",
-       "Text": "Released"
+       "NamespaceIndex": 7,
+       "TextId": "RecipeReleased"
       }
      },{
       "Name": "Value5",
       "Value": 5,
       "DisplayName": {
-       "LocaleId": "en-US",
-       "Text": "Archived"
+       "NamespaceIndex": 7,
+       "TextId": "RecipeArchived"
       }
      }]
    }
@@ -64,7 +64,7 @@ Children:
     ModellingRule: None
     ValueRank: OneDimension
     ArrayDimensions: [0]
-    Value: [{"TypeId":{"Id":7594},"Body":{"Value":0,"DisplayName":{"LocaleId":"en-US","Text":"Template"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"LocaleId":"en-US","Text":"Draft"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"LocaleId":"en-US","Text":"Prepared"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"LocaleId":"en-US","Text":"Approved"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":4,"DisplayName":{"LocaleId":"en-US","Text":"Released"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":5,"DisplayName":{"LocaleId":"en-US","Text":"Archived"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
+    Value: [{"TypeId":{"Id":7594},"Body":{"Value":0,"DisplayName":{"NamespaceIndex":7,"TextId":"RecipeTemplate"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":1,"DisplayName":{"NamespaceIndex":7,"TextId":"RecipeDraft"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":2,"DisplayName":{"NamespaceIndex":7,"TextId":"RecipePrepared"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":3,"DisplayName":{"NamespaceIndex":7,"TextId":"RecipeApproved"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":4,"DisplayName":{"NamespaceIndex":7,"TextId":"RecipeReleased"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}},{"TypeId":{"Id":7594},"Body":{"Value":5,"DisplayName":{"NamespaceIndex":7,"TextId":"RecipeArchived"},"Description":{"NamespaceIndex":-1,"LocaleId":"","Text":""}}}]
 - Class: DataType
   Name: RecipeGroupIds
   Id: g=bc213e2c37c1b6222df386e307cc7783

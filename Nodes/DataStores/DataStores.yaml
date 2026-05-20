@@ -1,8 +1,8 @@
 Name: DataStores
 Type: DataStoresCategoryFolder
 Children:
-- Name: EmbeddedDatabase1
-  Id: g=94b93616d2c7914aa765383efef4bbe8
+- Name: EmbeddedDatabase2
+  Id: g=8894742705f2d4d36dea00286ff6b3e7
   Type: SQLiteStore
   Children:
   - Name: Tables
