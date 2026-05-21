@@ -74,6 +74,12 @@ Children:
         - Name: RecipeId
           Type: StoreColumn
           DataType: RecipeId
+        - Name: MethodId
+          Type: StoreColumn
+          DataType: String
+        - Name: ClientUserId
+          Type: StoreColumn
+          DataType: String
     - Name: Recipes
       Type: SQLiteStoreTable
       Children:

@@ -202,29 +202,6 @@ Children:
           Type: PropertyType
           DataType: NodeId
           Value: "/Types/ObjectTypes/BaseObjectType"
-    - Name: EventConfiguration2
-      Type: EventConfiguration
-      Children:
-      - Name: EventType
-        Type: NodePointer
-        DataType: NodeId
-        ReferenceType: HasProperty
-        Value: "/Types/EventTypes/BaseEventType/RefactorCompleted"
-        Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: "/Types/EventTypes/BaseEventType"
-      - Name: EventSource
-        Type: NodePointer
-        DataType: NodeId
-        ReferenceType: HasProperty
-        Value: "/Objects/recipex_example"
-        Children:
-        - Name: Kind
-          Type: PropertyType
-          DataType: NodeId
-          Value: "/Types/ObjectTypes/BaseObjectType"
     - Name: EventConfiguration3
       Type: EventConfiguration
       Children:
@@ -248,6 +225,29 @@ Children:
           Type: PropertyType
           DataType: NodeId
           Value: "/Types/ObjectTypes/BaseObjectType"
+    - Name: EventConfiguration2
+      Type: EventConfiguration
+      Children:
+      - Name: EventType
+        Type: NodePointer
+        DataType: NodeId
+        ReferenceType: HasProperty
+        Value: "/Types/EventTypes/BaseEventType/AuditEventType/AuditUpdateMethodEventType"
+        Children:
+        - Name: Kind
+          Type: PropertyType
+          DataType: NodeId
+          Value: "/Types/EventTypes/BaseEventType"
+      - Name: EventSource
+        Type: NodePointer
+        DataType: NodeId
+        ReferenceType: HasProperty
+        Value: "/Objects/recipex_example/Recipes/RecipeSchema1"
+        Children:
+        - Name: Kind
+          Type: PropertyType
+          DataType: NodeId
+          Value: "/Types/ObjectTypes/BaseObjectType"
   - Name: EventFieldPaths
     Type: BaseObjectType
     Children:
@@ -263,6 +263,14 @@ Children:
       Type: EventFieldPath
       DataType: NodePath
       Value: "/9:RecipeId"
+    - Name: MethodId
+      Type: EventFieldPath
+      DataType: NodePath
+      Value: "/0:MethodId"
+    - Name: ClientUserId
+      Type: EventFieldPath
+      DataType: NodePath
+      Value: "/0:ClientUserId"
   - Name: EventArguments
     Type: BaseObjectType
     Children:
@@ -278,6 +286,12 @@ Children:
     - Name: RecipeId
       Type: BaseDataVariableType
       DataType: RecipeId
+    - Name: MethodId
+      Type: BaseDataVariableType
+      DataType: NodeId
+    - Name: ClientUserId
+      Type: BaseDataVariableType
+      DataType: String
   - Name: EventFieldsToLog
     Type: BaseObjectType
     Children:
@@ -305,6 +319,22 @@ Children:
         Type: DynamicLink
         DataType: NodePath
         Value: "../../EventArguments/RecipeId"
+    - Name: MethodId
+      Type: EventFieldToLog
+      DataType: String
+      Children:
+      - Name: DynamicLink
+        Type: DynamicLink
+        DataType: NodePath
+        Value: "../../EventArguments/MethodId@BrowseName"
+    - Name: ClientUserId
+      Type: EventFieldToLog
+      DataType: String
+      Children:
+      - Name: DynamicLink
+        Type: DynamicLink
+        DataType: NodePath
+        Value: "../../EventArguments/ClientUserId"
 - Name: MethodsEventLogger
   Type: EventLogger
   Children:
