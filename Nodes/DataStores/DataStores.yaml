@@ -35,6 +35,18 @@ Children:
         - Name: Username
           Type: StoreColumn
           DataType: String
+        - Name: Status
+          Type: StoreColumn
+          DataType: Boolean
+        - Name: EventType
+          Type: StoreColumn
+          DataType: String
+        - Name: LocalTime
+          Type: StoreColumn
+          DataType: TimeZoneDataType
+        - Name: Time
+          Type: StoreColumn
+          DataType: UtcTime
     - Name: RecipesLogger
       Type: SQLiteStoreTable
       Children:
@@ -313,6 +325,72 @@ Children:
         - Name: Archived
           Type: StoreColumn
           DataType: Boolean
+    - Name: MethodsEventLogger
+      Type: SQLiteStoreTable
+      Children:
+      - Class: Reference
+        Target: ns=8;i=12
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=15
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=21
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=20
+        Direction: Forward
+      - Name: Columns
+        Type: BaseObjectType
+        Children:
+        - Name: LocalTime
+          Type: StoreColumn
+          DataType: TimeZoneDataType
+        - Name: Time
+          Type: StoreColumn
+          DataType: UtcTime
+        - Name: ClientUserId
+          Type: StoreColumn
+          DataType: String
+        - Name: MethodId
+          Type: StoreColumn
+          DataType: String
+    - Name: VariablesEventLogger
+      Type: SQLiteStoreTable
+      Children:
+      - Class: Reference
+        Target: ns=8;i=12
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=15
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=21
+        Direction: Forward
+      - Class: Reference
+        Target: ns=8;i=20
+        Direction: Forward
+      - Name: Columns
+        Type: BaseObjectType
+        Children:
+        - Name: LocalTime
+          Type: StoreColumn
+          DataType: TimeZoneDataType
+        - Name: SourceNode
+          Type: StoreColumn
+          DataType: NodeId
+        - Name: Time
+          Type: StoreColumn
+          DataType: UtcTime
+        - Name: ClientUserId
+          Type: StoreColumn
+          DataType: String
+        - Name: NewValue
+          Type: StoreColumn
+          DataType: BaseDataType
+        - Name: OldValue
+          Type: StoreColumn
+          DataType: BaseDataType
   - Class: Reference
     Target: ns=10;i=30
     Direction: Forward

@@ -1,4 +1,5 @@
 Name: UI
+Id: g=1f8fed5f6fabb17ca243c114e112d810
 Type: UICategoryFolder
 Children:
 - Name: DefaultStyleSheet
@@ -283,6 +284,36 @@ Children:
           Type: NodePointer
           DataType: NodeId
           Value: "/Objects/recipex_example/UI/Screens/RecipesAuditing"
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
+      - Name: Panel4
+        Type: NavigationPanelItem
+        Children:
+        - Name: Title
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+        - Name: Panel
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/UI/Screens/MethodsAuditing"
+          Children:
+          - Name: Kind
+            Type: PropertyType
+            DataType: NodeId
+            Value: "/Types/ObjectTypes/BaseObjectType/BaseUIObject/Item/Container"
+      - Name: Panel5
+        Type: NavigationPanelItem
+        Children:
+        - Name: Title
+          Type: BaseDataVariableType
+          DataType: LocalizedText
+        - Name: Panel
+          Type: NodePointer
+          DataType: NodeId
+          Value: "/Objects/recipex_example/UI/Screens/VariablesAuditing"
           Children:
           - Name: Kind
             Type: PropertyType
