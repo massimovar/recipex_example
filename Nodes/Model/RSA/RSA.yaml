@@ -90,9 +90,6 @@ Children:
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
-    - Name: StepEnabled
-      Type: BaseDataVariableType
-      DataType: Boolean
   - Name: RecipeStepRSA2
     Type: RecipeStepRSA
     Children:
@@ -163,9 +160,6 @@ Children:
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
-    - Name: StepEnabled
-      Type: BaseDataVariableType
-      DataType: Boolean
   - Name: RecipeStepRSA3
     Type: RecipeStepRSA
     Children:
@@ -236,7 +230,4 @@ Children:
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
-    - Name: StepEnabled
-      Type: BaseDataVariableType
-      DataType: Boolean
 - File: types/types.yaml
