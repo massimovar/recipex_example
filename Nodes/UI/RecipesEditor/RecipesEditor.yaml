@@ -1511,6 +1511,28 @@ Children:
           - Name: Checked
             Type: BaseDataVariableType
             DataType: Boolean
+            Children:
+            - Name: ExpressionEvaluator1
+              Type: ExpressionEvaluator
+              Children:
+              - Name: Source0
+                Type: BaseDataVariableType
+                DataType: BaseDataType
+                ReferenceType: HasSource
+                Children:
+                - Name: DynamicLink
+                  Type: DynamicLink
+                  DataType: NodePath
+                  Value: "../../../RecipeStatusName"
+              - Name: Source1
+                Type: BaseDataVariableType
+                DataType: BaseDataType
+                ReferenceType: HasSource
+                Children:
+                - Name: DynamicLink
+                  Type: DynamicLink
+                  DataType: NodePath
+                  Value: "../../../RecipeActualStatus"
           - Name: ModifiedValueHandler1
             Type: EventHandler
             Children:
@@ -1631,6 +1653,20 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
+          - Name: RecipeActualStatus
+            Type: BaseDataVariableType
+            DataType: String
+            Children:
+            - Name: DynamicLink
+              Type: DynamicLink
+              DataType: NodePath
+              Value: "../../RecipeActualStatus"
+        - Name: RecipeStatusDraft
+          Type: RecipeStatusCheckbox
+          Children:
+          - Name: Checked
+            Type: BaseDataVariableType
+            DataType: Boolean
             Children:
             - Name: ExpressionEvaluator1
               Type: ExpressionEvaluator
@@ -1653,20 +1689,6 @@ Children:
                   Type: DynamicLink
                   DataType: NodePath
                   Value: "../../../RecipeActualStatus"
-          - Name: RecipeActualStatus
-            Type: BaseDataVariableType
-            DataType: String
-            Children:
-            - Name: DynamicLink
-              Type: DynamicLink
-              DataType: NodePath
-              Value: "../../RecipeActualStatus"
-        - Name: RecipeStatusDraft
-          Type: RecipeStatusCheckbox
-          Children:
-          - Name: Checked
-            Type: BaseDataVariableType
-            DataType: Boolean
           - Name: ModifiedValueHandler1
             Type: EventHandler
             Children:
@@ -1795,6 +1817,12 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
+        - Name: RecipeStatusPrepared
+          Type: RecipeStatusCheckbox
+          Children:
+          - Name: Checked
+            Type: BaseDataVariableType
+            DataType: Boolean
             Children:
             - Name: ExpressionEvaluator1
               Type: ExpressionEvaluator
@@ -1817,12 +1845,6 @@ Children:
                   Type: DynamicLink
                   DataType: NodePath
                   Value: "../../../RecipeActualStatus"
-        - Name: RecipeStatusPrepared
-          Type: RecipeStatusCheckbox
-          Children:
-          - Name: Checked
-            Type: BaseDataVariableType
-            DataType: Boolean
           - Name: ModifiedValueHandler1
             Type: EventHandler
             Children:
@@ -1951,6 +1973,12 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
+        - Name: RecipeStatusApproved
+          Type: RecipeStatusCheckbox
+          Children:
+          - Name: Checked
+            Type: BaseDataVariableType
+            DataType: Boolean
             Children:
             - Name: ExpressionEvaluator1
               Type: ExpressionEvaluator
@@ -1973,12 +2001,6 @@ Children:
                   Type: DynamicLink
                   DataType: NodePath
                   Value: "../../../RecipeActualStatus"
-        - Name: RecipeStatusApproved
-          Type: RecipeStatusCheckbox
-          Children:
-          - Name: Checked
-            Type: BaseDataVariableType
-            DataType: Boolean
           - Name: ModifiedValueHandler1
             Type: EventHandler
             Children:
@@ -2107,6 +2129,12 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
+        - Name: RecipeStatusReleased
+          Type: RecipeStatusCheckbox
+          Children:
+          - Name: Checked
+            Type: BaseDataVariableType
+            DataType: Boolean
             Children:
             - Name: ExpressionEvaluator1
               Type: ExpressionEvaluator
@@ -2129,12 +2157,6 @@ Children:
                   Type: DynamicLink
                   DataType: NodePath
                   Value: "../../../RecipeActualStatus"
-        - Name: RecipeStatusReleased
-          Type: RecipeStatusCheckbox
-          Children:
-          - Name: Checked
-            Type: BaseDataVariableType
-            DataType: Boolean
           - Name: ModifiedValueHandler1
             Type: EventHandler
             Children:
@@ -2263,6 +2285,12 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
+        - Name: RecipeStatusArchived
+          Type: RecipeStatusCheckbox
+          Children:
+          - Name: Checked
+            Type: BaseDataVariableType
+            DataType: Boolean
             Children:
             - Name: ExpressionEvaluator1
               Type: ExpressionEvaluator
@@ -2285,12 +2313,6 @@ Children:
                   Type: DynamicLink
                   DataType: NodePath
                   Value: "../../../RecipeActualStatus"
-        - Name: RecipeStatusArchived
-          Type: RecipeStatusCheckbox
-          Children:
-          - Name: Checked
-            Type: BaseDataVariableType
-            DataType: Boolean
           - Name: ModifiedValueHandler1
             Type: EventHandler
             Children:
@@ -2419,28 +2441,6 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
-            Children:
-            - Name: ExpressionEvaluator1
-              Type: ExpressionEvaluator
-              Children:
-              - Name: Source0
-                Type: BaseDataVariableType
-                DataType: BaseDataType
-                ReferenceType: HasSource
-                Children:
-                - Name: DynamicLink
-                  Type: DynamicLink
-                  DataType: NodePath
-                  Value: "../../../RecipeStatusName"
-              - Name: Source1
-                Type: BaseDataVariableType
-                DataType: BaseDataType
-                ReferenceType: HasSource
-                Children:
-                - Name: DynamicLink
-                  Type: DynamicLink
-                  DataType: NodePath
-                  Value: "../../../RecipeActualStatus"
         - Name: RecipeActualStatus
           Type: BaseDataVariableType
           DataType: String
