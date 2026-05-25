@@ -282,7 +282,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "../../../../../RecipeStatusRetriever@NodeId"
+              Value: "../../../../../CustomRecipeStatusRetriever@NodeId"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -460,7 +460,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "../../../../../RecipeStatusRetriever@NodeId"
+              Value: "../../../../../CustomRecipeStatusRetriever@NodeId"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -637,7 +637,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "../../../../../RecipeStatusRetriever@NodeId"
+              Value: "../../../../../CustomRecipeStatusRetriever@NodeId"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -810,7 +810,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "../../../../../RecipeStatusRetriever@NodeId"
+              Value: "../../../../../CustomRecipeStatusRetriever@NodeId"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -983,7 +983,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "../../../../../RecipeStatusRetriever@NodeId"
+              Value: "../../../../../CustomRecipeStatusRetriever@NodeId"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -1156,7 +1156,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "../../../../../RecipeStatusRetriever@NodeId"
+              Value: "../../../../../CustomRecipeStatusRetriever@NodeId"
               Children:
               - Name: Mode
                 Type: BaseVariableType
@@ -1235,14 +1235,14 @@ Children:
     - Name: DynamicLink
       Type: DynamicLink
       DataType: NodePath
-      Value: "../RecipeStatusRetriever/RecipeActualStatus"
+      Value: "../CustomRecipeStatusRetriever/RecipeActualStatus"
       Children:
       - Name: Mode
         Type: BaseVariableType
         DataType: DynamicLinkMode
         ModellingRule: Optional
         Value: 2
-  - Name: RecipeStatusRetriever
+  - Name: CustomRecipeStatusRetriever
     Type: NetLogic
     Children:
     - Class: Method

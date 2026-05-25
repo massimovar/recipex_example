@@ -26,6 +26,7 @@ Children:
     - Name: PhaseType
       Type: BaseDataVariableType
       DataType: Float
+      Value: 1.0
     - Name: StepName
       Type: BaseDataVariableType
       DataType: LocalizedText

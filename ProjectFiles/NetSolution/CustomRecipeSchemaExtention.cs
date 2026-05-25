@@ -23,8 +23,6 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
     private RecipeSchema _schema;
     private const string Tag = "RecipeSchemaNetLogic";
 
-    private IUANode _recipeStatusesEnum;
-
     public override void Start()
     {
         _schema = (RecipeSchema)LogicObject.Owner;
@@ -34,50 +32,11 @@ public class CustomRecipeSchemaExtention : BaseNetLogic
             return;
         }
 
-        // Resolve RecipeStatuses enumeration from configured NodeId variable
-        var statusesVar = LogicObject.GetVariable("RecipeStatuses");
-        if (statusesVar != null)
-        {
-            NodeId sid = (NodeId)statusesVar.Value;
-            if (sid != null && sid != NodeId.Empty)
-                _recipeStatusesEnum = InformationModel.Get(sid);
-        }
-        if (_recipeStatusesEnum == null)
-        {
-            Log.Warning(Tag, "RecipeStatuses variable not configured. Enum validation unavailable.");
-        }
-        else
-        {
-            ValidateRecipeStatusesEnum();
-        }
+        // RecipeStatuses C# enum is the single source of truth — no model enum lookup needed
+        Log.Info(Tag, $"Start: using C# RecipeStatuses enum ({Enum.GetValues(typeof(RecipeStatuses)).Length} values).");
     }
 
     public override void Stop() { }
-
-    /// <summary>
-    /// Validate C# RecipeStatuses enum matches Model/RecipeStatuses enumeration node.
-    /// </summary>
-    private void ValidateRecipeStatusesEnum()
-    {
-        if (_recipeStatusesEnum == null) return;
-
-        var modelValues = _recipeStatusesEnum.Children.OfType<IUANode>().ToList();
-        var csharpValues = Enum.GetValues(typeof(RecipeStatuses)).Cast<RecipeStatuses>().ToList();
-
-        foreach (var csVal in csharpValues)
-        {
-            string expectedName = csVal.ToString();
-            var match = modelValues.FirstOrDefault(n => n.BrowseName == expectedName);
-            if (match == null)
-                Log.Error(Tag, $"C# enum '{expectedName}' ({(int)csVal}) not found in Model/RecipeStatuses. Sync required.");
-        }
-
-        foreach (var modelNode in modelValues)
-        {
-            if (!Enum.TryParse<RecipeStatuses>(modelNode.BrowseName, out _))
-                Log.Error(Tag, $"Model enum value '{modelNode.BrowseName}' has no matching C# RecipeStatuses entry.");
-        }
-    }
 
     #region CreateRecipe
 

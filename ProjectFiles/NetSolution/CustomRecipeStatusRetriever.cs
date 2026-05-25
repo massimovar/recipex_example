@@ -26,7 +26,7 @@ using FTOptix.Recipe;
 ///   - RecipeVersion (string) → selected recipe version
 ///   - RecipeActualStatus (string) → output, written with active status name
 /// </summary>
-public class RecipeStatusRetriever : BaseNetLogic
+public class CustomRecipeStatusRetriever : BaseNetLogic
 {
     private const string Tag = "RecipeStatusRetriever";
 

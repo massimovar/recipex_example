@@ -22,7 +22,7 @@ using OpcUa = UAManagedCore.OpcUa;
 /// All operations move actual step DATA (including PhaseType) between physical slots.
 /// StepIndex is never modified — it is the fixed slot identifier.
 /// </summary>
-public class CustomRecipeEditorLogics : BaseNetLogic
+public class CustomMachineStepUIManager : BaseNetLogic
 {
     private const string LogCategory = "RecipeEditor";
 

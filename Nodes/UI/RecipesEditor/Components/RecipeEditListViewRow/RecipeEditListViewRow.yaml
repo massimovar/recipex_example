@@ -343,7 +343,7 @@ Children:
     DataType: HorizontalAlignment
     ModellingRule: Optional
     Value: 3
-  - Name: CustomRecipeEditorLogics
+  - Name: CustomMachineStepUIManager
     Type: NetLogic
     Children:
     - Class: Method
@@ -410,14 +410,21 @@ Children:
           DataType: DynamicLinkMode
           ModellingRule: Optional
           Value: 2
-    - Name: ListViewRecipeSchema
+    - Name: RSAMachine
+      Type: BaseDataVariableType
+      DataType: NodeId
+      Value: "/Objects/recipex_example/Model/RSA/types/RSAMachine"
+  - Name: CustomMachineStepSetup
+    Type: NetLogic
+    Children:
+    - Name: RowItem
       Type: BaseDataVariableType
       DataType: NodeId
       Children:
       - Name: DynamicLink
         Type: DynamicLink
         DataType: NodePath
-        Value: "{RecipeSchemaAlias}@NodeId"
+        Value: "{RowItem}@NodeId"
         Children:
         - Name: Mode
           Type: BaseVariableType
@@ -607,7 +614,7 @@ Children:
                     - Name: DynamicLink
                       Type: DynamicLink
                       DataType: NodePath
-                      Value: "../../../../../../../../../CustomRecipeEditorLogics@NodeId"
+                      Value: "../../../../../../../../../CustomMachineStepUIManager@NodeId"
                       Children:
                       - Name: Mode
                         Type: BaseVariableType
@@ -723,7 +730,7 @@ Children:
                     - Name: DynamicLink
                       Type: DynamicLink
                       DataType: NodePath
-                      Value: "../../../../../../../../../CustomRecipeEditorLogics@NodeId"
+                      Value: "../../../../../../../../../CustomMachineStepUIManager@NodeId"
                       Children:
                       - Name: Mode
                         Type: BaseVariableType
@@ -839,7 +846,7 @@ Children:
                     - Name: DynamicLink
                       Type: DynamicLink
                       DataType: NodePath
-                      Value: "../../../../../../../../../CustomRecipeEditorLogics@NodeId"
+                      Value: "../../../../../../../../../CustomMachineStepUIManager@NodeId"
                       Children:
                       - Name: Mode
                         Type: BaseVariableType
@@ -960,7 +967,7 @@ Children:
                     - Name: DynamicLink
                       Type: DynamicLink
                       DataType: NodePath
-                      Value: "../../../../../../../../../CustomRecipeEditorLogics@NodeId"
+                      Value: "../../../../../../../../../CustomMachineStepUIManager@NodeId"
                       Children:
                       - Name: Mode
                         Type: BaseVariableType
@@ -1076,7 +1083,7 @@ Children:
                     - Name: DynamicLink
                       Type: DynamicLink
                       DataType: NodePath
-                      Value: "../../../../../../../../../CustomRecipeEditorLogics@NodeId"
+                      Value: "../../../../../../../../../CustomMachineStepUIManager@NodeId"
                       Children:
                       - Name: Mode
                         Type: BaseVariableType
@@ -1134,25 +1141,6 @@ Children:
             Type: BaseDataVariableType
             DataType: Boolean
             Value: true
-            Children:
-            - Name: ExpressionEvaluator1
-              Type: ExpressionEvaluator
-              Children:
-              - Name: Expression
-                Type: BaseDataVariableType
-                DataType: String
-                ReferenceType: HasParameter
-                ModellingRule: Optional
-                Value: "{0} != 0"
-              - Name: ns=2;Source0
-                Type: BaseDataVariableType
-                DataType: BaseDataType
-                ReferenceType: HasSource
-                Children:
-                - Name: DynamicLink
-                  Type: DynamicLink
-                  DataType: NodePath
-                  Value: "{RowItem}/PhaseType"
         - Name: StepNumber
           Type: Label
           Children:
@@ -1550,6 +1538,29 @@ Children:
                 Type: DynamicLink
                 DataType: NodePath
                 Value: "{StepParameterVariable}/ParameterEnabled"
+      - Name: Enabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+        Children:
+        - Name: ExpressionEvaluator1
+          Type: ExpressionEvaluator
+          Children:
+          - Name: Expression
+            Type: BaseDataVariableType
+            DataType: String
+            ReferenceType: HasParameter
+            ModellingRule: Optional
+            Value: "{0} != 0"
+          - Name: ns=2;Source0
+            Type: BaseDataVariableType
+            DataType: BaseDataType
+            ReferenceType: HasSource
+            Children:
+            - Name: DynamicLink
+              Type: DynamicLink
+              DataType: NodePath
+              Value: "{RowItem}/PhaseType"
     - Name: HorizontalAlignment
       Type: BaseVariableType
       DataType: HorizontalAlignment
