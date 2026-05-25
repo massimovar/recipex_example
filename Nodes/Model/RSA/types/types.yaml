@@ -88,6 +88,9 @@ Children:
     - Name: ParameterEnabled
       Type: BaseDataVariableType
       DataType: Boolean
+  - Name: StepIndex
+    Type: BaseDataVariableType
+    DataType: Byte
 - Name: RecipeStepParameter
   Id: g=afa31a09a9ff3fa5f3fa8e9815d4c99f
   Supertype: BaseObjectType
@@ -203,6 +206,9 @@ Children:
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
   - Name: RecipeStepRSA2
     Type: RecipeStepRSA
     Children:
@@ -273,6 +279,9 @@ Children:
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
   - Name: RecipeStepRSA3
     Type: RecipeStepRSA
     Children:
@@ -343,3 +352,6 @@ Children:
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte

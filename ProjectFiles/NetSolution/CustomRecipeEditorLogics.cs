@@ -16,9 +16,11 @@ using OpcUa = UAManagedCore.OpcUa;
 
 /// <summary>
 /// Per-step NetLogic for recipe EditModel step manipulation.
-/// Invariant: active steps (PT=1..N) occupy physical slots 1..N in order.
-/// Inactive steps (PT=0) occupy slots N+1..MaxSteps.
-/// All operations move actual step DATA between physical slots to maintain this invariant.
+/// Ordering invariant: steps are always ordered by their fixed StepIndex (1-based, immutable).
+/// Active steps (PhaseType != 0) occupy the front positions by StepIndex order.
+/// Inactive steps (PhaseType == 0) are pushed to the end positions.
+/// All operations move actual step DATA (including PhaseType) between physical slots.
+/// StepIndex is never modified — it is the fixed slot identifier.
 /// </summary>
 public class CustomRecipeEditorLogics : BaseNetLogic
 {
@@ -83,9 +85,9 @@ public class CustomRecipeEditorLogics : BaseNetLogic
     #region ExportMethods
 
     /// <summary>
-    /// Insert a new empty step before this step's position.
-    /// Shifts data from position P..N right by one slot, clears slot P.
-    /// Not allowed on first step (PT=1) or inactive steps (PT=0).
+    /// Insert a new empty step before this step's StepIndex position.
+    /// Shifts data from this position to last active rightward, clears the opened slot.
+    /// Not allowed on StepIndex == 1 (first step) or inactive steps (PhaseType == 0).
     /// </summary>
     [ExportMethod]
     public void AddStepBefore(out bool success)
@@ -98,52 +100,48 @@ public class CustomRecipeEditorLogics : BaseNetLogic
         var target = myStep.Owner;
         if (target == null) { Log.Error(LogCategory, "AddStepBefore: cannot resolve target node."); return; }
 
+        // Use StepIndex for position determination
+        int myPosition = GetStepIndex(myStep);
         float myPT = GetPhaseType(myStep);
-        if (myPT <= 1f)
+
+        // Block on first step or inactive step
+        if (myPosition <= 1 || myPT == 0f)
         {
-            Log.Warning(LogCategory, "AddStepBefore: not allowed on first or inactive step.");
+            Log.Warning(LogCategory, "AddStepBefore: not allowed on first step or inactive step.");
             return;
         }
 
         var allSteps = GetAllStepNodes(target);
         int activeCount = CountActive(allSteps);
+
+        // Cannot add if all slots are occupied
         if (activeCount >= MaxSteps)
         {
             Log.Warning(LogCategory, "AddStepBefore: max steps reached.");
             return;
         }
 
-        int insertPos = (int)myPT; // 1-based position to insert at
-
-        // Shift data RIGHT: from slot N down to insertPos, copy slot[i-1] -> slot[i]
-        // This opens a gap at insertPos
-        for (int i = activeCount; i >= insertPos; i--)
+        // Shift data RIGHT: from last active slot down to myPosition, copy slot[i-1] -> slot[i]
+        // This opens a gap at myPosition (1-based)
+        for (int i = activeCount; i >= myPosition; i--)
         {
             CopyStepContent(allSteps[i - 1], allSteps[i]);
         }
 
-        // Clear the inserted slot and activate it
-        ClearStepContent(allSteps[insertPos - 1]);
-        SetPhaseType(allSteps[insertPos - 1], (float)insertPos);
+        // Clear the opened slot and mark it active (PhaseType != 0)
+        ClearStepContent(allSteps[myPosition - 1]);
+        SetPhaseType(allSteps[myPosition - 1], 1f);
 
-        // Reassign PTs for all active slots (1..N+1)
-        for (int i = 0; i <= activeCount; i++)
-        {
-            SetPhaseType(allSteps[i], (float)(i + 1));
-        }
-        // Ensure remaining slots are inactive
-        for (int i = activeCount + 1; i < allSteps.Count; i++)
-        {
-            SetPhaseType(allSteps[i], 0f);
-        }
+        // Normalize: ensure all PT==0 content is at the end
+        EnsureInactiveAtEnd(allSteps);
 
         success = true;
-        Log.Info(LogCategory, $"AddStepBefore: inserted at position {insertPos}. Active steps: {activeCount + 1}.");
+        Log.Info(LogCategory, $"AddStepBefore: inserted at StepIndex {myPosition}. Active steps: {activeCount + 1}.");
     }
 
     /// <summary>
     /// Append a new empty step at end of active sequence.
-    /// Not allowed on inactive steps (PT=0).
+    /// Not allowed on inactive steps (PhaseType == 0).
     /// </summary>
     [ExportMethod]
     public void AddStepAfter(out bool success)
@@ -166,24 +164,28 @@ public class CustomRecipeEditorLogics : BaseNetLogic
         var allSteps = GetAllStepNodes(target);
         int activeCount = CountActive(allSteps);
 
+        // Cannot add if all slots are occupied
         if (activeCount >= MaxSteps)
         {
             Log.Warning(LogCategory, "AddStepAfter: max steps reached.");
             return;
         }
 
-        // Next slot after last active — clear and activate
-        int newSlot = activeCount; // 0-based index of slot N+1
+        // Activate the first inactive slot (right after last active, by StepIndex order)
+        int newSlot = activeCount; // 0-based index of first inactive slot
         ClearStepContent(allSteps[newSlot]);
-        SetPhaseType(allSteps[newSlot], (float)(activeCount + 1));
+        SetPhaseType(allSteps[newSlot], 1f);
+
+        // Normalize: ensure ordering invariant holds
+        EnsureInactiveAtEnd(allSteps);
 
         success = true;
-        Log.Info(LogCategory, $"AddStepAfter: activated step at position {activeCount + 1}. Active steps: {activeCount + 1}.");
+        Log.Info(LogCategory, $"AddStepAfter: activated step at StepIndex {activeCount + 1}. Active steps: {activeCount + 1}.");
     }
 
     /// <summary>
-    /// Move this step one position up by swapping all data with the step above.
-    /// Not allowed on first step (PT=1) or inactive steps (PT=0).
+    /// Move this step one position up (lower StepIndex) by swapping content with the step above.
+    /// Not allowed on StepIndex == 1 (first step) or inactive steps (PhaseType == 0).
     /// </summary>
     [ExportMethod]
     public void MoveStepUp(out bool success)
@@ -196,27 +198,38 @@ public class CustomRecipeEditorLogics : BaseNetLogic
         var target = myStep.Owner;
         if (target == null) { Log.Error(LogCategory, "MoveStepUp: cannot resolve target node."); return; }
 
+        // Use StepIndex for position
+        int myPosition = GetStepIndex(myStep);
         float myPT = GetPhaseType(myStep);
-        if (myPT <= 1f)
+
+        // Block on first position or inactive step
+        if (myPosition <= 1 || myPT == 0f)
         {
             Log.Warning(LogCategory, "MoveStepUp: already at top or inactive.");
             return;
         }
 
         var allSteps = GetAllStepNodes(target);
-        int myIndex = (int)myPT - 1;     // 0-based
+        int myIndex = myPosition - 1;     // 0-based
         int aboveIndex = myIndex - 1;
 
-        // Swap content (not PT) between this slot and slot above
+        // Block if the step above is inactive (shouldn't happen under normal invariant)
+        if (GetPhaseType(allSteps[aboveIndex]) == 0f)
+        {
+            Log.Warning(LogCategory, "MoveStepUp: step above is inactive, cannot swap.");
+            return;
+        }
+
+        // Swap all content (including PhaseType) between this slot and slot above
         SwapStepContent(allSteps[myIndex], allSteps[aboveIndex]);
 
         success = true;
-        Log.Info(LogCategory, $"MoveStepUp: swapped position {(int)myPT} with {(int)myPT - 1}.");
+        Log.Info(LogCategory, $"MoveStepUp: swapped StepIndex {myPosition} with {myPosition - 1}.");
     }
 
     /// <summary>
-    /// Move this step one position down by swapping all data with the step below.
-    /// Not allowed on last active step or inactive steps (PT=0).
+    /// Move this step one position down (higher StepIndex) by swapping content with the step below.
+    /// Not allowed on last active step or inactive steps (PhaseType == 0).
     /// </summary>
     [ExportMethod]
     public void MoveStepDown(out bool success)
@@ -229,7 +242,11 @@ public class CustomRecipeEditorLogics : BaseNetLogic
         var target = myStep.Owner;
         if (target == null) { Log.Error(LogCategory, "MoveStepDown: cannot resolve target node."); return; }
 
+        // Use StepIndex for position
+        int myPosition = GetStepIndex(myStep);
         float myPT = GetPhaseType(myStep);
+
+        // Block on inactive step
         if (myPT == 0f)
         {
             Log.Warning(LogCategory, "MoveStepDown: not allowed on inactive step.");
@@ -239,25 +256,34 @@ public class CustomRecipeEditorLogics : BaseNetLogic
         var allSteps = GetAllStepNodes(target);
         int activeCount = CountActive(allSteps);
 
-        if (myPT >= activeCount)
+        // Block if already at the last active position
+        if (myPosition >= activeCount)
         {
             Log.Warning(LogCategory, "MoveStepDown: already at bottom active position.");
             return;
         }
 
-        int myIndex = (int)myPT - 1;     // 0-based
+        int myIndex = myPosition - 1;     // 0-based
         int belowIndex = myIndex + 1;
 
-        // Swap content (not PT) between this slot and slot below
+        // Block if the step below is inactive (shouldn't happen under normal invariant)
+        if (GetPhaseType(allSteps[belowIndex]) == 0f)
+        {
+            Log.Warning(LogCategory, "MoveStepDown: step below is inactive, cannot swap.");
+            return;
+        }
+
+        // Swap all content (including PhaseType) between this slot and slot below
         SwapStepContent(allSteps[myIndex], allSteps[belowIndex]);
 
         success = true;
-        Log.Info(LogCategory, $"MoveStepDown: swapped position {(int)myPT} with {(int)myPT + 1}.");
+        Log.Info(LogCategory, $"MoveStepDown: swapped StepIndex {myPosition} with {myPosition + 1}.");
     }
 
     /// <summary>
-    /// Delete this step: shift data from slots after this one LEFT, deactivate last active slot.
-    /// Not allowed on inactive steps (PT=0).
+    /// Delete this step: clear its content, set PhaseType to 0, then normalize order
+    /// so inactive content moves to the end.
+    /// Not allowed on inactive steps (PhaseType == 0).
     /// </summary>
     [ExportMethod]
     public void DeleteStep(out bool success)
@@ -277,28 +303,20 @@ public class CustomRecipeEditorLogics : BaseNetLogic
             return;
         }
 
+        // Use StepIndex for position
+        int myPosition = GetStepIndex(myStep);
         var allSteps = GetAllStepNodes(target);
         int activeCount = CountActive(allSteps);
-        int deletePos = (int)myPT; // 1-based
 
-        // Shift data LEFT: from slot deletePos+1 to N, copy slot[i] -> slot[i-1]
-        for (int i = deletePos; i < activeCount; i++)
-        {
-            CopyStepContent(allSteps[i], allSteps[i - 1]);
-        }
+        // Clear this step's content and mark it inactive (PT = 0)
+        ClearStepContent(allSteps[myPosition - 1]);
+        SetPhaseType(allSteps[myPosition - 1], 0f);
 
-        // Clear and deactivate last active slot
-        ClearStepContent(allSteps[activeCount - 1]);
-        SetPhaseType(allSteps[activeCount - 1], 0f);
-
-        // Reassign PTs for remaining active slots
-        for (int i = 0; i < activeCount - 1; i++)
-        {
-            SetPhaseType(allSteps[i], (float)(i + 1));
-        }
+        // Normalize: push the now-inactive step content to the end
+        EnsureInactiveAtEnd(allSteps);
 
         success = true;
-        Log.Info(LogCategory, $"DeleteStep: removed position {deletePos}. Active steps: {activeCount - 1}.");
+        Log.Info(LogCategory, $"DeleteStep: removed StepIndex {myPosition}. Active steps: {activeCount - 1}.");
     }
 
     #endregion
@@ -306,11 +324,13 @@ public class CustomRecipeEditorLogics : BaseNetLogic
     #region Data Movement Helpers
 
     /// <summary>
-    /// Swap all content (StepName, StepEnabled, parameters) between two step nodes.
-    /// PhaseType is NOT swapped — it always matches physical slot index.
+    /// Swap all content between two step nodes: StepName, StepEnabled, PhaseType, and parameters.
+    /// StepIndex is NOT swapped — it is the fixed slot identifier.
     /// </summary>
     private void SwapStepContent(IUANode a, IUANode b)
     {
+        // Swap PhaseType (belongs to content, not to slot)
+        SwapVariable(a, b, "PhaseType");
         // Swap StepName
         SwapVariable(a, b, "StepName");
         // Swap StepEnabled
@@ -329,11 +349,13 @@ public class CustomRecipeEditorLogics : BaseNetLogic
     }
 
     /// <summary>
-    /// Copy all content (StepName, StepEnabled, parameters) from src to dst.
-    /// PhaseType is NOT copied.
+    /// Copy all content from src to dst: StepName, StepEnabled, PhaseType, and parameters.
+    /// StepIndex is NOT copied — it is the fixed slot identifier.
     /// </summary>
     private void CopyStepContent(IUANode src, IUANode dst)
     {
+        // Copy PhaseType (belongs to content, not to slot)
+        CopyVariable(src, dst, "PhaseType");
         CopyVariable(src, dst, "StepName");
         CopyVariable(src, dst, "StepEnabled");
         foreach (var paramName in ParameterObjects)
@@ -350,7 +372,7 @@ public class CustomRecipeEditorLogics : BaseNetLogic
 
     /// <summary>
     /// Clear step content to defaults (empty name, disabled, zero parameters).
-    /// PhaseType is NOT cleared here.
+    /// Does NOT clear PhaseType — caller sets PT explicitly after this call.
     /// </summary>
     private void ClearStepContent(IUANode step)
     {
@@ -369,6 +391,30 @@ public class CustomRecipeEditorLogics : BaseNetLogic
             var pe = obj.GetVariable("ParameterEnabled");
             if (pe != null) pe.Value = false;
         }
+    }
+
+    /// <summary>
+    /// Enforce the ordering invariant: any step with PhaseType == 0 must have its content
+    /// placed at the end (higher StepIndex positions). Uses bubble-sort style passes
+    /// to move inactive content toward the end while preserving relative order of active steps.
+    /// </summary>
+    private void EnsureInactiveAtEnd(List<IUANode> allSteps)
+    {
+        // Bubble inactive (PT==0) content toward the end of the list
+        bool swapped;
+        do
+        {
+            swapped = false;
+            for (int i = 0; i < allSteps.Count - 1; i++)
+            {
+                // If current slot is inactive and next slot is active, swap content
+                if (GetPhaseType(allSteps[i]) == 0f && GetPhaseType(allSteps[i + 1]) != 0f)
+                {
+                    SwapStepContent(allSteps[i], allSteps[i + 1]);
+                    swapped = true;
+                }
+            }
+        } while (swapped);
     }
 
     /// <summary>
@@ -412,8 +458,8 @@ public class CustomRecipeEditorLogics : BaseNetLogic
     }
 
     /// <summary>
-    /// Get all step nodes (RecipeStepRSA1..MaxSteps) from the target node.
-    /// Returns list indexed 0-based: index 0 = physical slot 1 (RecipeStepRSA1).
+    /// Get all step nodes (RecipeStepRSA1..MaxSteps) from the target node, ordered by StepIndex.
+    /// Returns list indexed 0-based: index 0 = step with StepIndex 1.
     /// </summary>
     private List<IUANode> GetAllStepNodes(IUANode target)
     {
@@ -423,11 +469,23 @@ public class CustomRecipeEditorLogics : BaseNetLogic
             var step = target.GetObject($"RecipeStepRSA{i}");
             if (step != null) steps.Add(step);
         }
+        // Sort by StepIndex to guarantee correct ordering
+        steps.Sort((a, b) => GetStepIndex(a).CompareTo(GetStepIndex(b)));
         return steps;
     }
 
     /// <summary>
+    /// Read StepIndex from a step node. Returns the fixed 1-based position of this slot.
+    /// </summary>
+    private int GetStepIndex(IUANode stepNode)
+    {
+        var v = stepNode.GetVariable("StepIndex");
+        return v != null ? Convert.ToInt32(v.Value.Value) : 0;
+    }
+
+    /// <summary>
     /// Read PhaseType from a step node. Returns 0 if not found.
+    /// Only used for active/inactive determination (0 = inactive, non-zero = active).
     /// </summary>
     private float GetPhaseType(IUANode stepNode)
     {
@@ -445,11 +503,11 @@ public class CustomRecipeEditorLogics : BaseNetLogic
     }
 
     /// <summary>
-    /// Count active steps (PhaseType > 0).
+    /// Count active steps (PhaseType != 0).
     /// </summary>
     private int CountActive(List<IUANode> steps)
     {
-        return steps.Count(s => GetPhaseType(s) > 0f);
+        return steps.Count(s => GetPhaseType(s) != 0f);
     }
 
     #endregion
