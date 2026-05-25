@@ -45,9 +45,11 @@ Children:
         - Name: High
           Type: BaseDataVariableType
           DataType: Double
+          Value: 100.0
     - Name: ParameterEnabled
       Type: BaseDataVariableType
       DataType: Boolean
+      Value: true
   - Name: tsp
     Type: RecipeStepParameter
     Children:
@@ -65,9 +67,11 @@ Children:
         - Name: High
           Type: BaseDataVariableType
           DataType: Double
+          Value: 100.0
     - Name: ParameterEnabled
       Type: BaseDataVariableType
       DataType: Boolean
+      Value: true
   - Name: psp
     Type: RecipeStepParameter
     Children:
@@ -85,9 +89,11 @@ Children:
         - Name: High
           Type: BaseDataVariableType
           DataType: Double
+          Value: 100.0
     - Name: ParameterEnabled
       Type: BaseDataVariableType
       DataType: Boolean
+      Value: true
   - Name: StepIndex
     Type: BaseDataVariableType
     DataType: Byte
@@ -109,6 +115,7 @@ Children:
       - Name: High
         Type: BaseDataVariableType
         DataType: Double
+        Value: 100.0
       - Name: Constrain
         Type: BaseDataVariableType
         DataType: Boolean
@@ -117,6 +124,7 @@ Children:
   - Name: ParameterEnabled
     Type: BaseDataVariableType
     DataType: Boolean
+    Value: true
 - Name: RSAMachine
   Id: g=e0f0d30e0bcf9f357517f5021f2b803c
   Supertype: BaseObjectType
@@ -163,9 +171,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: tsp
       Type: RecipeStepParameter
       Children:
@@ -183,9 +193,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: psp
       Type: RecipeStepParameter
       Children:
@@ -203,9 +215,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: StepIndex
       Type: BaseDataVariableType
       DataType: Byte
@@ -236,9 +250,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: tsp
       Type: RecipeStepParameter
       Children:
@@ -256,9 +272,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: psp
       Type: RecipeStepParameter
       Children:
@@ -276,9 +294,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: StepIndex
       Type: BaseDataVariableType
       DataType: Byte
@@ -309,9 +329,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: tsp
       Type: RecipeStepParameter
       Children:
@@ -329,9 +351,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: psp
       Type: RecipeStepParameter
       Children:
@@ -349,9 +373,11 @@ Children:
           - Name: High
             Type: BaseDataVariableType
             DataType: Double
+            Value: 100.0
       - Name: ParameterEnabled
         Type: BaseDataVariableType
         DataType: Boolean
+        Value: true
     - Name: StepIndex
       Type: BaseDataVariableType
       DataType: Byte
