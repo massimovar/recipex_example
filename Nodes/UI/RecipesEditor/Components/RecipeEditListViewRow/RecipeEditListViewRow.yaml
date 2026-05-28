@@ -111,7 +111,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/RecipeFamily@BrowseName"
+              Value: "{Parameter}@BrowseName"
         - Name: SpinBox1
           Type: SpinBox
           Children:
@@ -122,7 +122,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/RecipeFamily"
+              Value: "{Parameter}"
         - Name: Parameter
           Type: Alias
           DataType: NodeId
@@ -154,7 +154,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/f0@BrowseName"
+              Value: "{Parameter}@BrowseName"
         - Name: SpinBox1
           Type: SpinBox
           Children:
@@ -165,7 +165,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/f0"
+              Value: "{Parameter}"
         - Name: Parameter
           Type: Alias
           DataType: NodeId
@@ -177,7 +177,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/FaseType@NodeId"
+            Value: "{RowItem}/f0@NodeId"
             Children:
             - Name: Mode
               Type: BaseVariableType
@@ -197,7 +197,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/ft@BrowseName"
+              Value: "{Parameter}@BrowseName"
         - Name: SpinBox1
           Type: SpinBox
           Children:
@@ -208,7 +208,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/ft"
+              Value: "{Parameter}"
         - Name: Parameter
           Type: Alias
           DataType: NodeId
@@ -220,7 +220,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/dsp@NodeId"
+            Value: "{RowItem}/ft@NodeId"
             Children:
             - Name: Mode
               Type: BaseVariableType
@@ -240,7 +240,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/so@BrowseName"
+              Value: "{Parameter}@BrowseName"
         - Name: SpinBox1
           Type: SpinBox
           Children:
@@ -251,7 +251,7 @@ Children:
             - Name: DynamicLink
               Type: DynamicLink
               DataType: NodePath
-              Value: "{RowItem}/so"
+              Value: "{Parameter}"
         - Name: Parameter
           Type: Alias
           DataType: NodeId
@@ -263,7 +263,7 @@ Children:
           - Name: DynamicLink
             Type: DynamicLink
             DataType: NodePath
-            Value: "{RowItem}/tsp@NodeId"
+            Value: "{RowItem}/so@NodeId"
             Children:
             - Name: Mode
               Type: BaseVariableType
