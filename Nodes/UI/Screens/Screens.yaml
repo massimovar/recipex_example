@@ -2714,3 +2714,7 @@ Children:
         - Name: Severity
           Type: PropertyType
           DataType: UInt16
+- Name: sandbox
+  Id: g=7adcb2d340b93eeb22fe0552ccda4c85
+  Supertype: Screen
+  ReferenceType: HasComponent

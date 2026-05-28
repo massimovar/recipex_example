@@ -1601,6 +1601,20 @@ Children:
       DataType: Size
       ModellingRule: Optional
       Value: 4.0
+  - Name: RecipeEditModel
+    Type: BaseDataVariableType
+    DataType: NodeId
+    Children:
+    - Name: DynamicLink
+      Type: DynamicLink
+      DataType: NodePath
+      Value: "{RecipeSchemaAlias}@NodeId"
+      Children:
+      - Name: Mode
+        Type: BaseVariableType
+        DataType: DynamicLinkMode
+        ModellingRule: Optional
+        Value: 2
 - Name: MachineGeneralParameter
   Id: g=8c21c5e31dc9de598ce06b30e4118a42
   Supertype: RowLayout

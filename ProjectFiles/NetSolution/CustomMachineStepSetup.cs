@@ -161,6 +161,8 @@ public class CustomMachineStepSetup : BaseNetLogic
         // Apply rules to this step at startup
         int pt = (int)_step.PhaseType;
         Log.Info(LogCategory, $"Start: {_step.BrowseName} PhaseType={pt}. Applying rules.");
+        
+        // Update dictionary with specific dynamic rules. 
         ApplyRulesToStep(_step, pt);
 
         // Subscribe to PhaseType changes on this step
