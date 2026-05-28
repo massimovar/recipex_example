@@ -9,7 +9,7 @@ Children:
   Value: 
    {
     "Type": 12,
-    "Dimensions": [29,3],
+    "Dimensions": [43,3],
     "Body": [
      "","en-US","it-IT",
      "RecipeTemplate","template","template",
@@ -39,6 +39,20 @@ Children:
      "ChangePasswordFormPasswordMismatchMessage","Passwords do not match","Le password non coincidono",
      "LoginFormLoginSuccessful","Login successful","Login riuscito",
      "LoginFormAuthenticationFailed","Authentication failed","Autenticazione fallita",
-     "LoginFormInvalidAuthenticationModeForUser","Invalid authentication mode for user","Modalità di autenticazione non valida per l'utente"
+     "LoginFormInvalidAuthenticationModeForUser","Invalid authentication mode for user","Modalità di autenticazione non valida per l'utente",
+     "Timestamp","Timestamp","Timestamp",
+     "TimedShelve","Timed Shelve","Sospensione temporizzata",
+     "Acknowledge","Acknowledge","Riconosci",
+     "Acknowledge All","Acknowledge All","Riconosci tutti",
+     "Active","Active","Attivo",
+     "Confirm","Confirm","Conferma",
+     "OneShotShelve","One-Shot Shelve","Sospensione singola",
+     "Confirm All","Confirm All","Conferma tutti",
+     "Name","Name","Nome",
+     "SourceName","Source Variable","Variabile sorgente",
+     "Message","Message","Messaggio",
+     "Acked","Acked","Riconosciuto",
+     "Confirmed","Confirmed","Confermato",
+     "Severity","Severity","Gravità"
     ]
    }

@@ -90,16 +90,24 @@ Project:
    Uri: 'urn:FTOptix:EventLogger:Net'
    Module: FTOptix.EventLogger.Net
    Version: 1.0
+  23:
+   Uri: 'urn:FTOptix:Alarm'
+   Module: FTOptix.Alarm
+   Version: 6.1
+  24:
+   Uri: 'urn:FTOptix:Alarm:Net'
+   Module: FTOptix.Alarm.Net
+   Version: 1.2
  Statistics:
-  TotalNodeCount: 4199
-  Objects: 865
-  ObjectTypes: 38
-  Variables: 3277
+  TotalNodeCount: 4615
+  Objects: 944
+  ObjectTypes: 41
+  Variables: 3611
   VariableTypes: 0
   DataTypes: 0
   Methods: 19
-  References: 88
+  References: 127
   ReferenceTypes: 0
-  Files: 36
+  Files: 39
  Nodes:
  - File: Nodes/recipex_example.yaml

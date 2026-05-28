@@ -308,6 +308,13 @@ public class CustomMachineStepUIManager : BaseNetLogic
         var allSteps = GetAllStepNodes(target);
         int activeCount = CountActive(allSteps);
 
+        // Block deletion if this is the last remaining active step
+        if (activeCount <= 1)
+        {
+            Log.Warning(LogCategory, "DeleteStep: cannot delete the last active step.");
+            return;
+        }
+
         // Clear this step's content and mark it inactive (PT = 0)
         ClearStepContent(allSteps[myPosition - 1]);
         SetPhaseType(allSteps[myPosition - 1], 0f);

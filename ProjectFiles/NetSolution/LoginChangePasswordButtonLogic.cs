@@ -12,6 +12,7 @@ using FTOptix.Retentivity;
 using FTOptix.DataLogger;
 using FTOptix.EventLogger;
 using FTOptix.Recipe;
+using FTOptix.Alarm;
 #endregion
 
 public class LoginChangePasswordButtonLogic : BaseNetLogic

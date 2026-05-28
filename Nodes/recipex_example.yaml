@@ -68,3 +68,4 @@ Children:
 - File: Retentivity/Retentivity.yaml
 - Name: RuntimeOptimization
   Type: PropertyGroup
+- File: AlarmTypes/AlarmTypes.yaml

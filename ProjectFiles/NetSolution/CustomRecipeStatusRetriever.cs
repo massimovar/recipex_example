@@ -16,6 +16,7 @@ using FTOptix.Core;
 using FTOptix.DataLogger;
 using FTOptix.EventLogger;
 using FTOptix.Recipe;
+using FTOptix.Alarm;
 #endregion
 
 /// <summary>

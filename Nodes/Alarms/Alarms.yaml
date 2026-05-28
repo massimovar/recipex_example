@@ -1,3 +1,63 @@
 Name: Alarms
 Id: g=3293e7cd8de0bb06cc725e017a984470
 Type: AlarmsCategoryFolder
+Children:
+- Name: LTAlarm
+  Id: g=4f13950310277abfa5c4fe50739706fb
+  Supertype: OffNormalAlarmController
+  Children:
+  - Class: Reference
+    Target: ns=23;i=81
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=82
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=83
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=130
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=135
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=132
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=146
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=148
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=150
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=152
+    Direction: Forward
+  - Class: Reference
+    Target: ns=23;i=154
+    Direction: Forward
+  - Name: NormalStateValue
+    Id: g=7f014eea7c6aa378da2855fcaf0a5ae5
+    Type: BaseDataVariableType
+    DataType: Double
+  - Name: InputValue
+    Id: g=e68bd22423bec1da58b654a9015fe586
+    Type: BaseDataVariableType
+    DataType: Double
+  - Name: LastEvent
+    Id: g=d688f57b6a065d1158e3b7a786fda856
+    Type: BaseDataVariableType
+    DataType: BaseDataType
+    ValueRank: OneDimension
+    ArrayDimensions: [0]
+  - Name: IsDiagnostic
+    Id: g=3571b4aba0ae2c642d054b1aa58632c8
+    Type: BaseDataVariableType
+    DataType: Boolean
+  - Class: Reference
+    Type: GeneratesEvent
+    Target: g=1099a64b7b87ad66aa5560bf38071e76
+- File: Folder1/Folder1.yaml

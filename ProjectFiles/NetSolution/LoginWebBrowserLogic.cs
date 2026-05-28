@@ -15,6 +15,7 @@ using System.Text;
 using FTOptix.DataLogger;
 using FTOptix.EventLogger;
 using FTOptix.Recipe;
+using FTOptix.Alarm;
 #endregion
 
 public class LoginWebBrowserLogic : BaseNetLogic

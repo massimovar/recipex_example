@@ -3,3 +3,4 @@ Type: ModelCategoryFolder
 Children:
 - File: RSA/RSA.yaml
 - File: AuditVariables/AuditVariables.yaml
+- File: Alarms/Alarms.yaml
