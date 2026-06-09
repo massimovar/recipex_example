@@ -34,6 +34,10 @@ public class CustomMachineStepSetup : BaseNetLogic
     private RecipeStepRSA _step;
     private (IUAVariable variable, EventHandler<VariableChangeEventArgs> handler)? _subscription;
 
+    // Cross-row link: f0 lives on the RecipeGeneralParameters row (RecipeMainParameters
+    // data node, sibling under the shared RSAMachine). We subscribe to it and drive dsp.
+    private (IUAVariable variable, EventHandler<VariableChangeEventArgs> handler)? _f0Subscription;
+
     #region ═══════════════════════════════════════════════════════════════
     //  TEMPLATE RULES — EDIT HERE TO CHANGE BEHAVIOR
     #endregion
@@ -179,6 +183,11 @@ public class CustomMachineStepSetup : BaseNetLogic
             _subscription = (ptVar, handler);
         }
 
+        // Cross-row link: subscribe to f0 on the shared RecipeMainParameters data node.
+        // Both rows (RecipeGeneralParameters and this RecipeStep) bind the same model,
+        // so reading f0 from the model is the supported path (no dynamic-link needed).
+        SetupF0Link();
+
         Log.Info(LogCategory, $"Start: setup complete. Step={_step.BrowseName}, Params=[{string.Join(", ", ParameterObjects)}]");
     }
 
@@ -190,6 +199,78 @@ public class CustomMachineStepSetup : BaseNetLogic
             _subscription.Value.variable.VariableChange -= _subscription.Value.handler;
             _subscription = null;
         }
+
+        // Mandatory: unsubscribe f0 cross-row handler (prevents leaked subscriptions on row recycle)
+        if (_f0Subscription.HasValue)
+        {
+            _f0Subscription.Value.variable.VariableChange -= _f0Subscription.Value.handler;
+            _f0Subscription = null;
+        }
+    }
+
+    #region ═══════════════════════════════════════════════════════════════
+    //  CROSS-ROW LINK: f0 (RecipeGeneralParameters) -> dsp (RecipeStep)
+    #endregion
+
+    /// <summary>
+    /// Wire f0 -> dsp. f0 is a variable on the RecipeMainParameters node (shown by the
+    /// RecipeGeneralParameters row). This RecipeStep row shares the same parent (RSAMachine),
+    /// so we reach f0 via the model, not via the other row's widget.
+    /// On every f0 change, dsp.ParameterValue = f0 * 2 (proof of the link).
+    /// </summary>
+    private void SetupF0Link()
+    {
+        // _step.Owner is the shared RSAMachine instance both rows hang off of
+        var owner = _step.Owner;
+        if (owner == null)
+        {
+            Log.Error(LogCategory, "SetupF0Link: step Owner (RSAMachine) is null.");
+            return;
+        }
+
+        // Locate the RecipeMainParameters sibling that carries f0
+        var mainParams = owner.Children.OfType<RecipeMainParameters>().FirstOrDefault();
+        if (mainParams == null)
+        {
+            Log.Error(LogCategory, "SetupF0Link: RecipeMainParameters node not found under owner.");
+            return;
+        }
+
+        var f0Var = mainParams.f0Variable;
+        if (f0Var == null)
+        {
+            Log.Error(LogCategory, "SetupF0Link: f0 variable not found on RecipeMainParameters.");
+            return;
+        }
+
+        // Apply once with current f0 so dsp is correct at startup
+        UpdateDspFromF0(Convert.ToSingle(f0Var.Value.Value));
+
+        // React to runtime f0 edits
+        EventHandler<VariableChangeEventArgs> handler = (sender, e) =>
+        {
+            float f0 = Convert.ToSingle(e.NewValue.Value);
+            UpdateDspFromF0(f0);
+        };
+        f0Var.VariableChange += handler;
+        _f0Subscription = (f0Var, handler);
+    }
+
+    /// <summary>
+    /// Set this step's dsp ParameterValue = f0 * 2.
+    /// </summary>
+    private void UpdateDspFromF0(float f0)
+    {
+        var dsp = _step.dsp;
+        if (dsp == null)
+        {
+            Log.Warning(LogCategory, "UpdateDspFromF0: dsp parameter not found on step.");
+            return;
+        }
+
+        float newValue = f0 * 2f;
+        dsp.ParameterValue = newValue;
+        Log.Info(LogCategory, $"f0={f0} -> {_step.BrowseName}.dsp={newValue}");
     }
 
     #region ═══════════════════════════════════════════════════════════════
