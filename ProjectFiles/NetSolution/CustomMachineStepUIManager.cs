@@ -473,7 +473,7 @@ public class CustomMachineStepUIManager : BaseNetLogic
         var steps = new List<IUANode>();
         for (int i = 1; i <= MaxSteps; i++)
         {
-            var step = target.GetObject($"RecipeStepRSA{i}");
+            var step = target.GetObject($"RecipeStepRSA{i:D2}");
             if (step != null) steps.Add(step);
         }
         // Sort by StepIndex to guarantee correct ordering

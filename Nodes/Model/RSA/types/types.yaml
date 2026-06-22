@@ -144,7 +144,7 @@ Children:
     - Name: f0
       Type: BaseDataVariableType
       DataType: Float
-  - Name: RecipeStepRSA1
+  - Name: RecipeStepRSA01
     Type: RecipeStepRSA
     Children:
     - Name: PhaseType
@@ -223,7 +223,7 @@ Children:
     - Name: StepIndex
       Type: BaseDataVariableType
       DataType: Byte
-  - Name: RecipeStepRSA2
+  - Name: RecipeStepRSA02
     Type: RecipeStepRSA
     Children:
     - Name: PhaseType
@@ -302,7 +302,1350 @@ Children:
     - Name: StepIndex
       Type: BaseDataVariableType
       DataType: Byte
-  - Name: RecipeStepRSA3
+  - Name: RecipeStepRSA03
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA04
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA05
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA06
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA07
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA08
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA09
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA10
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA11
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA12
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA13
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA14
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA15
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA16
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA17
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA18
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA19
+    Type: RecipeStepRSA
+    Children:
+    - Name: PhaseType
+      Type: BaseDataVariableType
+      DataType: Float
+    - Name: StepName
+      Type: BaseDataVariableType
+      DataType: LocalizedText
+      Value: {"LocaleId":"en-US","Text":"not set"}
+    - Name: dsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: tsp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: psp
+      Type: RecipeStepParameter
+      Children:
+      - Name: ParameterValue
+        Type: BaseDataVariableType
+        DataType: Float
+        Children:
+        - Name: EURange
+          Type: RangeType
+          DataType: Range
+          Children:
+          - Name: Low
+            Type: BaseDataVariableType
+            DataType: Double
+          - Name: High
+            Type: BaseDataVariableType
+            DataType: Double
+            Value: 100.0
+      - Name: ParameterEnabled
+        Type: BaseDataVariableType
+        DataType: Boolean
+        Value: true
+    - Name: StepIndex
+      Type: BaseDataVariableType
+      DataType: Byte
+  - Name: RecipeStepRSA20
     Type: RecipeStepRSA
     Children:
     - Name: PhaseType
