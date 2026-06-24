@@ -6,6 +6,7 @@ using UAManagedCore;
 using FTOptix.HMIProject;
 using FTOptix.NetLogic;
 using FTOptix.Core;
+using FTOptix.CoreBase;
 using FTOptix.RecipeX;
 using FTOptix.Alarm;
 using FTOptix.DataLogger;
@@ -29,6 +30,7 @@ public class CustomMachineStepUIManager : BaseNetLogic
     // Resolved dynamically from RSAMachine type at Start()
     private int MaxSteps;
     private string[] ParameterObjects;
+    private DelayedTask _postSwapVerificationTask;
 
     public override void Start()
     {
@@ -80,7 +82,12 @@ public class CustomMachineStepUIManager : BaseNetLogic
         Log.Info(LogCategory, $"Start: MaxSteps={MaxSteps}, ParameterObjects=[{string.Join(", ", ParameterObjects)}]");
     }
 
-    public override void Stop() { }
+    public override void Stop()
+    {
+        // Dispose any pending post-swap verification when the row logic is recycled.
+        _postSwapVerificationTask?.Dispose();
+        _postSwapVerificationTask = null;
+    }
 
     #region ExportMethods
 
@@ -333,26 +340,37 @@ public class CustomMachineStepUIManager : BaseNetLogic
     /// <summary>
     /// Swap all content between two step nodes: StepName, StepEnabled, PhaseType, and parameters.
     /// StepIndex is NOT swapped — it is the fixed slot identifier.
+    /// Parameter values are captured first but written last, after PhaseType
+    /// subscriptions re-apply final rules for the destination slot.
     /// </summary>
     private void SwapStepContent(IUANode a, IUANode b)
     {
-        // Swap PhaseType (belongs to content, not to slot)
-        SwapVariable(a, b, "PhaseType");
+        // Snapshot parameter values before any rule-triggering write changes the row state.
+        var parameterSnapshots = CaptureParameterSwapSnapshots(a, b);
+
         // Swap StepName
         SwapVariable(a, b, "StepName");
         // Swap StepEnabled
         SwapVariable(a, b, "StepEnabled");
-        // Swap parameter sub-objects
-        foreach (var paramName in ParameterObjects)
+
+        // Move ParameterEnabled as content before PhaseType; PhaseType rules may override it next.
+        foreach (var snapshot in parameterSnapshots)
         {
-            var objA = a.GetObject(paramName);
-            var objB = b.GetObject(paramName);
-            if (objA != null && objB != null)
-            {
-                SwapVariable(objA, objB, "ParameterValue");
-                SwapVariable(objA, objB, "ParameterEnabled");
-            }
+            snapshot.ParameterA.ParameterEnabled = snapshot.EnabledB;
+            snapshot.ParameterB.ParameterEnabled = snapshot.EnabledA;
         }
+
+        // Swap PhaseType before parameter values so setup subscriptions settle enablement/range rules first.
+        SwapVariable(a, b, "PhaseType");
+
+        // Apply values last so UI refreshes or PhaseType rules cannot leave slot 1 with stale values.
+        foreach (var snapshot in parameterSnapshots)
+        {
+            ApplyParameterValuesAfterPhaseSwap(snapshot);
+        }
+
+        // Verify once after UI/RecipeX dynamic links settle, protecting the first visible row case.
+        QueuePostSwapParameterVerification(parameterSnapshots);
     }
 
     /// <summary>
@@ -425,27 +443,185 @@ public class CustomMachineStepUIManager : BaseNetLogic
     }
 
     /// <summary>
+    /// Capture all parameter values and enabled states before the step identity changes.
+    /// </summary>
+    private List<ParameterSwapSnapshot> CaptureParameterSwapSnapshots(IUANode a, IUANode b)
+    {
+        var snapshots = new List<ParameterSwapSnapshot>();
+
+        // Collect only valid RecipeStepParameter pairs; missing pairs are logged and skipped safely.
+        foreach (var paramName in ParameterObjects)
+        {
+            var paramA = a.GetObject(paramName) as RecipeStepParameter;
+            var paramB = b.GetObject(paramName) as RecipeStepParameter;
+            if (paramA == null || paramB == null)
+            {
+                Log.Warning(LogCategory, $"CaptureParameterSwapSnapshots: {paramName} missing or not a RecipeStepParameter.");
+                continue;
+            }
+
+            // Store plain values, not FTOptix wrappers, so the later write is a true exchange.
+            snapshots.Add(new ParameterSwapSnapshot(paramName, paramA, paramB));
+        }
+
+        return snapshots;
+    }
+
+    /// <summary>
+    /// Apply captured parameter values after PhaseType change handlers have completed.
+    /// </summary>
+    private void ApplyParameterValuesAfterPhaseSwap(ParameterSwapSnapshot snapshot)
+    {
+        // Preserve the final enablement produced by PhaseType rules before forcing write access.
+        bool finalEnabledA = snapshot.ParameterA.ParameterEnabled;
+        bool finalEnabledB = snapshot.ParameterB.ParameterEnabled;
+
+        // Temporarily enable both parameters so disabled slots accept the incoming value.
+        snapshot.ParameterA.ParameterEnabled = true;
+        snapshot.ParameterB.ParameterEnabled = true;
+
+        // Write both directions explicitly through the generated FTOptix SetValue path.
+        WriteParameterValue(snapshot.ParameterA, snapshot.ValueB);
+        WriteParameterValue(snapshot.ParameterB, snapshot.ValueA);
+
+        // Restore rule-derived enablement after the values are safely in place.
+        snapshot.ParameterA.ParameterEnabled = finalEnabledA;
+        snapshot.ParameterB.ParameterEnabled = finalEnabledB;
+
+        // Verify immediately so any remaining runtime write rejection is visible in diagnostics.
+        if (!FloatEquals(snapshot.ParameterA.ParameterValue, snapshot.ValueB) ||
+            !FloatEquals(snapshot.ParameterB.ParameterValue, snapshot.ValueA))
+        {
+            Log.Error(LogCategory,
+                $"ApplyParameterValuesAfterPhaseSwap: {snapshot.Name} verification failed. " +
+                $"A expected={snapshot.ValueB}, actual={snapshot.ParameterA.ParameterValue}; " +
+                $"B expected={snapshot.ValueA}, actual={snapshot.ParameterB.ParameterValue}.");
+        }
+    }
+
+    /// <summary>
+    /// Queue one bounded verification pass after the current UI event cycle completes.
+    /// </summary>
+    private void QueuePostSwapParameterVerification(List<ParameterSwapSnapshot> snapshots)
+    {
+        if (snapshots.Count == 0)
+            return;
+
+        // Keep only the newest verification task for this row to avoid stale re-writes.
+        _postSwapVerificationTask?.Cancel();
+        _postSwapVerificationTask?.Dispose();
+
+        // Copy the snapshot list so the delayed callback sees the original exchange data.
+        var capturedSnapshots = snapshots.ToArray();
+        _postSwapVerificationTask = new DelayedTask(() =>
+        {
+            foreach (var snapshot in capturedSnapshots)
+            {
+                ReapplyParameterValuesIfNeeded(snapshot);
+            }
+        }, 50, LogicObject);
+
+        _postSwapVerificationTask.Start();
+    }
+
+    /// <summary>
+    /// Reapply one parameter swap only if a later UI or recipe binding refresh reverted it.
+    /// </summary>
+    private void ReapplyParameterValuesIfNeeded(ParameterSwapSnapshot snapshot)
+    {
+        if (FloatEquals(snapshot.ParameterA.ParameterValue, snapshot.ValueB) &&
+            FloatEquals(snapshot.ParameterB.ParameterValue, snapshot.ValueA))
+        {
+            return;
+        }
+
+        // Reapply once with diagnostics; repeated failures remain visible in the log.
+        Log.Warning(LogCategory,
+            $"ReapplyParameterValuesIfNeeded: {snapshot.Name} drifted after swap. " +
+            $"A expected={snapshot.ValueB}, actual={snapshot.ParameterA.ParameterValue}; " +
+            $"B expected={snapshot.ValueA}, actual={snapshot.ParameterB.ParameterValue}. Reapplying once.");
+        ApplyParameterValuesAfterPhaseSwap(snapshot);
+    }
+
+    /// <summary>
+    /// Write a RecipeStepParameter value and retry once through the variable handle if needed.
+    /// </summary>
+    private void WriteParameterValue(RecipeStepParameter parameter, float value)
+    {
+        // First use the generated property, which maps to Refs.GetVariable(...).SetValue(value).
+        parameter.ParameterValue = value;
+
+        // Retry via the variable handle to make a failed first write explicit and bounded.
+        if (!FloatEquals(parameter.ParameterValue, value))
+            parameter.ParameterValueVariable.SetValue(value);
+    }
+
+    /// <summary>
+    /// Compare parameter values with a small tolerance to avoid false errors on float roundoff.
+    /// </summary>
+    private bool FloatEquals(float left, float right)
+    {
+        return Math.Abs(left - right) <= 0.0001f;
+    }
+
+    /// <summary>
+    /// Immutable snapshot of one parameter pair before a step-content swap begins.
+    /// </summary>
+    private readonly struct ParameterSwapSnapshot
+    {
+        public readonly string Name;
+        public readonly RecipeStepParameter ParameterA;
+        public readonly RecipeStepParameter ParameterB;
+        public readonly float ValueA;
+        public readonly float ValueB;
+        public readonly bool EnabledA;
+        public readonly bool EnabledB;
+
+        public ParameterSwapSnapshot(string name, RecipeStepParameter parameterA, RecipeStepParameter parameterB)
+        {
+            // Capture references and plain values at the same instant for deterministic exchange.
+            Name = name;
+            ParameterA = parameterA;
+            ParameterB = parameterB;
+            ValueA = parameterA.ParameterValue;
+            ValueB = parameterB.ParameterValue;
+            EnabledA = parameterA.ParameterEnabled;
+            EnabledB = parameterB.ParameterEnabled;
+        }
+    }
+
+    /// <summary>
     /// Swap a single variable's value between two parent nodes.
+    /// Captures the contained .NET values before writing so FTOptix UAValue wrappers
+    /// are not reused between variables.
     /// </summary>
     private void SwapVariable(IUANode parentA, IUANode parentB, string varName)
     {
         var vA = parentA.GetVariable(varName);
         var vB = parentB.GetVariable(varName);
         if (vA == null || vB == null) return;
-        var temp = vA.Value;
-        vA.Value = vB.Value;
-        vB.Value = temp;
+
+        // Snapshot both sides before either write so the operation is a true exchange.
+        object valueA = vA.Value.Value;
+        object valueB = vB.Value.Value;
+
+        // SetValue matches the generated model classes and avoids wrapper aliasing.
+        vA.SetValue(valueB);
+        vB.SetValue(valueA);
     }
 
     /// <summary>
     /// Copy a single variable's value from src parent to dst parent.
+    /// Uses SetValue on the contained value instead of assigning the source UAValue wrapper.
     /// </summary>
     private void CopyVariable(IUANode srcParent, IUANode dstParent, string varName)
     {
         var vSrc = srcParent.GetVariable(varName);
         var vDst = dstParent.GetVariable(varName);
         if (vSrc == null || vDst == null) return;
-        vDst.Value = vSrc.Value;
+
+        // Copy only the underlying value, never the FTOptix value wrapper instance.
+        vDst.SetValue(vSrc.Value.Value);
     }
 
     #endregion
