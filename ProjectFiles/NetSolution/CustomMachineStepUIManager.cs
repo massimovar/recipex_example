@@ -507,8 +507,9 @@ public class CustomMachineStepUIManager : BaseNetLogic
         if (snapshots.Count == 0)
             return;
 
-        // Keep only the newest verification task for this row to avoid stale re-writes.
-        _postSwapVerificationTask?.Cancel();
+        // Dispose the previous verification task (if any) before scheduling a new one.
+        // Note: do NOT call Cancel() here — a completed/non-running DelayedTask throws
+        // InvalidOperationException ("Task is not running"). Dispose() is sufficient.
         _postSwapVerificationTask?.Dispose();
 
         // Copy the snapshot list so the delayed callback sees the original exchange data.
